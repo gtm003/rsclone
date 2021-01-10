@@ -1,8 +1,9 @@
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path'];
 
 export class ToolsLeft {
-    constructor(rootElement) {
+    constructor(rootElement, mainPage) {
       this.rootElement = rootElement;
+      this.mainPage = mainPage;
       this.type = 'select';
     }
   
@@ -22,12 +23,12 @@ export class ToolsLeft {
     }
 
     addListeners() {
-        this.rootElement.addEventListener('click', function(event) {
+        this.rootElement.addEventListener('click', (event) => {
             let target = event.target;
-            console.log(this.type);
             while (target != this) {
                 if (target.nodeName == 'BUTTON') {
-                    this.type = target.id;
+                    this.mainPage.type = target.id;
+                    console.log(this.mainPage.type);
                     return;
                 }
                 target = target.parentNode;

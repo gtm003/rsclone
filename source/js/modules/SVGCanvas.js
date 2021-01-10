@@ -1,8 +1,9 @@
-import { SVG } from '@svgdotjs/svg.js';
+import { SVG } from './../vendor/svg.js';
 
 export class SVGCanvas {
-    constructor(rootElement,type) {
+    constructor(rootElement, mainPage,type) {
       this.rootElement = rootElement;
+      this.mainPage = mainPage;
       this.type = type;
       this.canvas = null;
     }
@@ -14,8 +15,8 @@ export class SVGCanvas {
   
     renderContent() {
         //this.rootElement.className = 'sheet';
-        this.canvas = SVG().addTo(this.rootElement).size(700, 500);
-        let rect = this.canvas.rect(200, 100).attr({ fill: '#38A6FF' });
+        this.canvas = SVG().addTo(this.rootElement).size(2000, 1000);
+        //let rect = this.canvas.rect(200, 100).attr({ fill: '#38A6FF' });
     }
 
     drawElem(type) {

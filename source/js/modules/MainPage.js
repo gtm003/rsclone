@@ -15,10 +15,11 @@ export class MainPage {
       this.footerContainer = null;
       this.contentElement = null;
       this.contentContainer = null;
-      this.tableContainer = null;
-      this.listContainer = null;
-      this.mapContainer = null;
-      this.graphicContainer = null;
+
+      this.toolsLeft = null;
+      this.workArea = null;
+
+      this.type = 'select';
     }
   
     init() {
@@ -62,10 +63,10 @@ export class MainPage {
   
       this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsBottomContainer, this.workAreaContainer);
 
-      const toolsLeft = new ToolsLeft(this.toolsLeftContainer);
-      toolsLeft.init();
-      const workArea = new WorkArea(this.workAreaContainer);
-      workArea.init();
+      this.toolsLeft = new ToolsLeft(this.toolsLeftContainer, this);
+      this.toolsLeft.init();
+      this.workArea = new WorkArea(this.workAreaContainer, this);
+      this.workArea.init();
     /* 
       this.worldMap = new WorldMap(this.mapContainer, this);
       this.worldMap.init();

@@ -11213,3 +11213,5 @@ var SVG = (function () {
 
 }());
 //# sourceMappingURL=svg.js.map
+
+export {SVG};
