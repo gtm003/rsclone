@@ -9,7 +9,6 @@ export class ToolsLeft {
   
     init() {
       this.renderContent();
-      this.addListeners();
     }
   
     renderContent() {
@@ -19,20 +18,6 @@ export class ToolsLeft {
             btn.id = `${item}`;
             btn.innerHTML = item;
             this.rootElement.append(btn);
-        })
-    }
-
-    addListeners() {
-        this.rootElement.addEventListener('click', (event) => {
-            let target = event.target;
-            while (target != this) {
-                if (target.nodeName == 'BUTTON') {
-                    this.mainPage.type = target.id;
-                    console.log(this.mainPage.type);
-                    return;
-                }
-                target = target.parentNode;
-            }
         })
     }
 }
