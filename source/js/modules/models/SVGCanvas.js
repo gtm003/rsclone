@@ -33,10 +33,10 @@ export class SVGCanvas {
                     line = canvas.line(x, y, x, y).stroke('black');
                 break;
                 case 'circle':
-                    circle = canvas.circle(0).move(x, y).stroke('black').fill('red');
+                    circle = canvas.circle(0).move(x, y).stroke('black').fill('none');
                 break;
                 case 'rect':
-                    rect = canvas.rect(0, 0).move(x, y).stroke('black').fill('green');
+                    rect = canvas.rect(0, 0).move(x, y).stroke('black').fill('none');
                 break;
             }
         })
@@ -70,5 +70,10 @@ export class SVGCanvas {
         this.canvas.mouseup(function(e) {
             isDraw = false;
         })
+    }
+
+    removeLastEvent() {
+        this.canvas.mousedown(null);
+        this.canvas.mousemove(null);
     }
 }

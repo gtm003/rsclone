@@ -23,6 +23,7 @@ export class Controller {
                 if (target.nodeName === 'BUTTON') {
                     this.activToolsLeftBtn = target.id;   // Хочу получить это значение в класс SVGCanvas
                     console.log(this.activToolsLeftBtn);
+                    this.canvas.removeLastEvent();
                     this.canvas.drawElem(target.id);
                     return;
                 }
