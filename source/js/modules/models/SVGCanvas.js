@@ -1,26 +1,37 @@
-import { SVG } from './../vendor/svg.js';
+import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
+import { CircleModel } from "./circle";
+
 
 export class SVGCanvas {
-    constructor(rootElement, mainPage,type) {
-      this.rootElement = rootElement;
-      this.mainPage = mainPage;
-      this.type = type;
-      this.canvas = null;
+    constructor(rootElement, controller, type) {
+        this.rootElement = rootElement;
+        //this.mainPage = mainPage;
+        this.controller = controller;
+        this.type = 'circle';
+        this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
+        this.elements = {
+            circles: [],
+            lines: [],
+        }
     }
   
     init() {
       this.renderContent();
-      this.drawElem('line');
+      this.drawElem(this.type);
+      //this.addCircle();
     }
   
     renderContent() {
-        //this.rootElement.className = 'sheet';
-        this.canvas = SVG().addTo(this.rootElement).size(2000, 1000);
-        //let rect = this.canvas.rect(200, 100).attr({ fill: '#38A6FF' });
+        //this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
+        this.canvas.id = 'canvas_1';
+        console.log('render content');
+        console.log(this.canvas);
+        var rect = this.canvas.rect(100, 100).attr({ fill: '#f06' });
     }
-
+    
     drawElem(type) {
         const canvas = this.canvas;
+        const control = this.controller;
         let mouse = {
             getX: function(e) {
               return e.offsetX;
@@ -33,6 +44,8 @@ export class SVGCanvas {
         let isDraw = false;
         let x, y, line, circle;
         this.canvas.mousedown(function(e) {
+            console.log(control.type);
+            console.log(type);
             isDraw = true;
             x = mouse.getX(e);
             y = mouse.getY(e);
@@ -42,7 +55,11 @@ export class SVGCanvas {
                 line = canvas.line(x, y, x, y).stroke('black');
                 break;
                 case 'circle':
-                circle = canvas.circle(0).move(x, y).stroke('black').fill('none');
+                circle = canvas.circle(0).move(x, y).stroke('black').fill('red');
+                circle.attr('id', '50');
+                circle.click(function() {
+                    this.stroke({ color: '#f06', width:  '5'})
+                  })
                 break;
             }
         })
@@ -70,6 +87,17 @@ export class SVGCanvas {
           
         this.canvas.mouseup(function(e) {
             isDraw = false;
+            var rect = new SVG.Rect().size(200, 200).addTo(canvas);
         })
-    }     
+    }
+    
+    addCircle() {
+        console.log(`add circle`);
+        console.log(this.canvas);
+        //const canvas = this.canvas;
+        this.canvas.id = 'canvas_2';
+        console.log(this.canvas);
+        const canvas = this.canvas;
+        var rect = new SVG.Rect().size(100, 100).addTo(canvas);
+    }
 }

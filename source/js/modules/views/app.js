@@ -1,12 +1,13 @@
 //import {ToolsTop} from './ToolsTop';
-//import {ToolsLeft} from './ToolsLeft';
 //import {ToolsBottom} from './ToolsBottom';
-//import {WorkArea} from './WorkArea';
+import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
+import { Controller } from "../controllers/Controller";
+import { CircleController } from "../controllers/circle";
 import { ToolsLeft } from "./ToolsLeft";
 import { WorkArea } from "./WorkArea";
 
-export class MainPage {
+export class appView {
     constructor(rootElement) {
       this.rootElement = rootElement;
       this.headerElement = null;
@@ -16,10 +17,7 @@ export class MainPage {
       this.contentElement = null;
       this.contentContainer = null;
 
-      this.toolsLeft = null;
-      this.workArea = null;
-
-      this.type = 'select';
+      this.circleController = new CircleController();
     }
   
     init() {
@@ -29,8 +27,11 @@ export class MainPage {
       this.renderFooter();
       this.rootElement.appendChild(wrapper);
       wrapper.append(this.headerElement, this.contentElement, this.footerElement);
-      window.addEventListener('DOMContentLoaded', function () {
-      });
+      this.addContoller();
+      //window.addEventListener('DOMContentLoaded', function () {
+      //});
+
+      console.log(this.circles);
     }
   
     createWrapper() {
@@ -56,17 +57,37 @@ export class MainPage {
       this.contentContainer.classList.add('container');
       this.contentElement.appendChild(this.contentContainer);
   
-      this.toolsTopContainer = document.createElement('div');
       this.toolsLeftContainer = document.createElement('div');
+      this.toolsTopContainer = document.createElement('div');
+      this.toolsRightContainer = document.createElement('div');
       this.toolsBottomContainer = document.createElement('div');
       this.workAreaContainer = document.createElement('div');
-  
-      this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsBottomContainer, this.workAreaContainer);
+
+
+      this.toolsTopContainer.className = 'toolsTop_container';
+      this.toolsLeftContainer.className = 'toolsLeft_container';
+      this.toolsRightContainer.className = 'toolsRight_container';
+      this.toolsBottomContainer.className = 'toolsBottom_container';
+      this.workAreaContainer.className = 'workArea_container';
+
+      this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer);
 
       this.toolsLeft = new ToolsLeft(this.toolsLeftContainer, this);
       this.toolsLeft.init();
       this.workArea = new WorkArea(this.workAreaContainer, this);
       this.workArea.init();
+      console.log(this.toolsTopContainer);
+      //this.toolsTopContainer.onclick = () => console.log('click');
+      //this.toolsTopContainer.addEventListener('click', () => console.log('click'));
+      this.toolsTopContainer.addEventListener('click', () => {
+        console.log('click');
+        this.circleController.addCircle();
+        //const canvas = document.querySelector('svg');
+        //console.log(canvas);
+        console.log(this.circleController.circles);
+      });
+
+      
     /* 
       this.worldMap = new WorldMap(this.mapContainer, this);
       this.worldMap.init();
@@ -126,6 +147,16 @@ export class MainPage {
       this.footerContainer.classList.add('container');
       this.footerContainer.append(copyrightElement);
       this.footerElement.appendChild(this.footerContainer);
+    }
+
+    addContoller() {
+        const controller = new Controller();
+        controller.init();
+    }
+
+    updateView() {
+      const canvas = document.querySelector('svg');
+      console.log('canvas');
     }
 }
 

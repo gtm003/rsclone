@@ -1,5 +1,4 @@
-import { SVG } from '@svgdotjs/svg.js';
-import { SVGCanvas } from "./SVGCanvas";
+import { SVGCanvas } from "../models/SVGCanvas";
 
 export class WorkArea {
     constructor(rootElement) {

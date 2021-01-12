@@ -602,8 +602,8 @@ button,
   .main .container {
     display: -ms-grid;
     display: grid;
-    -ms-grid-columns: 65px auto 200px;
-    grid-template-columns: 65px auto 200px;
+    -ms-grid-columns: 65px auto 65px;
+    grid-template-columns: 65px auto 65px;
     -ms-grid-rows: 50px auto 50px;
     grid-template-rows: 50px auto 50px;
     grid-column-gap: 5px;
@@ -622,16 +622,6 @@ button,
         -webkit-box-pack: justify;
             -ms-flex-pack: justify;
                 justify-content: space-between; } }
-    .main .container.container-full-screen {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      height: calc(100vh - 120px); }
-      @media (max-width: 767px) {
-        .main .container.container-full-screen .nav.menu {
-          height: calc(100vh - 291px); }
-        .main .container.container-full-screen .container-list-nav.container-list-menu {
-          height: calc(100vh - 270px); } }
 
 .toolsLeft_container {
   -ms-grid-row: 2;
@@ -652,7 +642,9 @@ button,
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 2px; }
+  padding: 2px;
+  border: black solid 1px;
+  height: calc(100vh - 240px); }
   .toolsLeft_container button {
     width: 59px;
     height: 44px;
@@ -662,12 +654,115 @@ button,
     cursor: pointer;
     background: #dcc8b4; }
 
+.toolsTop_container {
+  -ms-grid-row: 1;
+  -ms-grid-row-span: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 3;
+  grid-area: 1 / 1 / 2 / 4;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2px;
+  border: black solid 1px; }
+  .toolsTop_container button {
+    width: 59px;
+    height: 44px;
+    border-radius: 5px;
+    margin: 1px; }
+  .toolsTop_container button:hover {
+    cursor: pointer;
+    background: #dcc8b4; }
+
+.toolsRight_container {
+  -ms-grid-row: 2;
+  -ms-grid-row-span: 1;
+  -ms-grid-column: 3;
+  -ms-grid-column-span: 1;
+  grid-area: 2 / 3 / 3 / 4;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2px;
+  border: black solid 1px;
+  height: calc(100vh - 240px); }
+  .toolsRight_container button {
+    width: 59px;
+    height: 44px;
+    border-radius: 5px;
+    margin: 1px; }
+  .toolsRight_container button:hover {
+    cursor: pointer;
+    background: #dcc8b4; }
+
+.toolsBottom_container {
+  -ms-grid-row: 3;
+  -ms-grid-row-span: 1;
+  -ms-grid-column: 1;
+  -ms-grid-column-span: 3;
+  grid-area: 3 / 1 / 4 / 4;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 2px;
+  border: black solid 1px; }
+  .toolsBottom_container button {
+    width: 59px;
+    height: 44px;
+    border-radius: 5px;
+    margin: 1px; }
+  .toolsBottom_container button:hover {
+    cursor: pointer;
+    background: #dcc8b4; }
+
 .workArea_container {
   -ms-grid-row: 2;
   -ms-grid-row-span: 1;
   -ms-grid-column: 2;
   -ms-grid-column-span: 1;
-  grid-area: 2 / 2 / 3 / 3; }
+  grid-area: 2 / 2 / 3 / 3;
+  width: calc(100vw - 170px);
+  height: calc(100vh - 240px);
+  border: black solid 1px; }
+  .workArea_container #field {
+    width: 100%;
+    height: 100%;
+    background: rebeccapurple;
+    padding: 25px; }
+    .workArea_container #field .sheet {
+      width: 100%;
+      height: 100%;
+      background: #33993b; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,
