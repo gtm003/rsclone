@@ -6,7 +6,7 @@ export class SVGCanvas {
     constructor(rootElement, controller, type) {
         this.rootElement = rootElement;
         //this.mainPage = mainPage;
-        this.controller = controller;
+        //this.controller = controller;
         this.type = 'circle';
         this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
         this.elements = {
@@ -25,13 +25,13 @@ export class SVGCanvas {
         //this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
         this.canvas.id = 'canvas_1';
         console.log('render content');
-        console.log(this.canvas);
+        console.log(this.canvas.node);
         var rect = this.canvas.rect(100, 100).attr({ fill: '#f06' });
     }
     
     drawElem(type) {
         const canvas = this.canvas;
-        const control = this.controller;
+        //const control = this.controller;
         let mouse = {
             getX: function(e) {
               return e.offsetX;
@@ -44,7 +44,7 @@ export class SVGCanvas {
         let isDraw = false;
         let x, y, line, circle;
         this.canvas.mousedown(function(e) {
-            console.log(control.type);
+            //console.log(control.type);
             console.log(type);
             isDraw = true;
             x = mouse.getX(e);

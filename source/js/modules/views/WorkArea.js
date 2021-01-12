@@ -36,7 +36,7 @@ export class WorkArea {
         sheet.className = 'sheet';
         field.append(sheet);
 
-        const canvas = new SVGCanvas(sheet, 'rect');
+        const canvas = new SVGCanvas(sheet);
         canvas.init();
         //let svgField = SVG().addTo('#sheet').size(500, 500);
         //console.log(document.querySelector('.sheet'));
