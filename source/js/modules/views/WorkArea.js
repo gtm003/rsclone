@@ -18,7 +18,7 @@ export class WorkArea {
     sheet.className = 'sheet';
     field.append(sheet);
 
-    const canvas = new SVGCanvas(sheet);
-    canvas.init();
+    //const canvas = new SVGCanvas(sheet);
+    //canvas.init();
   }
 }

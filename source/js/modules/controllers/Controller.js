@@ -2,6 +2,7 @@ import { SVGCanvas } from "../models/SVGCanvas";
 
 export class Controller {
     constructor() {
+        this.canvas = new SVGCanvas(document.querySelector('.sheet'));
         this.fill = 'none';
         this.stroke = 'black';
         this.activToolsLeftBtn = 'select';
@@ -11,6 +12,7 @@ export class Controller {
 
     init() {
         this.getActivToolsLeftBtn();
+        this.canvas.init();
     }
   
     getActivToolsLeftBtn() {
@@ -21,6 +23,7 @@ export class Controller {
                 if (target.nodeName === 'BUTTON') {
                     this.activToolsLeftBtn = target.id;   // Хочу получить это значение в класс SVGCanvas
                     console.log(this.activToolsLeftBtn);
+                    this.canvas.drawElem(target.id);
                     return;
                 }
                 target = target.parentNode;
