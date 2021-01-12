@@ -3,7 +3,6 @@
 import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
 import { Controller } from "../controllers/Controller";
-import { CircleController } from "../controllers/circle";
 import { ToolsLeft } from "./ToolsLeft";
 import { WorkArea } from "./WorkArea";
 
@@ -17,7 +16,6 @@ export class appView {
       this.contentElement = null;
       this.contentContainer = null;
 
-      this.circleController = new CircleController();
     }
   
     init() {
@@ -28,10 +26,6 @@ export class appView {
       this.rootElement.appendChild(wrapper);
       wrapper.append(this.headerElement, this.contentElement, this.footerElement);
       this.addContoller();
-      //window.addEventListener('DOMContentLoaded', function () {
-      //});
-
-      console.log(this.circles);
     }
   
     createWrapper() {
@@ -76,27 +70,6 @@ export class appView {
       this.toolsLeft.init();
       this.workArea = new WorkArea(this.workAreaContainer, this);
       this.workArea.init();
-      console.log(this.toolsTopContainer);
-      //this.toolsTopContainer.onclick = () => console.log('click');
-      //this.toolsTopContainer.addEventListener('click', () => console.log('click'));
-      this.toolsTopContainer.addEventListener('click', () => {
-        console.log('click');
-        this.circleController.addCircle();
-        //const canvas = document.querySelector('svg');
-        //console.log(canvas);
-        console.log(this.circleController.circles);
-      });
-
-      
-    /* 
-      this.worldMap = new WorldMap(this.mapContainer, this);
-      this.worldMap.init();
-      this.tableCovid = new TableCovid(this.tableContainer, this);
-      this.tableCovid.init();
-      this.listCountries = new ListCountries(this.listContainer, this);
-      this.listCountries.init();
-      this.graphic = new Graphic(this.graphicContainer, this);
-      this.graphic.init();*/
     }
   
     renderFooter() {
@@ -152,11 +125,6 @@ export class appView {
     addContoller() {
         const controller = new Controller();
         controller.init();
-    }
-
-    updateView() {
-      const canvas = document.querySelector('svg');
-      console.log('canvas');
     }
 }
 
