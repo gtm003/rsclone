@@ -3,6 +3,7 @@
 import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
 import { Controller } from "../controllers/Controller";
+import { ToolsBottom } from './ToolsBottom.js';
 import { ToolsLeft } from "./ToolsLeft";
 import { WorkArea } from "./WorkArea";
 
@@ -70,6 +71,8 @@ export class appView {
       this.toolsLeft.init();
       this.workArea = new WorkArea(this.workAreaContainer, this);
       this.workArea.init();
+      this.toolsBottom = new ToolsBottom(this.toolsBottomContainer);
+      this.toolsBottom.init();
     }
   
     renderFooter() {

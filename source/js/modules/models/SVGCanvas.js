@@ -38,6 +38,9 @@ export class SVGCanvas {
                 case 'rect':
                     rect = canvas.rect(0, 0).move(x, y).stroke('black').fill('none');
                 break;
+                case 'select':
+                    console.log(x, y);
+                break;
             }
         })
 
@@ -75,5 +78,12 @@ export class SVGCanvas {
     removeLastEvent() {
         this.canvas.mousedown(null);
         this.canvas.mousemove(null);
+    }
+
+    fillElem(color) {
+        const canvas = this.canvas;
+        this.canvas.mousedown(function(e) {
+            canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)).fill(color);
+        })
     }
 }

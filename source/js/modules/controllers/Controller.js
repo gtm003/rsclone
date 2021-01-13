@@ -12,6 +12,7 @@ export class Controller {
 
     init() {
         this.getActivToolsLeftBtn();
+        this.getFill();
         this.canvas.init();
     }
   
@@ -21,10 +22,27 @@ export class Controller {
             let target = event.target;
             while (target !== toolsLeft) {
                 if (target.nodeName === 'BUTTON') {
-                    this.activToolsLeftBtn = target.id;   // Хочу получить это значение в класс SVGCanvas
+                    this.activToolsLeftBtn = target.id;
                     console.log(this.activToolsLeftBtn);
                     this.canvas.removeLastEvent();
                     this.canvas.drawElem(target.id);
+                    return;
+                }
+                target = target.parentNode;
+            }
+        })
+    }
+
+    getFill() {
+        const toolsBottom = document.querySelector('.toolsBottom_container');
+        toolsBottom.addEventListener('click', (event) => {
+            let target = event.target;
+            while (target !== toolsBottom) {
+                if (target.nodeName === 'BUTTON') {
+                    this.fill = target.id; 
+                    console.log(this.fill);
+                    //this.canvas.removeLastEvent();
+                    this.canvas.fillElem(target.id);
                     return;
                 }
                 target = target.parentNode;

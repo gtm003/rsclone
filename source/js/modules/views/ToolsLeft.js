@@ -1,4 +1,4 @@
-const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path'];
+const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'color'];
 
 export class ToolsLeft {
     constructor(rootElement, mainPage) {
@@ -12,7 +12,6 @@ export class ToolsLeft {
     }
   
     renderContent() {
-        this.rootElement.className = 'toolsLeft_container';
         toolsLeftBtnName.forEach((item) => {
             let btn = document.createElement('button');
             btn.id = `${item}`;
