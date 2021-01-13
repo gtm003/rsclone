@@ -1,4 +1,4 @@
-const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'color'];
+const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path'];
 
 export class ToolsLeft {
     constructor(rootElement, mainPage) {

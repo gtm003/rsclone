@@ -26,6 +26,7 @@ export class Controller {
                     console.log(this.activToolsLeftBtn);
                     this.canvas.removeLastEvent();
                     this.canvas.drawElem(target.id);
+                    //this.canvas.getData();
                     return;
                 }
                 target = target.parentNode;
