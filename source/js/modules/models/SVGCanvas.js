@@ -1,10 +1,12 @@
 import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
 export class SVGCanvas {
-    constructor(app, rootElement) {
+    constructor(app, rootElement, svgWidth, svgHeight) {
         this.rootElement = rootElement;
         //this.type = 'circle';
-        this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
+        this.svgWidth = svgWidth;
+        this.svgHeight = svgHeight;
+        this.canvas = SVG().addTo(this.rootElement).size(this.svgWidth, this.svgHeight);
         this.app = app;
     }
   
