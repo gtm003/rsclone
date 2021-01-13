@@ -1,7 +1,13 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .tools-top {
     grid-area: 1 / 1 / 2 / 4;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     padding: 2px;
     border: black solid 1px;
@@ -15,10 +21,106 @@
     }
 
     &__functional-area {
-        min-width: 100px;
+        display: flex;
+        // min-width: 100px;
         min-height: 40px;
 
         background-color: gray;
+
+        &__btn-delete,
+        &__btn-convert {
+          // display: inline-flex;
+          // align-items: center;
+          // justify-content: center;
+          // vertical-align: top;
+          // padding: 0;
+          // position: relative;
+          min-width: 30px;
+          max-width: 30px;
+          width: 100%;
+          margin: 5px;
+          padding: 0;
+          border: 0;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+
+        &__btn-delete:hover,
+        &__btn-convert:hover {
+          background-color: antiquewhite;
+        }
+
+        &__btn-delete:active,
+        &__btn-convert:active {
+          transform: scale(1.05);
+        }
+
+        &__btn-delete:active,
+        &__btn-convert:active,
+        &__btn-delete:focus,
+        &__btn-convert:focus {
+          outline: none;
+        }
+
+        &__btn-id,
+        &__btn-class,
+        &__btn-angle,
+        &__btn-blur,
+        &__btn-x,
+        &__btn-y,
+        &__btn-width,
+        &__btn-height,
+        &__btn-cx,
+        &__btn-cy,
+        &__btn-r,
+        &__btn-x1,
+        &__btn-y1,
+        &__btn-x2,
+        &__btn-y2 {
+          min-width: 40px;
+          max-width: 100px;
+          max-height: 30px;
+          width: 100%;
+          height: 100%;
+          margin: 5px;
+          border-radius: 5px;
+          border: none;
+          padding: 0px 5px;
+        }
+
+        &__btn-id:focus,
+        &__btn-class:focus,
+        &__btn-angle:focus,
+        &__btn-blur:focus,
+        &__btn-x:focus,
+        &__btn-y:focus,
+        &__btn-width:focus,
+        &__btn-height:focus,
+        &__btn-cx:focus,
+        &__btn-cy:focus,
+        &__btn-r:focus,
+        &__btn-x1:focus,
+        &__btn-y1:focus,
+        &__btn-x2:focus,
+        &__btn-y2:focus,
+        &__btn-id:active,
+        &__btn-class:active,
+        &__btn-angle:active,
+        &__btn-blur:active,
+        &__btn-x:active,
+        &__btn-y:active,
+        &__btn-width:active,
+        &__btn-height:active,
+        &__btn-cx:active,
+        &__btn-cy:active,
+        &__btn-r:active,
+        &__btn-x1:active,
+        &__btn-y1:active,
+        &__btn-x2:active,
+        &__btn-y2:active {
+          outline: none;
+          box-shadow: inset 0px 0px 5px 0px #9E9996
+        }
     }
 
     // button {
@@ -27,9 +129,13 @@
     //     border-radius: 5px;
     //     margin: 1px;
     // }
-    
+
     // button:hover {
     //     cursor: pointer;
     //     background: rgb(220, 200, 180);
     // }
+}
+
+.visibility {
+  display: none;
 }

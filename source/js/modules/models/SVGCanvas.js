@@ -7,11 +7,11 @@ export class SVGCanvas {
         this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
         this.app = app;
     }
-  
+
     init() {
       //this.drawElem(this.type);
     }
-  
+
     drawElem(type) {
         this.app.sendMessage();
         const canvas = this.canvas;
@@ -26,6 +26,8 @@ export class SVGCanvas {
 
         let isDraw = false;
         let x, y, line, circle, rect;
+        console.log(this.app);
+        const viewApp = this.app;
         this.canvas.mousedown(function(e) {
             isDraw = true;
             x = mouse.getX(e);
@@ -41,7 +43,13 @@ export class SVGCanvas {
                     rect = canvas.rect(0, 0).move(x, y).stroke('black').fill('none');
                 break;
                 case 'select':
-                    console.log(x, y);
+                    const arrayObjectsSVG = canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY));
+                    if (arrayObjectsSVG.length === 1) {
+                      viewApp.functionalAreaContainer.classList.remove('visibility');
+                      viewApp.updateFunctionalArea(...arrayObjectsSVG);
+                    } else {
+                      viewApp.functionalAreaContainer.classList.add('visibility');
+                    }
                 break;
             }
         })
@@ -71,7 +79,7 @@ export class SVGCanvas {
                 }
             }
         })
-          
+
         this.canvas.mouseup(function(e) {
             isDraw = false;
         })

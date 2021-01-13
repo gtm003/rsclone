@@ -654,6 +654,12 @@ button,
     cursor: pointer;
     background: #dcc8b4; }
 
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box; }
+
 .tools-top {
   -ms-grid-row: 1;
   -ms-grid-row-span: 1;
@@ -663,9 +669,9 @@ button,
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: start;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -677,9 +683,44 @@ button,
     margin-right: 50px;
     background-color: gray; }
   .tools-top__functional-area {
-    min-width: 100px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
     min-height: 40px;
     background-color: gray; }
+    .tools-top__functional-area__btn-delete, .tools-top__functional-area__btn-convert {
+      min-width: 30px;
+      max-width: 30px;
+      width: 100%;
+      margin: 5px;
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      cursor: pointer; }
+    .tools-top__functional-area__btn-delete:hover, .tools-top__functional-area__btn-convert:hover {
+      background-color: antiquewhite; }
+    .tools-top__functional-area__btn-delete:active, .tools-top__functional-area__btn-convert:active {
+      -webkit-transform: scale(1.05);
+              transform: scale(1.05); }
+    .tools-top__functional-area__btn-delete:active, .tools-top__functional-area__btn-convert:active, .tools-top__functional-area__btn-delete:focus, .tools-top__functional-area__btn-convert:focus {
+      outline: none; }
+    .tools-top__functional-area__btn-id, .tools-top__functional-area__btn-class, .tools-top__functional-area__btn-angle, .tools-top__functional-area__btn-blur, .tools-top__functional-area__btn-x, .tools-top__functional-area__btn-y, .tools-top__functional-area__btn-width, .tools-top__functional-area__btn-height, .tools-top__functional-area__btn-cx, .tools-top__functional-area__btn-cy, .tools-top__functional-area__btn-r, .tools-top__functional-area__btn-x1, .tools-top__functional-area__btn-y1, .tools-top__functional-area__btn-x2, .tools-top__functional-area__btn-y2 {
+      min-width: 40px;
+      max-width: 100px;
+      max-height: 30px;
+      width: 100%;
+      height: 100%;
+      margin: 5px;
+      border-radius: 5px;
+      border: none;
+      padding: 0px 5px; }
+    .tools-top__functional-area__btn-id:focus, .tools-top__functional-area__btn-class:focus, .tools-top__functional-area__btn-angle:focus, .tools-top__functional-area__btn-blur:focus, .tools-top__functional-area__btn-x:focus, .tools-top__functional-area__btn-y:focus, .tools-top__functional-area__btn-width:focus, .tools-top__functional-area__btn-height:focus, .tools-top__functional-area__btn-cx:focus, .tools-top__functional-area__btn-cy:focus, .tools-top__functional-area__btn-r:focus, .tools-top__functional-area__btn-x1:focus, .tools-top__functional-area__btn-y1:focus, .tools-top__functional-area__btn-x2:focus, .tools-top__functional-area__btn-y2:focus, .tools-top__functional-area__btn-id:active, .tools-top__functional-area__btn-class:active, .tools-top__functional-area__btn-angle:active, .tools-top__functional-area__btn-blur:active, .tools-top__functional-area__btn-x:active, .tools-top__functional-area__btn-y:active, .tools-top__functional-area__btn-width:active, .tools-top__functional-area__btn-height:active, .tools-top__functional-area__btn-cx:active, .tools-top__functional-area__btn-cy:active, .tools-top__functional-area__btn-r:active, .tools-top__functional-area__btn-x1:active, .tools-top__functional-area__btn-y1:active, .tools-top__functional-area__btn-x2:active, .tools-top__functional-area__btn-y2:active {
+      outline: none;
+      -webkit-box-shadow: inset 0px 0px 5px 0px #9E9996;
+              box-shadow: inset 0px 0px 5px 0px #9E9996; }
+
+.visibility {
+  display: none; }
 
 .tools-right {
   -ms-grid-row: 2;
