@@ -1,19 +1,21 @@
 import { SVGCanvas } from "../models/SVGCanvas";
 
 export class Controller {
-    constructor() {
-        this.canvas = new SVGCanvas(document.querySelector('.sheet'));
+    constructor(app, placeForSVGCanvas) {
         this.fill = 'none';
         this.stroke = 'black';
         this.activToolsLeftBtn = 'select';
         this.select = null;
         this.mouse = null;
+        // this.app = app;
+        // this.placeForSVGCanvas = placeForSVGCanvas;
+        this.canvas = new SVGCanvas(app, placeForSVGCanvas);
     }
 
     init() {
         this.getActivToolsLeftBtn();
         this.getFill();
-        this.canvas.init();
+        // this.canvas.init();
     }
   
     getActivToolsLeftBtn() {
