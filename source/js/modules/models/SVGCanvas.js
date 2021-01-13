@@ -1,10 +1,11 @@
 import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
 export class SVGCanvas {
-    constructor(rootElement) {
+    constructor(app, rootElement) {
         this.rootElement = rootElement;
         //this.type = 'circle';
         this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
+        this.app = app;
     }
   
     init() {
@@ -12,6 +13,7 @@ export class SVGCanvas {
     }
   
     drawElem(type) {
+        this.app.sendMessage();
         const canvas = this.canvas;
         let mouse = {
             getX: function(e) {
