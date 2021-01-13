@@ -42,6 +42,8 @@ export class SVGCanvas {
                 break;
                 case 'select':
                     console.log(x, y);
+                    console.log(canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)));
+
                 break;
             }
         })
@@ -61,11 +63,23 @@ export class SVGCanvas {
                         });
                     break;
                     case 'rect':
+                        let xNew, yNew;
+                        if (mouse.getX(e) < x) {
+                          xNew = mouse.getX(e);
+                        } else if (mouse.getX(e) >= x) {
+                          xNew = x;
+                        }
+                        if (mouse.getY(e) < y) {
+                          yNew = mouse.getY(e);
+                        } else if (mouse.getY(e) >= y) {
+                          yNew = y;
+                        }
                         rect.attr({
                             width: Math.abs(mouse.getX(e) - x),
                             height: Math.abs(mouse.getY(e) - y),
-                            //x: mouse.getX(e),
-                            //y: mouse.getY(e),
+                            x: xNew,
+                            y: yNew,
+                            id: 'test',
                         });
                     break;
                 }
@@ -87,5 +101,9 @@ export class SVGCanvas {
         this.canvas.mousedown(function(e) {
             canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)).fill(color);
         })
+    }
+
+    getData() {
+        console.log(this.canvas.svg());
     }
 }
