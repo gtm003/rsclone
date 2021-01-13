@@ -1,0 +1,21 @@
+.toolsTop_container {
+    grid-area: 1 / 1 / 2 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 2px;
+    border: black solid 1px;
+
+    button {
+        width: 59px;
+        height: 44px;
+        border-radius: 5px;
+        margin: 1px;
+    }
+    
+    button:hover {
+        cursor: pointer;
+        background: rgb(220, 200, 180);
+    }
+}

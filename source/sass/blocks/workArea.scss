@@ -1,0 +1,19 @@
+.workArea_container {
+    grid-area: 2 / 2 / 3 / 3;
+    width: calc(100vw - 170px);
+    height: calc(100vh - 240px);
+    border: black solid 1px;
+
+    #field {
+        width:100%;
+        height: 100%;
+        background: rebeccapurple;
+        padding: 25px;
+
+        .sheet {
+            width: 100%;
+            height: 100%;
+            background: rgb(51, 153, 59);
+        }
+    }
+}

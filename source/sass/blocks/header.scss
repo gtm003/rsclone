@@ -1,10 +1,10 @@
 .header {
   display: flex;
   align-items: center;
-  min-height: 100px;
+  min-height: 80px;
   padding: 0 40px;
 
-  background-color: $color-blue;
+  background-color: $color-red;
 
   &__wrapper {
     display: flex;
@@ -32,5 +32,17 @@
 
   .main-nav__toggle {
     display: none;
+  }
+
+  .container {
+    text-align: center;
+    color: $color-dark-blue;
+    font-size: 40px;
+    font-weight: bold;
+    line-height: 46px;
+
+    @include viewport--sm {
+      font-size: 34px;
+    }
   }
 }

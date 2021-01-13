@@ -19,6 +19,13 @@
 
 @import "blocks/header";
 @import "blocks/footer";
+@import "blocks/copyright";
+@import "blocks/main";
+@import "blocks/toolsLeft";
+@import "blocks/toolsTop";
+@import "blocks/toolsRight";
+@import "blocks/toolsBottom";
+@import "blocks/workArea";
 
 // используйте это для отключения ховеров на тач устройствах
 // ! но не используйте это для текстовых полей ( input, textarea )
