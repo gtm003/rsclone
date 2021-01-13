@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-// import {ToolsTop} from './ToolsTop';
-// import {ToolsBottom} from './ToolsBottom';
-import {SVG, extend as SVGextend, Element as SVGElement} from '../../vendor/svg.js';
-
-import {Controller} from '../controllers/Controller';
-=======
 import { Controller } from "../controllers/Controller";
->>>>>>> develop
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'color'];
