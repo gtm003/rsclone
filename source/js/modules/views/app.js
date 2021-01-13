@@ -1,7 +1,7 @@
 import { Controller } from "../controllers/Controller";
-import { ToolsBottom } from './ToolsBottom.js';
-import { ToolsLeft } from "./ToolsLeft";
-import { WorkArea } from "./WorkArea";
+
+const toolsBottomBtnName = ['red', 'green', 'blue'];
+const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'color'];
 
 export class appView {
     constructor(rootElement) {
@@ -13,6 +13,14 @@ export class appView {
       this.contentElement = null;
       this.contentContainer = null;
 
+      this.toolsTopContainer = null;
+      this.toolsBottomContainer = null;
+      this.toolsLeftContainer = null;
+      this.workAreaContainer = null;
+      this.menuContainer = null;
+      this.functionalAreaContainer = null;
+      
+      this.sheet = null;
     }
   
     init() {
@@ -22,7 +30,80 @@ export class appView {
       this.renderFooter();
       this.rootElement.appendChild(wrapper);
       wrapper.append(this.headerElement, this.contentElement, this.footerElement);
-      this.addContoller();
+      
+      const controller = new Controller(this, this.sheet);
+      controller.init();
+    }
+
+    sendMessage() {
+      console.log('privet');
+    }
+
+    createMenuContainer() {
+      const menuContainer = document.createElement('div');
+      menuContainer.classList.add('tools-top__menu-area');
+
+      return menuContainer;
+    }
+
+    createFunctionalArea() {
+      const functionalArea = document.createElement('div');
+      functionalArea.classList.add('tools-top__functional-area');
+
+      return functionalArea;
+    }
+
+    createToolsTop() {
+      const toolsTop = document.createElement('div');
+      toolsTop.classList.add('tools-top');
+      this.menuContainer = this.createMenuContainer();
+      this.functionalAreaContainer = this.createFunctionalArea();
+      toolsTop.append(this.menuContainer, this.functionalAreaContainer);
+
+      return toolsTop;
+    }
+
+    createWorkArea() {
+      const workAreaContainer = document.createElement('div');
+      workAreaContainer.className = 'work-area';
+
+      const field = document.createElement('div');
+      field.id = 'field';
+      workAreaContainer.append(field);
+
+      this.sheet = document.createElement('div');
+      this.sheet.className = 'sheet';
+      field.append(this.sheet);
+
+      return workAreaContainer;
+    }
+
+    createToolsBottom() {
+      const toolsBottomContainer = document.createElement('div');
+      toolsBottomContainer.className = 'tools-bottom';
+
+      toolsBottomBtnName.forEach((item) => {
+          let btn = document.createElement('button');
+          btn.id = `${item}`;
+          btn.style.background = item;
+          toolsBottomContainer.append(btn);
+      })
+
+      return toolsBottomContainer;
+    }
+
+    createToolsLeft() {
+      const toolsLeftContainer = document.createElement('div');
+      toolsLeftContainer.className = 'tools-left';
+
+      toolsLeftBtnName.forEach((item) => {
+        let btn = document.createElement('button');
+        btn.id = `${item}`;
+        btn.innerHTML = item;
+        toolsLeftContainer.append(btn);
+      })
+
+      return toolsLeftContainer;
     }
   
     createWrapper() {
@@ -42,33 +123,22 @@ export class appView {
     }
   
     renderContent() {
+      this.toolsTopContainer = this.createToolsTop();
+      this.toolsBottomContainer = this.createToolsBottom();
+      this.toolsLeftContainer = this.createToolsLeft();
+      this.workAreaContainer = this.createWorkArea();
+
       this.contentElement = document.createElement('main');
       this.contentElement.classList.add('main');
       this.contentContainer = document.createElement('div');
       this.contentContainer.classList.add('container');
       this.contentElement.appendChild(this.contentContainer);
   
-      this.toolsLeftContainer = document.createElement('div');
-      this.toolsTopContainer = document.createElement('div');
       this.toolsRightContainer = document.createElement('div');
-      this.toolsBottomContainer = document.createElement('div');
-      this.workAreaContainer = document.createElement('div');
 
-
-      this.toolsTopContainer.className = 'toolsTop_container';
-      this.toolsLeftContainer.className = 'toolsLeft_container';
-      this.toolsRightContainer.className = 'toolsRight_container';
-      this.toolsBottomContainer.className = 'toolsBottom_container';
-      this.workAreaContainer.className = 'workArea_container';
+      this.toolsRightContainer.className = 'tools-right';
 
       this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer);
-
-      this.toolsLeft = new ToolsLeft(this.toolsLeftContainer, this);
-      this.toolsLeft.init();
-      this.workArea = new WorkArea(this.workAreaContainer, this);
-      this.workArea.init();
-      this.toolsBottom = new ToolsBottom(this.toolsBottomContainer);
-      this.toolsBottom.init();
     }
   
     renderFooter() {
@@ -119,11 +189,6 @@ export class appView {
       this.footerContainer.classList.add('container');
       this.footerContainer.append(copyrightElement);
       this.footerElement.appendChild(this.footerContainer);
-    }
-
-    addContoller() {
-        const controller = new Controller();
-        controller.init();
     }
 }
 

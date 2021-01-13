@@ -623,7 +623,7 @@ button,
             -ms-flex-pack: justify;
                 justify-content: space-between; } }
 
-.toolsLeft_container {
+.tools-left {
   -ms-grid-row: 2;
   -ms-grid-row-span: 1;
   -ms-grid-column: 1;
@@ -645,16 +645,16 @@ button,
   padding: 2px;
   border: black solid 1px;
   height: calc(100vh - 240px); }
-  .toolsLeft_container button {
+  .tools-left button {
     width: 59px;
     height: 44px;
     border-radius: 5px;
     margin: 1px; }
-  .toolsLeft_container button:hover {
+  .tools-left button:hover {
     cursor: pointer;
     background: #dcc8b4; }
 
-.toolsTop_container {
+.tools-top {
   -ms-grid-row: 1;
   -ms-grid-row-span: 1;
   -ms-grid-column: 1;
@@ -663,10 +663,6 @@ button,
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: start;
@@ -675,16 +671,17 @@ button,
           align-items: center;
   padding: 2px;
   border: black solid 1px; }
-  .toolsTop_container button {
-    width: 59px;
-    height: 44px;
-    border-radius: 5px;
-    margin: 1px; }
-  .toolsTop_container button:hover {
-    cursor: pointer;
-    background: #dcc8b4; }
+  .tools-top__menu-area {
+    min-width: 100px;
+    min-height: 40px;
+    margin-right: 50px;
+    background-color: gray; }
+  .tools-top__functional-area {
+    min-width: 100px;
+    min-height: 40px;
+    background-color: gray; }
 
-.toolsRight_container {
+.tools-right {
   -ms-grid-row: 2;
   -ms-grid-row-span: 1;
   -ms-grid-column: 3;
@@ -706,16 +703,16 @@ button,
   padding: 2px;
   border: black solid 1px;
   height: calc(100vh - 240px); }
-  .toolsRight_container button {
+  .tools-right button {
     width: 59px;
     height: 44px;
     border-radius: 5px;
     margin: 1px; }
-  .toolsRight_container button:hover {
+  .tools-right button:hover {
     cursor: pointer;
     background: #dcc8b4; }
 
-.toolsBottom_container {
+.tools-bottom {
   -ms-grid-row: 3;
   -ms-grid-row-span: 1;
   -ms-grid-column: 1;
@@ -736,16 +733,16 @@ button,
           align-items: center;
   padding: 2px;
   border: black solid 1px; }
-  .toolsBottom_container button {
+  .tools-bottom button {
     width: 40px;
     height: 40px;
     border-radius: 5px;
     margin: 1px; }
-  .toolsBottom_container button:hover {
+  .tools-bottom button:hover {
     cursor: pointer;
     background: #dcc8b4; }
 
-.workArea_container {
+.work-area {
   -ms-grid-row: 2;
   -ms-grid-row-span: 1;
   -ms-grid-column: 2;
@@ -754,12 +751,12 @@ button,
   width: calc(100vw - 170px);
   height: calc(100vh - 240px);
   border: black solid 1px; }
-  .workArea_container #field {
+  .work-area #field {
     width: 100%;
     height: 100%;
     background: rebeccapurple;
     padding: 25px; }
-    .workArea_container #field .sheet {
+    .work-area #field .sheet {
       width: 100%;
       height: 100%;
       background: #33993b; }

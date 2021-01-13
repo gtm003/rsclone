@@ -1,23 +1,25 @@
 import { SVGCanvas } from "../models/SVGCanvas";
 
 export class Controller {
-    constructor() {
-        this.canvas = new SVGCanvas(document.querySelector('.sheet'));
+    constructor(appView, placeForSVGCanvas) {
         this.fill = 'none';
         this.stroke = 'black';
         this.activToolsLeftBtn = 'select';
         this.select = null;
         this.mouse = null;
+        // this.app = app;
+        // this.placeForSVGCanvas = placeForSVGCanvas;
+        this.canvas = new SVGCanvas(appView, placeForSVGCanvas);
     }
 
     init() {
         this.getActivToolsLeftBtn();
         this.getFill();
-        this.canvas.init();
+        // this.canvas.init();
     }
   
     getActivToolsLeftBtn() {
-        const toolsLeft = document.querySelector('.toolsLeft_container');
+        const toolsLeft = document.querySelector('.tools-left');
         toolsLeft.addEventListener('click', (event) => {
             let target = event.target;
             while (target !== toolsLeft) {
@@ -35,7 +37,7 @@ export class Controller {
     }
 
     getFill() {
-        const toolsBottom = document.querySelector('.toolsBottom_container');
+        const toolsBottom = document.querySelector('.tools-bottom');
         toolsBottom.addEventListener('click', (event) => {
             let target = event.target;
             while (target !== toolsBottom) {
