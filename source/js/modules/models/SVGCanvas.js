@@ -1,10 +1,12 @@
 import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
 
 export class SVGCanvas {
-    constructor(app, rootElement) {
+    constructor(app, rootElement, svgWidth, svgHeight) {
         this.rootElement = rootElement;
         //this.type = 'circle';
-        this.canvas = SVG().addTo(this.rootElement).size('100%', '100%');
+        this.svgWidth = svgWidth;
+        this.svgHeight = svgHeight;
+        this.canvas = SVG().addTo(this.rootElement).size(this.svgWidth, this.svgHeight);
         this.app = app;
     }
 
@@ -13,7 +15,6 @@ export class SVGCanvas {
     }
 
     drawElem(type) {
-        this.app.sendMessage();
         const canvas = this.canvas;
         let mouse = {
             getX: function(e) {
@@ -69,11 +70,23 @@ export class SVGCanvas {
                         });
                     break;
                     case 'rect':
+                        let xNew, yNew;
+                        if (mouse.getX(e) < x) {
+                          xNew = mouse.getX(e);
+                        } else if (mouse.getX(e) >= x) {
+                          xNew = x;
+                        }
+                        if (mouse.getY(e) < y) {
+                          yNew = mouse.getY(e);
+                        } else if (mouse.getY(e) >= y) {
+                          yNew = y;
+                        }
                         rect.attr({
                             width: Math.abs(mouse.getX(e) - x),
                             height: Math.abs(mouse.getY(e) - y),
-                            //x: mouse.getX(e),
-                            //y: mouse.getY(e),
+                            x: xNew,
+                            y: yNew,
+                            id: 'test',
                         });
                     break;
                 }

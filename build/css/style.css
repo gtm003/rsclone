@@ -682,6 +682,13 @@ button,
     min-height: 40px;
     margin-right: 50px;
     background-color: gray; }
+    .tools-top__menu-area button {
+      height: 44px;
+      border-radius: 5px;
+      margin: 1px; }
+    .tools-top__menu-area button:hover {
+      cursor: pointer;
+      background: #dcc8b4; }
   .tools-top__functional-area {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -801,6 +808,76 @@ button,
       width: 100%;
       height: 100%;
       background: #33993b; }
+
+.modal-save {
+  width: 300px;
+  height: 200px;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: coral;
+  position: fixed;
+  top: 50%;
+  left: 505px;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%); }
+  .modal-save__save-btn {
+    margin: 20px 0; }
+  .modal-save--show {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+
+.modal-settings {
+  width: 300px;
+  height: 400px;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: crimson;
+  position: fixed;
+  top: 50%;
+  left: 505px;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%); }
+  .modal-settings__title {
+    margin-bottom: 50px;
+    font-size: 20px;
+    font-weight: bold; }
+  .modal-settings__svg-width, .modal-settings__svg-height {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    width: 60%;
+    margin: 5px 0; }
+    .modal-settings__svg-width input, .modal-settings__svg-height input {
+      width: 30px; }
+  .modal-settings__save-btn {
+    margin-top: 50px;
+    margin-bottom: 10px; }
+  .modal-settings--show {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,

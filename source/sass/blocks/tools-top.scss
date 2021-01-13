@@ -18,23 +18,29 @@
         margin-right: 50px;
 
         background-color: gray;
+
+        button {
+          // width: 59px;
+          height: 44px;
+          border-radius: 5px;
+          margin: 1px;
+        }
+
+        button:hover {
+          cursor: pointer;
+          background: rgb(220, 200, 180);
+        }
+
     }
 
     &__functional-area {
         display: flex;
-        // min-width: 100px;
         min-height: 40px;
 
         background-color: gray;
 
         &__btn-delete,
         &__btn-convert {
-          // display: inline-flex;
-          // align-items: center;
-          // justify-content: center;
-          // vertical-align: top;
-          // padding: 0;
-          // position: relative;
           min-width: 30px;
           max-width: 30px;
           width: 100%;
@@ -119,21 +125,10 @@
         &__btn-x2:active,
         &__btn-y2:active {
           outline: none;
-          box-shadow: inset 0px 0px 5px 0px #9E9996
+          box-shadow: inset 0px 0px 5px 0px #9E9996;
         }
     }
 
-    // button {
-    //     width: 59px;
-    //     height: 44px;
-    //     border-radius: 5px;
-    //     margin: 1px;
-    // }
-
-    // button:hover {
-    //     cursor: pointer;
-    //     background: rgb(220, 200, 180);
-    // }
 }
 
 .visibility {

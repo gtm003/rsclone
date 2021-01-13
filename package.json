@@ -13,7 +13,8 @@
     "start": "gulp start",
     "webp": "gulp webp",
     "imagemin": "gulp imagemin",
-    "concat-js": "gulp concat-js"
+    "concat-js": "gulp concat-js",
+    "lint": "eslint source/js/"
   },
   "editorconfig-cli": [
     "*.json",
