@@ -1,5 +1,4 @@
 import {SVGCanvas} from '../models/SVGCanvas';
-import {appView} from '../views/app';
 
 export class Controller {
   constructor(appView, placeForSVGCanvas) {
@@ -31,7 +30,7 @@ export class Controller {
       while (target !== toolsLeft) {
         if (target.nodeName === 'BUTTON') {
           this.activToolsLeftBtn = target.id;
-          console.log(this.activToolsLeftBtn);
+          // console.log(this.activToolsLeftBtn);
           this.canvas.removeLastEvent();
           this.canvas.drawElem(target.id);
           return;
@@ -48,7 +47,7 @@ export class Controller {
       while (target !== toolsBottom) {
         if (target.nodeName === 'BUTTON') {
           this.fill = target.id;
-          console.log(this.fill);
+          // console.log(this.fill);
           this.canvas.fillElem(target.id);
           return;
         }
@@ -134,8 +133,7 @@ export class Controller {
 
   download(data, filename, type) {
     let file = new Blob([data], {type});
-    if (window.navigator.msSaveOrOpenBlob) // IE10+
-    {
+    if (window.navigator.msSaveOrOpenBlob) { // IE10+
       window.navigator.msSaveOrOpenBlob(file, filename);
     } else { // Others
       let a = document.createElement('a');
