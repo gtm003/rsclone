@@ -11,9 +11,13 @@
         padding: 25px;
 
         .sheet {
-            width: 100%;
-            height: 100%;
-            background: rgb(51, 153, 59);
+          display: flex;
+          overflow: auto;
+          padding: 10px;
+
+          width: 100%;
+          height: 100%;
+          background: rgb(51, 153, 59);
         }
     }
 }
