@@ -48,6 +48,26 @@ export class SVGCanvas {
                     if (arrayObjectsSVG.length === 1) {
                       viewApp.functionalAreaContainer.classList.remove('visibility');
                       viewApp.updateFunctionalArea(...arrayObjectsSVG);
+                      // Delete SVG Element
+                      const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+                      deleteBtn.addEventListener('click', () => {
+                        for (let i = 0; i < arrayObjectsSVG.length; i += 1) {
+                          arrayObjectsSVG[i].remove();
+                        }
+                      });
+                      // Properties
+                      const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+                      for (let i = 0; i < arrayProperties.length; i += 1) {
+                        arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
+                          const [...objSVG] = arrayObjectsSVG;
+                          console.log(arrayProperties[i].childNodes[1].value);
+                          if (arrayProperties[i].childNodes[1].value.length === 0) {
+                            objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
+                          } else {
+                            objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
+                          }
+                        });
+                      }
                     } else {
                       viewApp.functionalAreaContainer.classList.add('visibility');
                     }

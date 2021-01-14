@@ -53,27 +53,6 @@ export class appView {
     const functionalArea = document.createElement('div');
     functionalArea.classList.add('tools-top__functional-area', 'visibility');
 
-    // const arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x', 'y', 'width', 'height'];
-    // for (let i = 0; i < arrayNameBtn.length; i += 1) {
-    //   if (i === 0 || i === 1) {
-    //     const btn = document.createElement('input');
-    //     btn.setAttribute('type', 'button');
-    //     btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
-    //     functionalArea.append(btn);
-    //     // btn.innerHTML = '<span class="material-icons">backspace</span>';
-    //   } else {
-    //     const btn = document.createElement('input');
-    //     const label = document.createElement('label');
-    //     const span = document.createElement('span');
-    //     span.textContent = `${arrayNameBtn[i]}:`;
-    //     btn.setAttribute('type', 'text');
-    //     btn.setAttribute('placeholder', `${arrayNameBtn[i]}`);
-    //     btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
-    //     label.append(span, btn);
-    //     functionalArea.append(label);
-    //   }
-    // }
-
     return functionalArea;
   }
 
@@ -231,16 +210,20 @@ export class appView {
 
     for (let i = 0; i < arrayNameBtn.length; i += 1) {
       if (i === 0 || i === 1) {
-        const btn = document.createElement('input');
+        const btn = document.createElement('button');
         btn.setAttribute('type', 'button');
         btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
         this.functionalAreaContainer.append(btn);
-        // btn.innerHTML = '<span class="material-icons">backspace</span>';
+        if (i === 0) {
+          btn.innerHTML = '<i class="material-icons">disabled_by_default</i>';
+        } else {
+          btn.innerHTML = '<i class="material-icons">timeline</i>';
+        }
       } else {
         const btn = document.createElement('input');
         const label = document.createElement('label');
         const span = document.createElement('span');
-        span.textContent = `${arrayNameBtn[i]}:`;
+        span.textContent = arrayNameBtn[i];
         btn.setAttribute('type', 'text');
         btn.setAttribute('placeholder', `${arrayNameBtn[i]}`);
         btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
