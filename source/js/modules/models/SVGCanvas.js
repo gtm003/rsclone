@@ -3,17 +3,19 @@ import {} from '../../vendor/svg.select.js';
 import {} from '../../vendor/svg.resize.js';
 
 export class SVGCanvas {
-    constructor(app, rootElement, svgWidth, svgHeight) {
+    constructor(app, rootElement) {
         this.rootElement = rootElement;
-        //this.type = 'circle';
-        this.svgWidth = svgWidth;
-        this.svgHeight = svgHeight;
-        this.canvas = SVG(this.rootElement).size(this.svgWidth, this.svgHeight);
+        this.canvas = null;
         this.app = app;
     }
 
     init() {
-      //this.drawElem(this.type);
+      this.createSvgWorkArea('600', '400');
+    }
+
+    createSvgWorkArea(svgWidth, svgHeight) {
+      this.canvas = SVG(this.rootElement).size(svgWidth, svgHeight);
+      this.canvas.node.classList.add('svg-work-area');
     }
 
     drawElem(type) {
