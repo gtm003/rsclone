@@ -150,4 +150,8 @@ export class Controller {
       }, 0);
     }
   }
+
+  onKeyDownProperties() {
+    console.log(this.appView);
+  }
 }
