@@ -21,6 +21,7 @@ export class Controller {
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
+    this.canvas.init();
   }
 
   getActivToolsLeftBtn() {
@@ -47,7 +48,8 @@ export class Controller {
       while (target !== toolsBottom) {
         if (target.nodeName === 'BUTTON') {
           this.fill = target.id;
-          // console.log(this.fill);
+          console.log(this.fill);
+          this.canvas.removeLastEvent();
           this.canvas.fillElem(target.id);
           return;
         }
