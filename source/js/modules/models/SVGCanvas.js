@@ -1,4 +1,6 @@
-import { SVG, extend as SVGextend, Element as SVGElement } from '../../vendor/svg.js';
+import {} from '../../vendor/svg.js';
+import {} from '../../vendor/svg.select.js';
+import {} from '../../vendor/svg.resize.js';
 
 export class SVGCanvas {
     constructor(app, rootElement, svgWidth, svgHeight) {
@@ -6,7 +8,7 @@ export class SVGCanvas {
         //this.type = 'circle';
         this.svgWidth = svgWidth;
         this.svgHeight = svgHeight;
-        this.canvas = SVG().addTo(this.rootElement).size(this.svgWidth, this.svgHeight);
+        this.canvas = SVG(this.rootElement).size(this.svgWidth, this.svgHeight);
         this.app = app;
     }
 
@@ -42,6 +44,7 @@ export class SVGCanvas {
                 break;
                 case 'rect':
                     rect = canvas.rect(0, 0).move(x, y).stroke('black').fill('none');
+                    rect.selectize().resize();
                 break;
                 case 'select':
                     const arrayObjectsSVG = canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY));
@@ -125,8 +128,13 @@ export class SVGCanvas {
 
     fillElem(color) {
         const canvas = this.canvas;
+        canvas.each(function(i, children) {
+            this.fill('#f06')
+          })
         this.canvas.mousedown(function(e) {
-            canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)).fill(color);
+            console.log(canvas.children());
+            //canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)).fill(color);
+            
         })
     }
 }

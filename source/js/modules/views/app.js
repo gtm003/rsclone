@@ -400,6 +400,7 @@ export class appView {
 
     this.sheet = document.createElement('div');
     this.sheet.className = 'sheet';
+    this.sheet.id = 'sheet';
     field.append(this.sheet);
 
     return workAreaContainer;
