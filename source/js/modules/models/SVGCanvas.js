@@ -80,7 +80,7 @@ export class SVGCanvas {
                             //selectElements.push(this);
                             this.addClass('selectedElem');
                             this.selectize().resize();
-                            console.log(this.attr());   // Attributes selected elem
+                            console.log(this.attr());                                                                   // Attributes selected elem
                             //console.log(this.cx());
                             
                             cxLast = this.cx();
