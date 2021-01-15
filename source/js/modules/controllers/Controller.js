@@ -9,7 +9,7 @@ export class Controller {
     this.mouse = null;
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
-    this.canvas = new SVGCanvas(this.appView, this.placeForSVGCanvas, '100%', '100%');
+    this.canvas = new SVGCanvas(this.appView, this.placeForSVGCanvas);
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
@@ -81,7 +81,6 @@ export class Controller {
   }
 
   onSettingsModalClick({target}) {
-    // console.log(target)
     if (target.dataset['modalSettings'] === 'save') {
       this.changeProperties();
       this.closeModalSettings();
@@ -96,7 +95,7 @@ export class Controller {
     const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas = new SVGCanvas(this.appView, this.placeForSVGCanvas, svgWidth, svgHeight);
+    this.canvas.createSvgWorkArea(svgWidth, svgHeight);
   }
 
   onSaveModalClick({target}) {
@@ -121,7 +120,7 @@ export class Controller {
 
   createNewImage() {
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas = new SVGCanvas(this.appView, this.placeForSVGCanvas, '100%', '100%');
+    this.canvas.createSvgWorkArea('800', '600');
   }
 
   saveFile(fileName) {
@@ -149,5 +148,9 @@ export class Controller {
         window.URL.revokeObjectURL(url);
       }, 0);
     }
+  }
+
+  onKeyDownProperties() {
+    console.log(this.appView);
   }
 }

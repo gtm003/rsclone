@@ -740,6 +740,15 @@ button,
     min-height: 40px;
     background-color: gray; }
     .tools-top__functional-area__btn-delete, .tools-top__functional-area__btn-convert {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      -webkit-box-pack: center;
+          -ms-flex-pack: center;
+              justify-content: center;
       min-width: 30px;
       max-width: 30px;
       width: 100%;
@@ -849,6 +858,11 @@ button,
     background: rebeccapurple;
     padding: 25px; }
     .work-area #field .sheet {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      overflow: auto;
+      padding: 10px;
       width: 100%;
       height: 100%;
       background: #33993b; }
@@ -872,7 +886,7 @@ button,
   background-color: coral;
   position: fixed;
   top: 50%;
-  left: 505px;
+  left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%); }
   .modal-save__save-btn {
@@ -899,7 +913,7 @@ button,
   background-color: crimson;
   position: fixed;
   top: 50%;
-  left: 505px;
+  left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%); }
   .modal-settings__title {
@@ -924,6 +938,13 @@ button,
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex; }
+
+.svg-work-area {
+  background-color: white;
+  border: 2px solid black;
+  margin: auto;
+  -ms-flex-negative: 0;
+      flex-shrink: 0; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,
