@@ -27,6 +27,7 @@
     stroke-width:1;
     stroke:black;
     fill: #F9FFED;
+    cursor: url(/source/img/svg/rotate.svg) 12 12, auto;
 }
 
 .svg_select_points_point{
@@ -34,6 +35,7 @@
 }
 
 .svg_select_boundingRect{
+    cursor: move;
     stroke-width:1;
     fill:gray;
     stroke-dasharray:10 10;

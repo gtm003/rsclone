@@ -1,7 +1,7 @@
 import {Controller} from '../controllers/Controller';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
-const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'color'];
+const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
 const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
 
 export class appView {

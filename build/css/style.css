@@ -335,12 +335,14 @@ template {
 .svg_select_points_rot {
   stroke-width: 1;
   stroke: black;
-  fill: #F9FFED; }
+  fill: #F9FFED;
+  cursor: url(/source/img/svg/rotate.svg) 12 12, auto; }
 
 .svg_select_points_point {
   cursor: move; }
 
 .svg_select_boundingRect {
+  cursor: move;
   stroke-width: 1;
   fill: gray;
   stroke-dasharray: 10 10;
@@ -864,6 +866,8 @@ button,
       width: 100%;
       height: 100%;
       background: #33993b; }
+      .work-area #field .sheet .selectedElem {
+        cursor: move; }
 
 .modal-save {
   width: 300px;
