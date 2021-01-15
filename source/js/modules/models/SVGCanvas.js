@@ -33,6 +33,7 @@ export class SVGCanvas {
         let x, y, cxLast, cyLast, line, circle, rect, ellipse, text;
         //console.log(this.app);
         const viewApp = this.app;
+        // console.log(this.canvas.attr().width)
         this.canvas.mousedown(function(e) {
             console.log(e.which);
             if (e.which === 3) ;
@@ -40,7 +41,7 @@ export class SVGCanvas {
                 if (this.hasClass('selectedElem')) {
                     this.removeClass('selectedElem')
                     this.resize('stop').selectize(false);
-                } 
+                }
             })
             isDraw = true;
             x = mouse.getX(e);
@@ -79,47 +80,94 @@ export class SVGCanvas {
                 case 'select':
                     canvas.each(function(i, children) {
                         if (this.inside(e.offsetX, e.offsetY)) {
-                            //selectElements.push(this);
+                            selectElements.push(this);
+                            console.log(selectElements);
                             this.addClass('selectedElem');
                             this.selectize().resize();
-                            console.log(this.attr());                                                                   // Attributes selected elem
-                            //console.log(this.cx());
-                            
+                            viewApp.functionalAreaContainer.classList.remove('visibility');
+                            if (selectElements.length === 1) {
+                              viewApp.updateFunctionalArea(selectElements[0], true);
+                              const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+                              for (let i = 0; i < arrayProperties.length; i += 1) {
+                                arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
+                                  const objSVG = selectElements[0];
+                                  if (arrayProperties[i].childNodes[1].value.length === 0) {
+                                    switch (i) {
+                                      case 2:
+                                        objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
+                                        break;
+                                      case 3:
+
+
+                                      default:
+                                        objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
+                                        break
+                                    }
+                                  } else {
+                                    switch (i) {
+                                      case 2:
+                                        objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
+                                        break;
+                                      case 3:
+
+
+                                      default:
+                                        objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
+                                        break
+                                    }
+                                  }
+                                });
+                              }
+                            } else {
+                              viewApp.updateFunctionalArea(selectElements, false);
+                              const arrayAlignment = viewApp.functionalAreaContainer.childNodes;
+                              for (let i = 0; i < arrayAlignment.length; i += 1) {
+                                arrayAlignment[i].addEventListener('click', () => {
+                                  for (let j = 0; j < selectElements.length; j += 1) {
+                                    const x = selectElements[j].attr().x;
+                                    const y = selectElements[j].attr().y;
+                                    switch (i) {
+                                      case 2:
+                                        selectElements[j].attr('x', 0);
+                                        break;
+                                      case 3:
+                                        selectElements[j].attr('x', canvas.attr().width - selectElements[j].attr().width);
+                                        break;
+                                      case 4:
+                                        selectElements[j].attr('y', 0);
+                                        break;
+                                      case 5:
+                                        selectElements[j].attr('y', canvas.attr().height - selectElements[j].attr().height);
+                                        break;
+                                      case 6:
+                                        selectElements[j].attr('x', (canvas.attr().width - selectElements[j].attr().width) / 2);
+                                        break;
+                                      case 7:
+                                        selectElements[j].attr('y', (canvas.attr().height - selectElements[j].attr().height) / 2);
+                                        break;
+                                    }
+                                  }
+                                });
+                              }
+                            }
+                            // Delete SVG Element
+                            const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+                            deleteBtn.addEventListener('click', () => {
+                              const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
+                              for (let i = 0; i < selectElements.length; i += 1) {
+                                selectElements[i].remove();
+                                arrayG[i].remove();
+                              }
+                              viewApp.removeFunctionalAreaDataElements();
+                            });
                             cxLast = this.cx();
                             cyLast = this.cy();
-
-                        } 
-                        //if (this.id === 'selectedElem') this.fill('red');
-                    })
-                    //console.log(selectElements);
-                    //console.log(selectElements[0].attr());
-                    const arrayObjectsSVG = canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY));
-                    if (arrayObjectsSVG.length === 1) {
-                      viewApp.functionalAreaContainer.classList.remove('visibility');
-                      viewApp.updateFunctionalArea(...arrayObjectsSVG);
-                      // Delete SVG Element
-                      const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
-                      deleteBtn.addEventListener('click', () => {
-                        for (let i = 0; i < arrayObjectsSVG.length; i += 1) {
-                          arrayObjectsSVG[i].remove();
+                        } else {
+                          viewApp.functionalAreaContainer.classList.add('visibility');
+                          selectElements.length = 0;
+                          console.log('Я тут');
                         }
-                      });
-                      // Properties
-                      const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-                      for (let i = 0; i < arrayProperties.length; i += 1) {
-                        arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
-                          const [...objSVG] = arrayObjectsSVG;
-                          console.log(arrayProperties[i].childNodes[1].value);
-                          if (arrayProperties[i].childNodes[1].value.length === 0) {
-                            objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
-                          } else {
-                            objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
-                          }
-                        });
-                      }
-                    } else {
-                      viewApp.functionalAreaContainer.classList.add('visibility');
-                    }
+                    });
                 break;
             }
         })
@@ -143,7 +191,6 @@ export class SVGCanvas {
                         ellipse.attr({
                             rx: Math.abs(mouse.getX(e) - x),
                             ry: Math.abs(mouse.getY(e) - y),
-                            id: 'test',
                         });
                     break;
                     case 'rect':
@@ -163,7 +210,6 @@ export class SVGCanvas {
                             height: Math.abs(mouse.getY(e) - y),
                             x: xNew,
                             y: yNew,
-                            id: 'test',
                         });
                     break;
                     case 'text':
@@ -182,9 +228,10 @@ export class SVGCanvas {
                             if (this.hasClass('selectedElem')) {
                                 this.cx(mouse.getX(e) - x + cxLast);
                                 this.cy(mouse.getY(e) - y + cyLast);
-                            } 
+                                viewApp.updateFunctionalArea(this, true);
+                            }
                         })
-                        
+
                     break;
                 }
             }
