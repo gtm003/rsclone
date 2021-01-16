@@ -160,49 +160,58 @@ export class appView {
       const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
       switch (item.type) {
         case 'rect':
-          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
-          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
-          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
-          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
+          // if (flagCreate) {
+            arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+            arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+            arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+            arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
+            arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
+            arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
+            arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
+          // }
           break;
         case 'circle':
-          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
-          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
-          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
+          if (flagCreate) {
+            arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+            arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+            arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+            arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
+            arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
+            arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
+          }
           break;
         case 'line':
-          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
-          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
-          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
-          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
+          if (flagCreate) {
+            arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+            arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+            arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+            arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
+            arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
+            arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
+            arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
+          }
           break;
         case 'text':
-          console.log(item.attr());
-          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
-          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x);
-          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y);
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.size);
+          if (flagCreate) {
+            arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+            arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+            arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+            arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x);
+            arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y);
+            arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute['font-size']);
+          }
           // здесь долджно быть начертание
           break;
         case 'ellipse':
-          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
-          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx);
-          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy);
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.rx);
-          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.ry);
+          if (flagCreate) {
+            arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+            arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+            arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+            arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx);
+            arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy);
+            arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.rx);
+            arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.ry);
+          }
       }
     } else {
       this.createFunctionalAreaAlignmentElements();

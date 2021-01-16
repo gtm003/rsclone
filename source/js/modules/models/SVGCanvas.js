@@ -42,6 +42,7 @@ export class SVGCanvas {
     });
 
     const viewApp = this.app;
+    viewApp.removeFunctionalAreaDataElements(); // вот здесь нужно как-то убирать select на выделенном эл-те при создании нового svg эл-та, если уже выбран эл-т
     this.canvas.mousedown(function (e) {
       if (pressKey !== 'Control') {
         canvas.each(function (i, children) {
@@ -101,7 +102,9 @@ export class SVGCanvas {
               arrayElementG.shift();
               for (let i = 0; i < arrayElementG.length; i += 1) {
                 arrayElementG[i].addEventListener('mousemove', () => {
-                  viewApp.updateFunctionalArea(selectElements[0], true, false);
+                  if (selectElements.length === 1) {
+                    viewApp.updateFunctionalArea(selectElements[0], true, false);
+                  }
                 });
               }
               cxLast = this.cx();
@@ -109,29 +112,20 @@ export class SVGCanvas {
             }
           });
 
+          console.log(selectElements.length);
           viewApp.functionalAreaContainer.classList.remove('visibility');
           if (selectElements.length === 1) {
+            console.log(selectElements[0].height());
             viewApp.updateFunctionalArea(selectElements[0], true, true);
             const arraySelect = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'SELECT');
             if (arraySelect.length !== 0) {
               viewApp.createEventForSelect(arraySelect[0], selectElements[0], 'family');
             }
 
-            // Delete SVG Element
-            const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
-            deleteBtn.addEventListener('click', () => {
-              for (let i = 0; i < selectElements.length; i += 1) {
-                selectElements[i].resize('stop').selectize(false);
-                selectElements[i].remove();
-                selectElements = [];
-              }
-              viewApp.removeFunctionalAreaDataElements();
-            });
             const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
             for (let i = 0; i < arrayProperties.length; i += 1) {
               arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
                 const objSVG = selectElements[0];
-
                 if (arrayProperties[i].childNodes[1].value.length === 0) {
                   switch (arrayProperties[i].textContent) {
                     case 'angle':
@@ -171,34 +165,56 @@ export class SVGCanvas {
             const arrayAlignment = viewApp.functionalAreaContainer.childNodes;
             for (let i = 0; i < arrayAlignment.length; i += 1) {
               arrayAlignment[i].addEventListener('click', () => {
-                for (let j = 0; j < selectElements.length; j += 1) {
-                  const x = selectElements[j].attr().x;
-                  const y = selectElements[j].attr().y;
-                  switch (i) {
-                    case 2:
-                      selectElements[j].attr('x', 0);
-                      break;
-                    case 3:
-                      selectElements[j].attr('x', canvas.attr().width - selectElements[j].attr().width);
-                      break;
-                    case 4:
-                      selectElements[j].attr('y', 0);
-                      break;
-                    case 5:
-                      selectElements[j].attr('y', canvas.attr().height - selectElements[j].attr().height);
-                      break;
-                    case 6:
-                      selectElements[j].attr('x', (canvas.attr().width - selectElements[j].attr().width) / 2);
-                      break;
-                    case 7:
-                      selectElements[j].attr('y', (canvas.attr().height - selectElements[j].attr().height) / 2);
-                      break;
-                  }
+                console.log(selectElements);
+                switch (i) {
+                  case 2:
+                    selectElements.forEach((item) => item.x(0));
+                    break;
+                  case 3:
+                    selectElements.forEach((item) => {
+                      if (item.type === 'text') {
+                        item.x(canvas.width() - item.length());
+                      } else {
+                        item.x(canvas.width() - item.width());
+                      }
+                    });
+                    break;
+                  case 4:
+                    selectElements.forEach((item) => item.y(0));
+                    break;
+                  case 5:
+                    selectElements.forEach((item) => {
+                      if (item.type === 'text') {
+                        item.y(canvas.height() - item.attr()['font-size'] - 5); // примерно
+                      } else {
+                        item.y(canvas.height() - item.height());
+                      }
+                    });
+                    break;
+                  case 6:
+                    selectElements.forEach((item) => item.cx(canvas.width() / 2));
+                    break;
+                  case 7:
+                    selectElements.forEach((item) => item.cy(canvas.height() / 2));
+                    break;
                 }
               });
             }
           } else {
             viewApp.removeFunctionalAreaDataElements();
+          }
+          // Delete SVG Element
+          const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+          if (typeof deleteBtn !== 'undefined') {
+            deleteBtn.addEventListener('click', () => {
+              console.log(selectElements);
+              for (let i = 0; i < selectElements.length; i += 1) {
+                selectElements[i].resize('stop').selectize(false);
+                selectElements[i].remove();
+              }
+              selectElements = [];
+              viewApp.removeFunctionalAreaDataElements();
+            });
           }
           break;
       }
@@ -257,9 +273,11 @@ export class SVGCanvas {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
                   this.cy(mouse.getY(e) - y + cyLast);
-                  viewApp.updateFunctionalArea(this, true, false);
+                  if (selectElements.length === 1) {
+                    viewApp.updateFunctionalArea(this, true, false);
+                  }
                 }
-              })
+              });
             }
             break;
         }
