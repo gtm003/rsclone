@@ -40,6 +40,7 @@ export class SVGCanvas {
       pressKey = 'null';
       //console.log(pressKey);
     });
+<<<<<<< HEAD
 
     //console.log(this.app);
     const viewApp = this.app;
@@ -58,6 +59,25 @@ export class SVGCanvas {
         })
       }
 
+=======
+
+    const viewApp = this.app;
+    this.canvas.mousedown(function (e) {
+      if (pressKey !== 'Control') {
+        canvas.each(function (i, children) {
+          if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
+            this.removeClass('selectedElem');
+            this.resize('stop').selectize(false);
+            selectElements = [];
+            console.log(this.node.tagName);
+          }
+          if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
+            this.removeClass('inputText');
+          }
+        });
+      }
+
+>>>>>>> develop
       isDraw = true;
       x = mouse.getX(e);
       y = mouse.getY(e);
@@ -88,6 +108,7 @@ export class SVGCanvas {
             if (text.hasClass('inputText')) {
               textInput += event.key;
               text.plain(`${textInput}`)
+<<<<<<< HEAD
             }
           });
           break;
@@ -142,6 +163,124 @@ export class SVGCanvas {
           break;
       }
     })
+=======
+            }
+          });
+          break;
+        case 'select':
+          canvas.each(function (i, children) {
+            if (this.inside(e.offsetX, e.offsetY) && !this.hasClass('selectedElem')) {
+              selectElements.push(this);
+              this.addClass('selectedElem');
+              this.selectize().resize();
+              const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
+              const arrayElementG = [...arrayG[0].childNodes];
+              arrayElementG.shift();
+              for (let i = 0; i < arrayElementG.length; i += 1) {
+                arrayElementG[i].addEventListener('mousemove', () => {
+                  viewApp.updateFunctionalArea(selectElements[0], true, false);
+                });
+              }
+              cxLast = this.cx();
+              cyLast = this.cy();
+            }
+          });
+
+          viewApp.functionalAreaContainer.classList.remove('visibility');
+          if (selectElements.length === 1) {
+            viewApp.updateFunctionalArea(selectElements[0], true, true);
+            const arraySelect = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'SELECT');
+            if (arraySelect.length !== 0) {
+              viewApp.createEventForSelect(arraySelect[0], selectElements[0], 'family');
+            }
+
+            // Delete SVG Element
+            const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+            deleteBtn.addEventListener('click', () => {
+              for (let i = 0; i < selectElements.length; i += 1) {
+                selectElements[i].resize('stop').selectize(false);
+                selectElements[i].remove();
+                selectElements = [];
+              }
+              viewApp.removeFunctionalAreaDataElements();
+            });
+            const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+            for (let i = 0; i < arrayProperties.length; i += 1) {
+              arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
+                const objSVG = selectElements[0];
+
+                if (arrayProperties[i].childNodes[1].value.length === 0) {
+                  switch (arrayProperties[i].textContent) {
+                    case 'angle':
+                      objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
+                      break;
+                    case 'blur':
+
+                      break;
+                    case 'size':
+                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].getAttribute('placeholder'));
+                      break;
+                    default:
+                      objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
+                      break;
+                  }
+                } else {
+                  console.log(arrayProperties[i].childNodes[1].value);
+                  switch (arrayProperties[i].textContent) {
+                    case 'angle':
+                      objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
+                      break;
+                    case 'blur':
+
+                      break;
+                    case 'size':
+                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].value);
+                      break;
+                    default:
+                      objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
+                      break;
+                  }
+                }
+              });
+            }
+          } else if (selectElements.length > 1) {
+            viewApp.updateFunctionalArea(selectElements, false, true);
+            const arrayAlignment = viewApp.functionalAreaContainer.childNodes;
+            for (let i = 0; i < arrayAlignment.length; i += 1) {
+              arrayAlignment[i].addEventListener('click', () => {
+                for (let j = 0; j < selectElements.length; j += 1) {
+                  const x = selectElements[j].attr().x;
+                  const y = selectElements[j].attr().y;
+                  switch (i) {
+                    case 2:
+                      selectElements[j].attr('x', 0);
+                      break;
+                    case 3:
+                      selectElements[j].attr('x', canvas.attr().width - selectElements[j].attr().width);
+                      break;
+                    case 4:
+                      selectElements[j].attr('y', 0);
+                      break;
+                    case 5:
+                      selectElements[j].attr('y', canvas.attr().height - selectElements[j].attr().height);
+                      break;
+                    case 6:
+                      selectElements[j].attr('x', (canvas.attr().width - selectElements[j].attr().width) / 2);
+                      break;
+                    case 7:
+                      selectElements[j].attr('y', (canvas.attr().height - selectElements[j].attr().height) / 2);
+                      break;
+                  }
+                }
+              });
+            }
+          } else {
+            viewApp.removeFunctionalAreaDataElements();
+          }
+          break;
+      }
+    });
+>>>>>>> develop
 
     this.canvas.mousemove(function (e) {
       if (isDraw) {
@@ -161,7 +300,10 @@ export class SVGCanvas {
             ellipse.attr({
               rx: Math.abs(mouse.getX(e) - x),
               ry: Math.abs(mouse.getY(e) - y),
+<<<<<<< HEAD
               id: 'test',
+=======
+>>>>>>> develop
             });
             break;
           case 'rect':
@@ -181,7 +323,10 @@ export class SVGCanvas {
               height: Math.abs(mouse.getY(e) - y),
               x: xNew,
               y: yNew,
+<<<<<<< HEAD
               id: 'test',
+=======
+>>>>>>> develop
             });
             break;
           case 'text':
@@ -198,18 +343,30 @@ export class SVGCanvas {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
                   this.cy(mouse.getY(e) - y + cyLast);
+<<<<<<< HEAD
+=======
+                  viewApp.updateFunctionalArea(this, true, false);
+>>>>>>> develop
                 }
               })
             }
             break;
         }
       }
+<<<<<<< HEAD
     })
+=======
+    });
+>>>>>>> develop
 
     this.canvas.mouseup(function (e) {
       isDraw = false;
       //console.log('reload block')
+<<<<<<< HEAD
     })
+=======
+    });
+>>>>>>> develop
   }
 
   removeLastEvent() {

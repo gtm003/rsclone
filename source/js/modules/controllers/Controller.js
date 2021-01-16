@@ -70,6 +70,14 @@ export class Controller {
     if (target.dataset['menu'] === 'Document Properties') {
       this.openModalSettings();
     }
+
+    if (target.dataset['menu'] === 'Get SVG-code') {
+      this.openModalSvgCode();
+    }
+  }
+
+  openModalSvgCode() {
+    this.appView.svgCodeModalWindow.classList.add('modal-svg-code--show');
   }
 
   openModalSettings() {
@@ -120,7 +128,7 @@ export class Controller {
 
   createNewImage() {
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas.createSvgWorkArea('800', '600');
+    this.canvas.createSvgWorkArea('600', '400');
   }
 
   saveFile(fileName) {

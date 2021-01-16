@@ -40,7 +40,13 @@
         background-color: gray;
 
         &__btn-delete,
-        &__btn-convert {
+        &__btn-convert,
+        &__btn-left,
+        &__btn-right,
+        &__btn-top,
+        &__btn-bottom,
+        &__btn-center,
+        &__btn-middle {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -55,19 +61,36 @@
         }
 
         &__btn-delete:hover,
-        &__btn-convert:hover {
+        &__btn-convert:hover,
+        &__btn-left:hover,
+        &__btn-right:hover,
+        &__btn-top:hover,
+        &__btn-bottom:hover,
+        &__btn-center:hover,
+        &__btn-middle:hover {
           background-color: antiquewhite;
         }
 
         &__btn-delete:active,
-        &__btn-convert:active {
+        &__btn-convert:active,
+        &__btn-left:active,
+        &__btn-right:active,
+        &__btn-top:active,
+        &__btn-bottom:active,
+        &__btn-center:active,
+        &__btn-middle:active {
           transform: scale(1.05);
+          outline: none;
         }
 
-        &__btn-delete:active,
-        &__btn-convert:active,
         &__btn-delete:focus,
-        &__btn-convert:focus {
+        &__btn-convert:focus,
+        &__btn-left:focus,
+        &__btn-right:focus,
+        &__btn-top:focus,
+        &__btn-bottom:focus,
+        &__btn-center:focus,
+        &__btn-middle:focus  {
           outline: none;
         }
 
@@ -85,9 +108,13 @@
         &__btn-x1,
         &__btn-y1,
         &__btn-x2,
-        &__btn-y2 {
+        &__btn-y2,
+        &__btn-size,
+        &__btn-mark,
+        &__btn-rx,
+        &__btn-ry {
           min-width: 40px;
-          max-width: 100px;
+          max-width: 80px;
           max-height: 30px;
           width: 100%;
           height: 100%;
@@ -112,6 +139,10 @@
         &__btn-y1:focus,
         &__btn-x2:focus,
         &__btn-y2:focus,
+        &__btn-size:focus,
+        &__btn-mark:focus,
+        &__btn-rx:focus,
+        &__btn-ry:focus,
         &__btn-id:active,
         &__btn-class:active,
         &__btn-angle:active,
@@ -126,9 +157,20 @@
         &__btn-x1:active,
         &__btn-y1:active,
         &__btn-x2:active,
-        &__btn-y2:active {
+        &__btn-y2:active,
+        &__btn-size:active,
+        &__btn-mark:active,
+        &__btn-rx:active,
+        &__btn-ry:active {
           outline: none;
           box-shadow: inset 0px 0px 5px 0px #9E9996;
+        }
+
+        &__select-family,
+        &__select-anchor {
+          max-height: 30px;
+          margin: 5px;
+          border-radius: 5px;
         }
     }
 

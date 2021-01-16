@@ -24,10 +24,14 @@ export class appView {
     this.inputFileName = null;
     this.sheet = null;
     this.settingsModalWindow = null;
+    this.svgCodeModalWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
     this.settingsElementsDataAttribute = 'modalSettings';
+
+    this.countFamily = 5;
+    // this.countAnchor = 3;
   }
 
   init() {
@@ -42,156 +46,40 @@ export class appView {
     controller.init();
   }
 
-  createMenuContainer() {
-    const menuContainer = document.createElement('div');
-    menuContainer.classList.add('tools-top__menu-area');
-
-    return menuContainer;
+  getCurrentRotation(item) {
+    const transform = item.attr().transform;
+    if (typeof transform !== 'undefined') {
+      const values = transform.split('(')[1].split(')')[0].split(',');
+      const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
+      return (angle < 0 ? angle + 360 : angle);
+    }
+    return 0;
   }
 
-  createFunctionalArea() {
-    const functionalArea = document.createElement('div');
-    functionalArea.classList.add('tools-top__functional-area', 'visibility');
+  createSelectElement(typeElement) {
+    const select = document.createElement('select');
+    select.classList.add(`tools-top__functional-area__select-${typeElement}`);
+    if (typeElement === 'family') {
+      const familyClasses = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
+      for (let i = 0; i < this.countFamily; i += 1) {
+        const option = document.createElement('option');
+        option.textContent = familyClasses[i];
+        select.append(option);
+      }
 
-    return functionalArea;
+    }
+
+    return select;
   }
 
-  createToolsTop() {
-    const toolsTop = document.createElement('div');
-    toolsTop.classList.add('tools-top');
-    this.menuContainer = this.createMenuContainer();
-    this.functionalAreaContainer = this.createFunctionalArea();
-    toolsTop.append(this.menuContainer, this.functionalAreaContainer);
-
-    return toolsTop;
-  }
-
-  createWorkArea() {
-    const workAreaContainer = document.createElement('div');
-    workAreaContainer.className = 'work-area';
-
-    const field = document.createElement('div');
-    field.id = 'field';
-    workAreaContainer.append(field);
-
-    this.sheet = document.createElement('div');
-    this.sheet.className = 'sheet';
-    field.append(this.sheet);
-
-    return workAreaContainer;
-  }
-
-  createToolsBottom() {
-    const toolsBottomContainer = document.createElement('div');
-    toolsBottomContainer.className = 'tools-bottom';
-
-    toolsBottomBtnName.forEach((item) => {
-      let btn = document.createElement('button');
-      btn.id = `${item}`;
-      btn.style.background = item;
-      toolsBottomContainer.append(btn);
+  createEventForSelect(elementEvent, item, typeElement) {
+    elementEvent.addEventListener(('change'), () => {
+      if (typeElement === 'family') {
+        item.attr('font-family', elementEvent.value);
+      } else if (typeElement === 'anchor') {
+        item.attr('text-anchor', elementEvent.value);
+      }
     });
-
-    return toolsBottomContainer;
-  }
-
-  createToolsLeft() {
-    const toolsLeftContainer = document.createElement('div');
-    toolsLeftContainer.className = 'tools-left';
-
-    toolsLeftBtnName.forEach((item) => {
-      let btn = document.createElement('button');
-      btn.id = `${item}`;
-      btn.innerHTML = item;
-      toolsLeftContainer.append(btn);
-    });
-
-    return toolsLeftContainer;
-  }
-
-  createWrapper() {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('wrapper');
-    return wrapper;
-  }
-
-
-  renderHeader() {
-    this.headerElement = document.createElement('header');
-    this.headerElement.classList.add('header');
-    this.headerContainer = document.createElement('div');
-    this.headerContainer.classList.add('container');
-    this.headerContainer.textContent = 'SVG EDITOR';
-    this.headerElement.appendChild(this.headerContainer);
-  }
-
-  renderContent() {
-    this.toolsTopContainer = this.createToolsTop();
-    this.toolsBottomContainer = this.createToolsBottom();
-    this.toolsLeftContainer = this.createToolsLeft();
-    this.workAreaContainer = this.createWorkArea();
-
-    this.contentElement = document.createElement('main');
-    this.contentElement.classList.add('main');
-    this.contentContainer = document.createElement('div');
-    this.contentContainer.classList.add('container');
-    this.contentElement.appendChild(this.contentContainer);
-
-    this.toolsRightContainer = document.createElement('div');
-
-    this.toolsRightContainer.className = 'tools-right';
-
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer);
-  }
-
-  renderFooter() {
-    const yearSpan = document.createElement('span');
-    yearSpan.classList.add('copyright__year');
-    yearSpan.textContent = '2020 ©';
-
-    const by = document.createElement('span');
-    by.textContent = 'by';
-
-    const student1Link = document.createElement('a');
-    student1Link.classList.add('copyright__student-link');
-    student1Link.setAttribute('href', 'https://github.com/alexk08');
-    student1Link.setAttribute('target', '__blank');
-    student1Link.textContent = 'Aleksandr Krasinikov';
-
-    const student2Link = document.createElement('a');
-    student2Link.classList.add('copyright__student-link');
-    student2Link.setAttribute('href', 'https://github.com/11alexey11');
-    student2Link.setAttribute('target', '__blank');
-    student2Link.textContent = 'Alexey Yanvarev';
-
-    const student3Link = document.createElement('a');
-    student3Link.classList.add('copyright__student-link');
-    student3Link.setAttribute('href', 'https://github.com/gtm003');
-    student3Link.setAttribute('target', '__blank');
-    student3Link.textContent = 'Tatyana Grigorovich';
-
-    const logo = document.createElement('img');
-    logo.classList.add('copyright__logo-rs');
-    logo.setAttribute('src', 'img/svg/rs_school_js.svg');
-    logo.setAttribute('alt', 'Logo RS School');
-    logo.setAttribute('width', '100px');
-
-    const courseLink = document.createElement('a');
-    courseLink.classList.add('copyright__course-link');
-    courseLink.setAttribute('href', 'https://rs.school/js/');
-    courseLink.setAttribute('target', '__blank');
-    courseLink.appendChild(logo);
-
-    const copyrightElement = document.createElement('div');
-    copyrightElement.classList.add('copyright');
-    copyrightElement.append(yearSpan, by, student1Link, student2Link, student3Link, courseLink);
-
-    this.footerElement = document.createElement('footer');
-    this.footerElement.classList.add('footer');
-    this.footerContainer = document.createElement('div');
-    this.footerContainer.classList.add('container');
-    this.footerContainer.append(copyrightElement);
-    this.footerElement.appendChild(this.footerContainer);
   }
 
   createFunctionalAreaDataElements(type) {
@@ -206,19 +94,27 @@ export class appView {
       case 'line':
         arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x1', 'y1', 'x2', 'y2'];
         break;
+      case 'text':
+        arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x', 'y', 'size', 'family', 'mark'];
+        break;
+      case 'ellipse':
+        arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'cx', 'cy', 'rx', 'ry'];
+        break;
     }
 
     for (let i = 0; i < arrayNameBtn.length; i += 1) {
-      if (i === 0 || i === 1) {
+      if (arrayNameBtn[i] === 'delete' || arrayNameBtn[i] === 'convert') {
         const btn = document.createElement('button');
         btn.setAttribute('type', 'button');
         btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
         this.functionalAreaContainer.append(btn);
-        if (i === 0) {
+        if (arrayNameBtn[i] === 'delete') {
           btn.innerHTML = '<i class="material-icons">disabled_by_default</i>';
         } else {
           btn.innerHTML = '<i class="material-icons">timeline</i>';
         }
+      } else if (arrayNameBtn[i] === 'family') {
+        this.functionalAreaContainer.append(this.createSelectElement(arrayNameBtn[i]));
       } else {
         const btn = document.createElement('input');
         const label = document.createElement('label');
@@ -233,6 +129,18 @@ export class appView {
     }
   }
 
+  createFunctionalAreaAlignmentElements() {
+    const alignment = ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
+    const alignmentIcons = ['disabled_by_default', 'timeline', 'align_horizontal_left', 'align_horizontal_right', 'align_vertical_top', 'align_vertical_bottom', 'align_horizontal_center', 'align_vertical_center'];
+    for (let i = 0; i < alignment.length; i += 1) {
+      const btn = document.createElement('button');
+      btn.setAttribute('type', 'button');
+      btn.classList.add(`tools-top__functional-area__btn-${alignment[i]}`);
+      btn.innerHTML = `<i class="material-icons">${alignmentIcons[i]}</i>`;
+      this.functionalAreaContainer.append(btn);
+    }
+  }
+
   removeFunctionalAreaDataElements() {
     for (let i = 0; i < this.functionalAreaContainer.childNodes.length; i += 1) {
       this.functionalAreaContainer.childNodes[i].remove();
@@ -240,39 +148,72 @@ export class appView {
     }
   }
 
-  updateFunctionalArea(item) {
-    this.removeFunctionalAreaDataElements();
-    const attribute = item.attr();
-    this.createFunctionalAreaDataElements(item.type, item);
-    const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-    switch (item.type) {
-      case 'rect':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
-        arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
-        break;
-      case 'circle':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
-        break;
-      case 'line':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
-        arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
-        break;
+  updateFunctionalArea(item, flag, flagCreate) {
+    if (flagCreate) {
+      this.removeFunctionalAreaDataElements();
     }
+    if (flag) {
+      const attribute = item.attr();
+      if (flagCreate) {
+        this.createFunctionalAreaDataElements(item.type, item);
+      }
+      const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+      switch (item.type) {
+        case 'rect':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
+          break;
+        case 'circle':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
+          break;
+        case 'line':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
+          break;
+        case 'text':
+          console.log(item.attr());
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.size);
+          // здесь долджно быть начертание
+          break;
+        case 'ellipse':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.rx);
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.ry);
+      }
+    } else {
+      this.createFunctionalAreaAlignmentElements();
+    }
+  }
+
+  createSvgCodeModal() {
+    const svgCodeModal = document.createElement('div');
+    svgCodeModal.classList.add('modal-svg-code');
+
+    return svgCodeModal;
   }
 
   createSettingsModal() {
@@ -439,7 +380,6 @@ export class appView {
     wrapper.classList.add('wrapper');
     return wrapper;
   }
-
 
   renderHeader() {
     this.headerElement = document.createElement('header');
