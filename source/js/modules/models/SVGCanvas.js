@@ -40,6 +40,26 @@ export class SVGCanvas {
       pressKey = 'null';
       //console.log(pressKey);
     });
+<<<<<<< HEAD
+
+    //console.log(this.app);
+    const viewApp = this.app;
+    this.canvas.mousedown(function (e) {
+      if (pressKey !== 'Control') {
+        canvas.each(function (i, children) {
+          if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
+            this.removeClass('selectedElem');
+            this.resize('stop').selectize(false);
+            selectElements = [];
+            console.log(this.node.tagName);
+          }
+          if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
+            this.removeClass('inputText');
+          }
+        })
+      }
+
+=======
 
     const viewApp = this.app;
     this.canvas.mousedown(function (e) {
@@ -57,6 +77,7 @@ export class SVGCanvas {
         });
       }
 
+>>>>>>> develop
       isDraw = true;
       x = mouse.getX(e);
       y = mouse.getY(e);
@@ -87,6 +108,62 @@ export class SVGCanvas {
             if (text.hasClass('inputText')) {
               textInput += event.key;
               text.plain(`${textInput}`)
+<<<<<<< HEAD
+            }
+          });
+          break;
+        case 'select':
+          canvas.each(function (i, children) {
+            console.log(this.node.tagName);
+            if (this.inside(e.offsetX, e.offsetY)) {
+              if (!this.hasClass('selectedElem')) {
+                selectElements.push(this);
+                this.addClass('selectedElem');
+                this.selectize().resize();
+              }
+
+              //console.log(this.attr());                                                                   // Attributes selected elem
+              //console.log(this.cx());
+
+              cxLast = this.cx();
+              cyLast = this.cy();
+            }
+            //if (this.id === 'selectedElem') this.fill('red');
+          })
+          console.log(selectElements);
+          //console.log(selectElements[0].attr());
+          const arrayObjectsSVG = canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY));
+          if (arrayObjectsSVG.length === 1) {
+            viewApp.functionalAreaContainer.classList.remove('visibility');
+            viewApp.updateFunctionalArea(...arrayObjectsSVG);
+            // Delete SVG Element
+            const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+            deleteBtn.addEventListener('click', () => {
+              for (let i = 0; i < arrayObjectsSVG.length; i += 1) {
+                arrayObjectsSVG[i].resize('stop').selectize(false);
+                arrayObjectsSVG[i].remove();
+              }
+            });
+            // Properties
+            const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+            for (let i = 0; i < arrayProperties.length; i += 1) {
+              arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
+                const [...objSVG] = arrayObjectsSVG;
+                //console.log(arrayProperties[i].childNodes[1].value);
+                if (arrayProperties[i].childNodes[1].value.length === 0) {
+                  objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
+                } else {
+                  objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
+                }
+              });
+            }
+          } else {
+            viewApp.functionalAreaContainer.classList.add('visibility');
+          }
+          break;
+      }
+    })
+=======
             }
           });
           break;
@@ -203,6 +280,7 @@ export class SVGCanvas {
           break;
       }
     });
+>>>>>>> develop
 
     this.canvas.mousemove(function (e) {
       if (isDraw) {
@@ -222,6 +300,10 @@ export class SVGCanvas {
             ellipse.attr({
               rx: Math.abs(mouse.getX(e) - x),
               ry: Math.abs(mouse.getY(e) - y),
+<<<<<<< HEAD
+              id: 'test',
+=======
+>>>>>>> develop
             });
             break;
           case 'rect':
@@ -241,6 +323,10 @@ export class SVGCanvas {
               height: Math.abs(mouse.getY(e) - y),
               x: xNew,
               y: yNew,
+<<<<<<< HEAD
+              id: 'test',
+=======
+>>>>>>> develop
             });
             break;
           case 'text':
@@ -257,19 +343,30 @@ export class SVGCanvas {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
                   this.cy(mouse.getY(e) - y + cyLast);
+<<<<<<< HEAD
+=======
                   viewApp.updateFunctionalArea(this, true, false);
+>>>>>>> develop
                 }
               })
             }
             break;
         }
       }
+<<<<<<< HEAD
+    })
+=======
     });
+>>>>>>> develop
 
     this.canvas.mouseup(function (e) {
       isDraw = false;
       //console.log('reload block')
+<<<<<<< HEAD
+    })
+=======
     });
+>>>>>>> develop
   }
 
   removeLastEvent() {
