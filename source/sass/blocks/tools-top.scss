@@ -40,7 +40,13 @@
         background-color: gray;
 
         &__btn-delete,
-        &__btn-convert {
+        &__btn-convert,
+        &__btn-left,
+        &__btn-right,
+        &__btn-top,
+        &__btn-bottom,
+        &__btn-center,
+        &__btn-middle {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -55,19 +61,36 @@
         }
 
         &__btn-delete:hover,
-        &__btn-convert:hover {
+        &__btn-convert:hover,
+        &__btn-left:hover,
+        &__btn-right:hover,
+        &__btn-top:hover,
+        &__btn-bottom:hover,
+        &__btn-center:hover,
+        &__btn-middle:hover {
           background-color: antiquewhite;
         }
 
         &__btn-delete:active,
-        &__btn-convert:active {
+        &__btn-convert:active,
+        &__btn-left:active,
+        &__btn-right:active,
+        &__btn-top:active,
+        &__btn-bottom:active,
+        &__btn-center:active,
+        &__btn-middle:active {
           transform: scale(1.05);
+          outline: none;
         }
 
-        &__btn-delete:active,
-        &__btn-convert:active,
         &__btn-delete:focus,
-        &__btn-convert:focus {
+        &__btn-convert:focus,
+        &__btn-left:focus,
+        &__btn-right:focus,
+        &__btn-top:focus,
+        &__btn-bottom:focus,
+        &__btn-center:focus,
+        &__btn-middle:focus  {
           outline: none;
         }
 

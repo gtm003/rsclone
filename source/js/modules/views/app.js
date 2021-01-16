@@ -233,6 +233,18 @@ export class appView {
     }
   }
 
+  createFunctionalAreaAlignmentElements() {
+    const alignment = ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
+    const alignmentIcons = ['disabled_by_default', 'timeline', 'align_horizontal_left', 'align_horizontal_right', 'align_vertical_top', 'align_vertical_bottom', 'align_horizontal_center', 'align_vertical_center'];
+    for (let i = 0; i < alignment.length; i += 1) {
+      const btn = document.createElement('button');
+      btn.setAttribute('type', 'button');
+      btn.classList.add(`tools-top__functional-area__btn-${alignment[i]}`);
+      btn.innerHTML = `<i class="material-icons">${alignmentIcons[i]}</i>`;
+      this.functionalAreaContainer.append(btn);
+    }
+  }
+
   removeFunctionalAreaDataElements() {
     for (let i = 0; i < this.functionalAreaContainer.childNodes.length; i += 1) {
       this.functionalAreaContainer.childNodes[i].remove();
@@ -240,38 +252,42 @@ export class appView {
     }
   }
 
-  updateFunctionalArea(item) {
+  updateFunctionalArea(item, flag) {
     this.removeFunctionalAreaDataElements();
-    const attribute = item.attr();
-    this.createFunctionalAreaDataElements(item.type, item);
-    const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-    switch (item.type) {
-      case 'rect':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
-        arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
-        break;
-      case 'circle':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
-        break;
-      case 'line':
-        arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-        arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
-        arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
-        arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
-        arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
-        arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
-        arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
-        break;
+    if (flag) {
+      const attribute = item.attr();
+      this.createFunctionalAreaDataElements(item.type, item);
+      const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
+      switch (item.type) {
+        case 'rect':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
+          break;
+        case 'circle':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
+          break;
+        case 'line':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
+          break;
+      }
+    } else {
+      this.createFunctionalAreaAlignmentElements();
     }
   }
 

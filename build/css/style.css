@@ -739,7 +739,7 @@ button,
     display: flex;
     min-height: 40px;
     background-color: gray; }
-    .tools-top__functional-area__btn-delete, .tools-top__functional-area__btn-convert {
+    .tools-top__functional-area__btn-delete, .tools-top__functional-area__btn-convert, .tools-top__functional-area__btn-left, .tools-top__functional-area__btn-right, .tools-top__functional-area__btn-top, .tools-top__functional-area__btn-bottom, .tools-top__functional-area__btn-center, .tools-top__functional-area__btn-middle {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
@@ -757,12 +757,13 @@ button,
       border: 0;
       border-radius: 5px;
       cursor: pointer; }
-    .tools-top__functional-area__btn-delete:hover, .tools-top__functional-area__btn-convert:hover {
+    .tools-top__functional-area__btn-delete:hover, .tools-top__functional-area__btn-convert:hover, .tools-top__functional-area__btn-left:hover, .tools-top__functional-area__btn-right:hover, .tools-top__functional-area__btn-top:hover, .tools-top__functional-area__btn-bottom:hover, .tools-top__functional-area__btn-center:hover, .tools-top__functional-area__btn-middle:hover {
       background-color: antiquewhite; }
-    .tools-top__functional-area__btn-delete:active, .tools-top__functional-area__btn-convert:active {
+    .tools-top__functional-area__btn-delete:active, .tools-top__functional-area__btn-convert:active, .tools-top__functional-area__btn-left:active, .tools-top__functional-area__btn-right:active, .tools-top__functional-area__btn-top:active, .tools-top__functional-area__btn-bottom:active, .tools-top__functional-area__btn-center:active, .tools-top__functional-area__btn-middle:active {
       -webkit-transform: scale(1.05);
-              transform: scale(1.05); }
-    .tools-top__functional-area__btn-delete:active, .tools-top__functional-area__btn-convert:active, .tools-top__functional-area__btn-delete:focus, .tools-top__functional-area__btn-convert:focus {
+              transform: scale(1.05);
+      outline: none; }
+    .tools-top__functional-area__btn-delete:focus, .tools-top__functional-area__btn-convert:focus, .tools-top__functional-area__btn-left:focus, .tools-top__functional-area__btn-right:focus, .tools-top__functional-area__btn-top:focus, .tools-top__functional-area__btn-bottom:focus, .tools-top__functional-area__btn-center:focus, .tools-top__functional-area__btn-middle:focus {
       outline: none; }
     .tools-top__functional-area__btn-id, .tools-top__functional-area__btn-class, .tools-top__functional-area__btn-angle, .tools-top__functional-area__btn-blur, .tools-top__functional-area__btn-x, .tools-top__functional-area__btn-y, .tools-top__functional-area__btn-width, .tools-top__functional-area__btn-height, .tools-top__functional-area__btn-cx, .tools-top__functional-area__btn-cy, .tools-top__functional-area__btn-r, .tools-top__functional-area__btn-x1, .tools-top__functional-area__btn-y1, .tools-top__functional-area__btn-x2, .tools-top__functional-area__btn-y2 {
       min-width: 40px;
@@ -941,10 +942,12 @@ button,
 
 .svg-work-area {
   background-color: white;
-  border: 2px solid black;
+  -webkit-box-shadow: inset 0px 0px 10px 0px #000;
+          box-shadow: inset 0px 0px 10px 0px #000;
   margin: auto;
   -ms-flex-negative: 0;
-      flex-shrink: 0; }
+      flex-shrink: 0;
+  border: none; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,
