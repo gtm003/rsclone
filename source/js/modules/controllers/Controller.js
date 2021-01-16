@@ -70,6 +70,14 @@ export class Controller {
     if (target.dataset['menu'] === 'Document Properties') {
       this.openModalSettings();
     }
+
+    if (target.dataset['menu'] === 'Get SVG-code') {
+      this.openModalSvgCode();
+    }
+  }
+
+  openModalSvgCode() {
+    this.appView.svgCodeModalWindow.classList.add('modal-svg-code--show');
   }
 
   openModalSettings() {

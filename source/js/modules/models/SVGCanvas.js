@@ -1,6 +1,6 @@
-import {} from '../../vendor/svg.js';
-import {} from '../../vendor/svg.select.js';
-import {} from '../../vendor/svg.resize.js';
+import { } from '../../vendor/svg.js';
+import { } from '../../vendor/svg.select.js';
+import { } from '../../vendor/svg.resize.js';
 
 export class SVGCanvas {
   constructor(app, rootElement) {
@@ -41,9 +41,7 @@ export class SVGCanvas {
       //console.log(pressKey);
     });
 
-    //console.log(this.app);
     const viewApp = this.app;
-    // console.log(this.canvas.attr().width)
     this.canvas.mousedown(function (e) {
       if (pressKey !== 'Control') {
         canvas.each(function (i, children) {
