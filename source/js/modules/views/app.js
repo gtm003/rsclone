@@ -1,4 +1,4 @@
-import { Controller } from '../controllers/Controller';
+import {Controller} from '../controllers/Controller';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
@@ -29,6 +29,9 @@ export class appView {
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
     this.settingsElementsDataAttribute = 'modalSettings';
+
+    this.countFamily = 5;
+    // this.countAnchor = 3;
   }
 
   init() {
@@ -43,6 +46,42 @@ export class appView {
     controller.init();
   }
 
+  getCurrentRotation(item) {
+    const transform = item.attr().transform;
+    if (typeof transform !== 'undefined') {
+      const values = transform.split('(')[1].split(')')[0].split(',');
+      const angle = Math.round(Math.atan2(values[1], values[0]) * (180 / Math.PI));
+      return (angle < 0 ? angle + 360 : angle);
+    }
+    return 0;
+  }
+
+  createSelectElement(typeElement) {
+    const select = document.createElement('select');
+    select.classList.add(`tools-top__functional-area__select-${typeElement}`);
+    if (typeElement === 'family') {
+      const familyClasses = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
+      for (let i = 0; i < this.countFamily; i += 1) {
+        const option = document.createElement('option');
+        option.textContent = familyClasses[i];
+        select.append(option);
+      }
+
+    }
+
+    return select;
+  }
+
+  createEventForSelect(elementEvent, item, typeElement) {
+    elementEvent.addEventListener(('change'), () => {
+      if (typeElement === 'family') {
+        item.attr('font-family', elementEvent.value);
+      } else if (typeElement === 'anchor') {
+        item.attr('text-anchor', elementEvent.value);
+      }
+    });
+  }
+
   createFunctionalAreaDataElements(type) {
     let arrayNameBtn;
     switch (type) {
@@ -55,19 +94,27 @@ export class appView {
       case 'line':
         arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x1', 'y1', 'x2', 'y2'];
         break;
+      case 'text':
+        arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x', 'y', 'size', 'family', 'mark'];
+        break;
+      case 'ellipse':
+        arrayNameBtn = ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'cx', 'cy', 'rx', 'ry'];
+        break;
     }
 
     for (let i = 0; i < arrayNameBtn.length; i += 1) {
-      if (i === 0 || i === 1) {
+      if (arrayNameBtn[i] === 'delete' || arrayNameBtn[i] === 'convert') {
         const btn = document.createElement('button');
         btn.setAttribute('type', 'button');
         btn.classList.add(`tools-top__functional-area__btn-${arrayNameBtn[i]}`);
         this.functionalAreaContainer.append(btn);
-        if (i === 0) {
+        if (arrayNameBtn[i] === 'delete') {
           btn.innerHTML = '<i class="material-icons">disabled_by_default</i>';
         } else {
           btn.innerHTML = '<i class="material-icons">timeline</i>';
         }
+      } else if (arrayNameBtn[i] === 'family') {
+        this.functionalAreaContainer.append(this.createSelectElement(arrayNameBtn[i]));
       } else {
         const btn = document.createElement('input');
         const label = document.createElement('label');
@@ -101,16 +148,20 @@ export class appView {
     }
   }
 
-  updateFunctionalArea(item, flag) {
-    this.removeFunctionalAreaDataElements();
+  updateFunctionalArea(item, flag, flagCreate) {
+    if (flagCreate) {
+      this.removeFunctionalAreaDataElements();
+    }
     if (flag) {
       const attribute = item.attr();
-      this.createFunctionalAreaDataElements(item.type, item);
+      if (flagCreate) {
+        this.createFunctionalAreaDataElements(item.type, item);
+      }
       const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
       switch (item.type) {
         case 'rect':
           arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
           arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
           arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x); // x
           arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y); // y
@@ -119,7 +170,7 @@ export class appView {
           break;
         case 'circle':
           arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
           arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
           arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
           arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
@@ -127,13 +178,31 @@ export class appView {
           break;
         case 'line':
           arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', 0); // angle
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
           arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
           arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x1);
           arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y1);
           arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.x2);
           arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
           break;
+        case 'text':
+          console.log(item.attr());
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.size);
+          // здесь долджно быть начертание
+          break;
+        case 'ellipse':
+          arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
+          arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
+          arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
+          arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.cx);
+          arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.cy);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.rx);
+          arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.ry);
       }
     } else {
       this.createFunctionalAreaAlignmentElements();
