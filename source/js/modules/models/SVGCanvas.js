@@ -30,18 +30,34 @@ export class SVGCanvas {
         };
         let selectElements = [];
         let isDraw = false;
+        let pressKey = '';
         let x, y, cxLast, cyLast, line, circle, rect, ellipse, text;
+        document.addEventListener('keydown', function(event) {
+            pressKey = event.key;
+            //console.log(pressKey);
+        });
+        document.addEventListener('keyup', function(event) {
+            pressKey = 'null';
+            //console.log(pressKey);
+        });
+
         //console.log(this.app);
         const viewApp = this.app;
         this.canvas.mousedown(function(e) {
-            console.log(e.which);
-            if (e.which === 3) ;
-            canvas.each(function(i, children) {
-                if (this.hasClass('selectedElem')) {
-                    this.removeClass('selectedElem')
-                    this.resize('stop').selectize(false);
-                } 
-            })
+            if (pressKey !== 'Control') {
+                canvas.each(function(i, children) {
+                    if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
+                        this.removeClass('selectedElem');
+                        this.resize('stop').selectize(false);
+                        selectElements = [];
+                        console.log(this.node.tagName);
+                    }
+                    if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
+                        this.removeClass('inputText');
+                    } 
+                })
+            }
+
             isDraw = true;
             x = mouse.getX(e);
             y = mouse.getY(e);
@@ -60,7 +76,7 @@ export class SVGCanvas {
                 break;
                 case 'text':
                     text = canvas.text('input text').move(x, y).stroke('none').fill('black');
-                    text.addClass('selectedElem');
+                    text.addClass('inputText');
                     text.font({
                         family: 'Helvetica',
                         size: 16,
@@ -69,9 +85,8 @@ export class SVGCanvas {
                       })
                     let textInput = '';
                     document.addEventListener('keydown', function(event) {
-                        if (text.hasClass('selectedElem')) {
+                        if (text.hasClass('inputText')) {
                             textInput += event.key;
-                            console.log(textInput);
                             text.plain(`${textInput}`)
                         }
                     });
@@ -79,19 +94,21 @@ export class SVGCanvas {
                 case 'select':
                     canvas.each(function(i, children) {
                         if (this.inside(e.offsetX, e.offsetY)) {
-                            //selectElements.push(this);
-                            this.addClass('selectedElem');
-                            this.selectize().resize();
-                            console.log(this.attr());                                                                   // Attributes selected elem
+                            if (!this.hasClass('selectedElem')) {
+                                selectElements.push(this);
+                                this.addClass('selectedElem');
+                                this.selectize().resize();
+                            }
+
+                            //console.log(this.attr());                                                                   // Attributes selected elem
                             //console.log(this.cx());
                             
                             cxLast = this.cx();
                             cyLast = this.cy();
-
                         } 
                         //if (this.id === 'selectedElem') this.fill('red');
                     })
-                    //console.log(selectElements);
+                    console.log(selectElements);
                     //console.log(selectElements[0].attr());
                     const arrayObjectsSVG = canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY));
                     if (arrayObjectsSVG.length === 1) {
@@ -109,7 +126,7 @@ export class SVGCanvas {
                       for (let i = 0; i < arrayProperties.length; i += 1) {
                         arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
                           const [...objSVG] = arrayObjectsSVG;
-                          console.log(arrayProperties[i].childNodes[1].value);
+                          //console.log(arrayProperties[i].childNodes[1].value);
                           if (arrayProperties[i].childNodes[1].value.length === 0) {
                             objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
                           } else {
@@ -125,7 +142,6 @@ export class SVGCanvas {
         })
 
         this.canvas.mousemove(function(e) {
-            if (e.metaKey || e.ctrlKey) console.log('ctrl');
             if (isDraw) {
                 switch(type) {
                     case 'line':
@@ -175,16 +191,14 @@ export class SVGCanvas {
                           })
                     break;
                     case 'select':
-                        canvas.each(function(i, children) {
-                            //let cxLast = this.cx();
-                            //let cyLast = this.cy();
-                            //console.log(`cxLast: ${cxLast}`)
-                            if (this.hasClass('selectedElem')) {
-                                this.cx(mouse.getX(e) - x + cxLast);
-                                this.cy(mouse.getY(e) - y + cyLast);
-                            } 
-                        })
-                        
+                        if (pressKey !== 'Control') {
+                            canvas.each(function(i, children) {
+                                if (this.hasClass('selectedElem')) {
+                                    this.cx(mouse.getX(e) - x + cxLast);
+                                    this.cy(mouse.getY(e) - y + cyLast);
+                                } 
+                            })
+                        }
                     break;
                 }
             }
@@ -192,6 +206,7 @@ export class SVGCanvas {
 
         this.canvas.mouseup(function(e) {
             isDraw = false;
+            //console.log('reload block')
         })
     }
 
