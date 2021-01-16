@@ -128,7 +128,7 @@ export class Controller {
 
   createNewImage() {
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas.createSvgWorkArea('800', '600');
+    this.canvas.createSvgWorkArea('600', '400');
   }
 
   saveFile(fileName) {
