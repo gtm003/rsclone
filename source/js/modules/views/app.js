@@ -1,8 +1,10 @@
+import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
+import { ColorPicker } from './colorPicker';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
-const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
 
 export class appView {
   constructor(rootElement) {
@@ -32,6 +34,8 @@ export class appView {
 
     this.countFamily = 5;
     // this.countAnchor = 3;
+
+    this.palleteCanvas = null;
   }
 
   init() {
@@ -44,6 +48,9 @@ export class appView {
 
     const controller = new Controller(this, this.sheet);
     controller.init();
+
+    this.palleteCanvas = new ColorPicker(this.workAreaContainer);
+    this.palleteCanvas.init();
   }
 
   getCurrentRotation(item) {
@@ -211,6 +218,11 @@ export class appView {
   createSvgCodeModal() {
     const svgCodeModal = document.createElement('div');
     svgCodeModal.classList.add('modal-svg-code');
+    // const preElement = document.createElement('pre');
+    // const codeElement = document.createElement('code');
+    // preElement.appendChild(codeElement);
+    // svgCodeModal.appendChild(preElement);
+    // console.log(svgCodeModal)
 
     return svgCodeModal;
   }
@@ -303,11 +315,24 @@ export class appView {
     menuContainer.classList.add('tools-top__menu-area');
 
     MENU_BUTTONS_NAMES.forEach((item) => {
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
-      button.textContent = item;
-      menuContainer.appendChild(button);
+      if (item !== 'Import SVG') {
+        const button = document.createElement('button');
+        button.setAttribute('type', 'button');
+        button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
+        button.textContent = item;
+        menuContainer.appendChild(button);
+      } else {
+        const inputFileUpload = document.createElement('input');
+        inputFileUpload.setAttribute('type', 'file');
+        inputFileUpload.setAttribute('id', 'upload-file');
+        inputFileUpload.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
+        inputFileUpload.style.display = 'none';
+
+        const labelFileUpload = document.createElement('label');
+        labelFileUpload.setAttribute('for', 'upload-file');
+        labelFileUpload.textContent = item;
+        menuContainer.append(labelFileUpload, inputFileUpload);
+      }
     });
 
     return menuContainer;
@@ -390,6 +415,7 @@ export class appView {
   }
 
   renderContent() {
+    this.svgCodeModalWindow = this.createSvgCodeModal();
     this.settingsModalWindow = this.createSettingsModal();
     this.saveModalWindow = this.createSaveModal();
     this.toolsTopContainer = this.createToolsTop();
@@ -407,7 +433,7 @@ export class appView {
 
     this.toolsRightContainer.className = 'tools-right';
 
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow);
   }
 
   renderFooter() {

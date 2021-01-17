@@ -1,5 +1,7 @@
 import {SVGCanvas} from '../models/SVGCanvas';
 
+const FILE_TYPE = 'svg';
+
 export class Controller {
   constructor(appView, placeForSVGCanvas) {
     this.fill = 'none';
@@ -13,12 +15,14 @@ export class Controller {
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
+    this.onImportSvgChange = this.onImportSvgChange.bind(this);
   }
 
   init() {
     this.getActivToolsLeftBtn();
     this.getFill();
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
+    this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
     this.canvas.init();
@@ -58,6 +62,12 @@ export class Controller {
     });
   }
 
+  onImportSvgChange({target}) {
+    if (target.dataset['menu'] === 'Import SVG') {
+      this.uploadSVG(target);
+    }
+  }
+
   onMenuButtonsClick({target}) {
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
@@ -77,7 +87,9 @@ export class Controller {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModalWindow.classList.add('modal-svg-code--show');
+    this.appView.svgCodeModalWindow.innerHTML = '';
+    this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
   openModalSettings() {
@@ -155,6 +167,21 @@ export class Controller {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       }, 0);
+    }
+  }
+
+  uploadSVG(input) {
+    const file = input.files[0];
+    const fileName = file.name.toLowerCase();
+
+    if(fileName.endsWith(FILE_TYPE)) {
+      const reader = new FileReader();
+
+      reader.addEventListener('load', () => {
+        this.canvas.canvas.svg(reader.result);
+      });
+
+      reader.readAsText(file);
     }
   }
 

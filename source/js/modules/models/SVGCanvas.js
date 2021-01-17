@@ -84,7 +84,7 @@ export class SVGCanvas {
           })
           let textInput = '';
           document.addEventListener('keydown', function (event) {
-            if (text.hasClass('inputText')) {
+            if (text.hasClass('inputText') && event.key.length < 2) {
               textInput += event.key;
               text.plain(`${textInput}`)
             }
@@ -92,7 +92,7 @@ export class SVGCanvas {
           break;
         case 'select':
           canvas.each(function (i, children) {
-            if (this.inside(e.offsetX, e.offsetY)) {
+            if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
               if (this.hasClass('selectedElem')) {
                 selectElements = [];
                 selectElements.push(this);
@@ -267,7 +267,7 @@ export class SVGCanvas {
             })
             break;
           case 'select':
-            if (pressKey !== 'Control') {
+            if (pressKey !== 'Control' && selectElements.length === 1) {
               canvas.each(function (i, children) {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
