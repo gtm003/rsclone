@@ -76,6 +76,8 @@ export class SVGCanvas {
         case 'text':
           text = canvas.text('input text').move(x, y).stroke('none').fill('black');
           text.addClass('inputText');
+          //text.width = text.length();
+          //text.height = text.size();
           text.font({
             family: 'Helvetica',
             size: 16,
@@ -93,6 +95,8 @@ export class SVGCanvas {
         case 'select':
           canvas.each(function (i, children) {
             if (this.inside(e.offsetX, e.offsetY) && !this.hasClass('selectedElem')) {
+              //console.log('************');
+              //console.log(this.length());
               selectElements.push(this);
               this.addClass('selectedElem');
               this.selectize().resize();
@@ -180,13 +184,23 @@ export class SVGCanvas {
                     selectElements.forEach((item) => item.x(0));
                     break;
                   case 3:
-                    selectElements.forEach((item) => item.x(canvas.width() - item.width()));
+                    selectElements.forEach((item) => {
+                      if (item.node.tagName === 'text') {
+                        item.x(canvas.width() - item.length());
+                      } else
+                      item.x(canvas.width() - item.width())
+                    });
                     break;
                   case 4:
                     selectElements.forEach((item) => item.y(0));
                     break;
                   case 5:
-                    selectElements.forEach((item) => item.y(canvas.height() - item.height()));
+                    selectElements.forEach((item) => {
+                      if (item.node.tagName === 'text') {
+                        item.y(canvas.height() - 1.11 * item.attr('size'));
+                      } else
+                      item.y(canvas.height() - item.height())
+                    });
                     break;
                   case 6:
                     selectElements.forEach((item) => item.cx(canvas.width() / 2));
