@@ -193,13 +193,12 @@ export class appView {
           arrayChildFunctionalArea[7].childNodes[1].setAttribute('placeholder', attribute.y1);
           break;
         case 'text':
-          console.log(item.attr());
           arrayChildFunctionalArea[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayChildFunctionalArea[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(item)); // angle
           arrayChildFunctionalArea[3].childNodes[1].setAttribute('placeholder', 0); // blur
           arrayChildFunctionalArea[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayChildFunctionalArea[5].childNodes[1].setAttribute('placeholder', attribute.y);
-          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute.size);
+          arrayChildFunctionalArea[6].childNodes[1].setAttribute('placeholder', attribute['font-size']);
           // здесь долджно быть начертание
           break;
         case 'ellipse':
