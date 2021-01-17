@@ -1,0 +1,16 @@
+.modal-svg-code {
+  width: 600px;
+  height: 400px;
+
+  display: none;
+
+  background-color: lightgray;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  &--show {
+    display: block;
+  }
+}

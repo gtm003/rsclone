@@ -2,7 +2,7 @@ import {Controller} from '../controllers/Controller';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
-const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
 
 export class appView {
   constructor(rootElement) {
@@ -212,6 +212,11 @@ export class appView {
   createSvgCodeModal() {
     const svgCodeModal = document.createElement('div');
     svgCodeModal.classList.add('modal-svg-code');
+    // const preElement = document.createElement('pre');
+    // const codeElement = document.createElement('code');
+    // preElement.appendChild(codeElement);
+    // svgCodeModal.appendChild(preElement);
+    // console.log(svgCodeModal)
 
     return svgCodeModal;
   }
@@ -391,6 +396,7 @@ export class appView {
   }
 
   renderContent() {
+    this.svgCodeModalWindow = this.createSvgCodeModal();
     this.settingsModalWindow = this.createSettingsModal();
     this.saveModalWindow = this.createSaveModal();
     this.toolsTopContainer = this.createToolsTop();
@@ -408,7 +414,7 @@ export class appView {
 
     this.toolsRightContainer.className = 'tools-right';
 
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow);
   }
 
   renderFooter() {

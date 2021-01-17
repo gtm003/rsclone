@@ -77,7 +77,9 @@ export class Controller {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModalWindow.classList.add('modal-svg-code--show');
+    this.appView.svgCodeModalWindow.innerHTML = '';
+    this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
   openModalSettings() {
