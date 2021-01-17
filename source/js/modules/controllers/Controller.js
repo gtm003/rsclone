@@ -77,10 +77,9 @@ export class Controller {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModalWindow.querySelector('code').innerHTML = '';
+    this.appView.svgCodeModalWindow.innerHTML = '';
     this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
-    this.appView.svgCodeModalWindow.querySelector('code').textContent = this.appView.sheet.innerHTML;
-    // console.log(this.canvas.canvas.node)
+    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
   openModalSettings() {
