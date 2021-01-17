@@ -76,8 +76,6 @@ export class SVGCanvas {
         case 'text':
           text = canvas.text('input text').move(x, y).stroke('none').fill('black');
           text.addClass('inputText');
-          //text.width = text.length();
-          //text.height = text.size();
           text.font({
             family: 'Helvetica',
             size: 16,
@@ -94,10 +92,10 @@ export class SVGCanvas {
           break;
         case 'select':
           canvas.each(function (i, children) {
-            if (this.inside(e.offsetX, e.offsetY) && !this.hasClass('selectedElem')) {
-              //console.log('************');
-              //console.log(this.length());
-              selectElements.push(this);
+            if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
+              if (!this.hasClass('selectedElem')) {
+                selectElements.push(this);
+              }
               this.addClass('selectedElem');
               this.selectize().resize();
               const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
@@ -292,7 +290,7 @@ export class SVGCanvas {
             })
             break;
           case 'select':
-            if (pressKey !== 'Control') {
+            if (pressKey !== 'Control' && selectElements.length === 1) {
               canvas.each(function (i, children) {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);

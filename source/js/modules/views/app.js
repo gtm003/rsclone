@@ -1,4 +1,6 @@
+import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
+import { ColorPicker } from './colorPicker';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
@@ -32,6 +34,8 @@ export class appView {
 
     this.countFamily = 5;
     // this.countAnchor = 3;
+
+    this.palleteCanvas = null;
   }
 
   init() {
@@ -44,6 +48,9 @@ export class appView {
 
     const controller = new Controller(this, this.sheet);
     controller.init();
+
+    this.palleteCanvas = new ColorPicker(this.workAreaContainer);
+    this.palleteCanvas.init();
   }
 
   getCurrentRotation(item) {
