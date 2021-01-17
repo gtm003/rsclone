@@ -765,9 +765,9 @@ button,
       outline: none; }
     .tools-top__functional-area__btn-delete:focus, .tools-top__functional-area__btn-convert:focus, .tools-top__functional-area__btn-left:focus, .tools-top__functional-area__btn-right:focus, .tools-top__functional-area__btn-top:focus, .tools-top__functional-area__btn-bottom:focus, .tools-top__functional-area__btn-center:focus, .tools-top__functional-area__btn-middle:focus {
       outline: none; }
-    .tools-top__functional-area__btn-id, .tools-top__functional-area__btn-class, .tools-top__functional-area__btn-angle, .tools-top__functional-area__btn-blur, .tools-top__functional-area__btn-x, .tools-top__functional-area__btn-y, .tools-top__functional-area__btn-width, .tools-top__functional-area__btn-height, .tools-top__functional-area__btn-cx, .tools-top__functional-area__btn-cy, .tools-top__functional-area__btn-r, .tools-top__functional-area__btn-x1, .tools-top__functional-area__btn-y1, .tools-top__functional-area__btn-x2, .tools-top__functional-area__btn-y2 {
+    .tools-top__functional-area__btn-id, .tools-top__functional-area__btn-class, .tools-top__functional-area__btn-angle, .tools-top__functional-area__btn-blur, .tools-top__functional-area__btn-x, .tools-top__functional-area__btn-y, .tools-top__functional-area__btn-width, .tools-top__functional-area__btn-height, .tools-top__functional-area__btn-cx, .tools-top__functional-area__btn-cy, .tools-top__functional-area__btn-r, .tools-top__functional-area__btn-x1, .tools-top__functional-area__btn-y1, .tools-top__functional-area__btn-x2, .tools-top__functional-area__btn-y2, .tools-top__functional-area__btn-size, .tools-top__functional-area__btn-mark, .tools-top__functional-area__btn-rx, .tools-top__functional-area__btn-ry {
       min-width: 40px;
-      max-width: 100px;
+      max-width: 80px;
       max-height: 30px;
       width: 100%;
       height: 100%;
@@ -775,10 +775,14 @@ button,
       border-radius: 5px;
       border: none;
       padding: 0px 5px; }
-    .tools-top__functional-area__btn-id:focus, .tools-top__functional-area__btn-class:focus, .tools-top__functional-area__btn-angle:focus, .tools-top__functional-area__btn-blur:focus, .tools-top__functional-area__btn-x:focus, .tools-top__functional-area__btn-y:focus, .tools-top__functional-area__btn-width:focus, .tools-top__functional-area__btn-height:focus, .tools-top__functional-area__btn-cx:focus, .tools-top__functional-area__btn-cy:focus, .tools-top__functional-area__btn-r:focus, .tools-top__functional-area__btn-x1:focus, .tools-top__functional-area__btn-y1:focus, .tools-top__functional-area__btn-x2:focus, .tools-top__functional-area__btn-y2:focus, .tools-top__functional-area__btn-id:active, .tools-top__functional-area__btn-class:active, .tools-top__functional-area__btn-angle:active, .tools-top__functional-area__btn-blur:active, .tools-top__functional-area__btn-x:active, .tools-top__functional-area__btn-y:active, .tools-top__functional-area__btn-width:active, .tools-top__functional-area__btn-height:active, .tools-top__functional-area__btn-cx:active, .tools-top__functional-area__btn-cy:active, .tools-top__functional-area__btn-r:active, .tools-top__functional-area__btn-x1:active, .tools-top__functional-area__btn-y1:active, .tools-top__functional-area__btn-x2:active, .tools-top__functional-area__btn-y2:active {
+    .tools-top__functional-area__btn-id:focus, .tools-top__functional-area__btn-class:focus, .tools-top__functional-area__btn-angle:focus, .tools-top__functional-area__btn-blur:focus, .tools-top__functional-area__btn-x:focus, .tools-top__functional-area__btn-y:focus, .tools-top__functional-area__btn-width:focus, .tools-top__functional-area__btn-height:focus, .tools-top__functional-area__btn-cx:focus, .tools-top__functional-area__btn-cy:focus, .tools-top__functional-area__btn-r:focus, .tools-top__functional-area__btn-x1:focus, .tools-top__functional-area__btn-y1:focus, .tools-top__functional-area__btn-x2:focus, .tools-top__functional-area__btn-y2:focus, .tools-top__functional-area__btn-size:focus, .tools-top__functional-area__btn-mark:focus, .tools-top__functional-area__btn-rx:focus, .tools-top__functional-area__btn-ry:focus, .tools-top__functional-area__btn-id:active, .tools-top__functional-area__btn-class:active, .tools-top__functional-area__btn-angle:active, .tools-top__functional-area__btn-blur:active, .tools-top__functional-area__btn-x:active, .tools-top__functional-area__btn-y:active, .tools-top__functional-area__btn-width:active, .tools-top__functional-area__btn-height:active, .tools-top__functional-area__btn-cx:active, .tools-top__functional-area__btn-cy:active, .tools-top__functional-area__btn-r:active, .tools-top__functional-area__btn-x1:active, .tools-top__functional-area__btn-y1:active, .tools-top__functional-area__btn-x2:active, .tools-top__functional-area__btn-y2:active, .tools-top__functional-area__btn-size:active, .tools-top__functional-area__btn-mark:active, .tools-top__functional-area__btn-rx:active, .tools-top__functional-area__btn-ry:active {
       outline: none;
       -webkit-box-shadow: inset 0px 0px 5px 0px #9E9996;
               box-shadow: inset 0px 0px 5px 0px #9E9996; }
+    .tools-top__functional-area__select-family, .tools-top__functional-area__select-anchor {
+      max-height: 30px;
+      margin: 5px;
+      border-radius: 5px; }
 
 .visibility {
   display: none; }
@@ -942,8 +946,8 @@ button,
 
 .svg-work-area {
   background-color: white;
-  -webkit-box-shadow: inset 0px 0px 10px 0px #000;
-          box-shadow: inset 0px 0px 10px 0px #000;
+  -webkit-box-shadow: 0px 0px 10px 0px #000;
+          box-shadow: 0px 0px 10px 0px #000;
   margin: auto;
   -ms-flex-negative: 0;
       flex-shrink: 0;

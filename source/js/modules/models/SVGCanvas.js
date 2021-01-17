@@ -76,6 +76,8 @@ export class SVGCanvas {
         case 'text':
           text = canvas.text('input text').move(x, y).stroke('none').fill('black');
           text.addClass('inputText');
+          //text.width = text.length();
+          //text.height = text.size();
           text.font({
             family: 'Helvetica',
             size: 16,
@@ -84,7 +86,7 @@ export class SVGCanvas {
           })
           let textInput = '';
           document.addEventListener('keydown', function (event) {
-            if (text.hasClass('inputText')) {
+            if (text.hasClass('inputText') && event.key.length < 2) {
               textInput += event.key;
               text.plain(`${textInput}`)
             }
@@ -93,9 +95,19 @@ export class SVGCanvas {
         case 'select':
           canvas.each(function (i, children) {
             if (this.inside(e.offsetX, e.offsetY) && !this.hasClass('selectedElem')) {
+              //console.log('************');
+              //console.log(this.length());
               selectElements.push(this);
               this.addClass('selectedElem');
               this.selectize().resize();
+              const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
+              const arrayElementG = [...arrayG[0].childNodes];
+              arrayElementG.shift();
+              for (let i = 0; i < arrayElementG.length; i += 1) {
+                arrayElementG[i].addEventListener('mousemove', () => {
+                  viewApp.updateFunctionalArea(selectElements[0], true, false);
+                });
+              }
               cxLast = this.cx();
               cyLast = this.cy();
             }
@@ -103,31 +115,53 @@ export class SVGCanvas {
 
           viewApp.functionalAreaContainer.classList.remove('visibility');
           if (selectElements.length === 1) {
-            console.log(selectElements[0]);
-            viewApp.updateFunctionalArea(selectElements[0], true);
+            viewApp.updateFunctionalArea(selectElements[0], true, true);
+            const arraySelect = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'SELECT');
+            if (arraySelect.length !== 0) {
+              viewApp.createEventForSelect(arraySelect[0], selectElements[0], 'family');
+            }
+
+            // Delete SVG Element
+            const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
+            deleteBtn.addEventListener('click', () => {
+              for (let i = 0; i < selectElements.length; i += 1) {
+                selectElements[i].resize('stop').selectize(false);
+                selectElements[i].remove();
+                selectElements = [];
+              }
+              viewApp.removeFunctionalAreaDataElements();
+            });
             const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
             for (let i = 0; i < arrayProperties.length; i += 1) {
               arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
                 const objSVG = selectElements[0];
+
                 if (arrayProperties[i].childNodes[1].value.length === 0) {
-                  switch (i) {
-                    case 2:
+                  switch (arrayProperties[i].textContent) {
+                    case 'angle':
                       objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
                       break;
-                    case 3:
+                    case 'blur':
 
+                      break;
+                    case 'size':
+                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].getAttribute('placeholder'));
                       break;
                     default:
                       objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
                       break;
                   }
                 } else {
-                  switch (i) {
-                    case 2:
+                  console.log(arrayProperties[i].childNodes[1].value);
+                  switch (arrayProperties[i].textContent) {
+                    case 'angle':
                       objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
                       break;
-                    case 3:
+                    case 'blur':
 
+                      break;
+                    case 'size':
+                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].value);
                       break;
                     default:
                       objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
@@ -136,11 +170,47 @@ export class SVGCanvas {
                 }
               });
             }
-          } else {
-            viewApp.updateFunctionalArea(selectElements, false);
+          } else if (selectElements.length > 1) {
+            viewApp.updateFunctionalArea(selectElements, false, true);
             const arrayAlignment = viewApp.functionalAreaContainer.childNodes;
             for (let i = 0; i < arrayAlignment.length; i += 1) {
               arrayAlignment[i].addEventListener('click', () => {
+                console.log(i);
+                switch(i) {
+                  case 0:
+                    selectElements.forEach((item) => item.resize('stop').selectize(false).remove());
+                    break;
+                  case 2:
+                    selectElements.forEach((item) => item.x(0));
+                    break;
+                  case 3:
+                    selectElements.forEach((item) => {
+                      if (item.node.tagName === 'text') {
+                        item.x(canvas.width() - item.length());
+                      } else
+                      item.x(canvas.width() - item.width())
+                    });
+                    break;
+                  case 4:
+                    selectElements.forEach((item) => item.y(0));
+                    break;
+                  case 5:
+                    selectElements.forEach((item) => {
+                      if (item.node.tagName === 'text') {
+                        item.y(canvas.height() - 1.11 * item.attr('size'));
+                      } else
+                      item.y(canvas.height() - item.height())
+                    });
+                    break;
+                  case 6:
+                    selectElements.forEach((item) => item.cx(canvas.width() / 2));
+                    break;
+                  case 7:
+                    selectElements.forEach((item) => item.cy(canvas.height() / 2));
+                    break;
+
+                }
+                /*
                 for (let j = 0; j < selectElements.length; j += 1) {
                   const x = selectElements[j].attr().x;
                   const y = selectElements[j].attr().y;
@@ -164,20 +234,12 @@ export class SVGCanvas {
                       selectElements[j].attr('y', (canvas.attr().height - selectElements[j].attr().height) / 2);
                       break;
                   }
-                }
+                }*/
               });
             }
-          }
-          // Delete SVG Element
-          const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
-          deleteBtn.addEventListener('click', () => {
-            const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
-            for (let i = 0; i < selectElements.length; i += 1) {
-              selectElements[i].remove();
-              arrayG[i].remove();
-            }
+          } else {
             viewApp.removeFunctionalAreaDataElements();
-          });
+          }
           break;
       }
     });
@@ -235,7 +297,7 @@ export class SVGCanvas {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
                   this.cy(mouse.getY(e) - y + cyLast);
-                  viewApp.updateFunctionalArea(this, true);
+                  viewApp.updateFunctionalArea(this, true, false);
                 }
               })
             }
