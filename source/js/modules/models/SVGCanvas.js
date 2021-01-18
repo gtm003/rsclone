@@ -29,6 +29,7 @@ export class SVGCanvas {
       }
     };
     let selectElements = [];
+    let setSelectElements = new Set();
     let isDraw = false;
     let pressKey = '';
     let x, y, cxLast, cyLast, line, circle, rect, ellipse, text;
@@ -42,14 +43,18 @@ export class SVGCanvas {
     });
 
     const viewApp = this.app;
-    this.canvas.mousedown(function (e) {
+    this.canvas.mousedown((e) => {
       if (pressKey !== 'Control') {
+        setSelectElements.clear();
+        selectElements = [...setSelectElements];
+        this.removeSelect();
         canvas.each(function (i, children) {
+          /*
           if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('selectedElem');
             this.resize('stop').selectize(false);
             selectElements = [];
-          }
+          }*/
           if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('inputText');
           }
@@ -91,16 +96,24 @@ export class SVGCanvas {
           });
           break;
         case 'select':
+          if (pressKey !== 'Control') {
+            setSelectElements.clear();
+            //this.removeSelect();
+          }
           canvas.each(function (i, children) {
             if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
+              /*
               if (this.hasClass('selectedElem')) {
                 selectElements = [];
                 selectElements.push(this);
               } else {
                 selectElements.push(this);
-              }
+              }*/
               this.addClass('selectedElem');
               this.selectize().resize();
+              setSelectElements.add(this);
+              selectElements = [...setSelectElements];         // Возможно и дальше использовать множество? И массив тогда лишняя переменная.
+
               const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
               const arrayElementG = [...arrayG[0].childNodes];
               arrayElementG.shift();
@@ -268,6 +281,7 @@ export class SVGCanvas {
             break;
           case 'select':
             if (pressKey !== 'Control' && selectElements.length === 1) {
+              //console.log(selectElements);
               canvas.each(function (i, children) {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
@@ -292,6 +306,15 @@ export class SVGCanvas {
   removeLastEvent() {
     this.canvas.mousedown(null);
     this.canvas.mousemove(null);
+  }
+
+  removeSelect() {
+    this.canvas.each(function (i, children) {
+      if (this.hasClass('selectedElem')) {
+        this.removeClass('selectedElem');
+        this.resize('stop').selectize(false);
+      }
+    })
   }
 
   fillElem(color) {
