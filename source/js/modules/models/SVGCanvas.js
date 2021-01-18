@@ -50,6 +50,7 @@ export class SVGCanvas {
         setSelectElements.clear();
         _that.selectElements = [...setSelectElements];
         this.removeSelect();
+        viewApp.removeVisibilityPanel(_that.selectElements);
         canvas.each(function (i, children) {
           /*
           if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {

@@ -77,6 +77,8 @@ export class Controller {
     this.deleteVisibilityContextMenu();
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
+      this.canvas.selectElements = [];
+      this.appView.removeVisibilityPanel(this.canvas.selectElements);
       this.appearContextMenu();
     }
 
@@ -180,7 +182,7 @@ export class Controller {
   uploadSVG(input) {
     const file = input.files[0];
     const fileName = file.name.toLowerCase();
-
+сд
     if(fileName.endsWith(FILE_TYPE)) {
       const reader = new FileReader();
 
@@ -288,6 +290,7 @@ export class Controller {
           this.canvas.selectElements[j].remove();
         }
         this.canvas.selectElements = [];
+        this.appView.removeVisibilityPanel(this.canvas.selectElements);
       });
     }
   }
