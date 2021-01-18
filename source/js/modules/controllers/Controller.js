@@ -26,6 +26,9 @@ export class Controller {
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
     this.canvas.init();
+    this.keyUpProperties();
+    this.clickAlignPanel();
+    this.clickDelete();
   }
 
   getActivToolsLeftBtn() {
@@ -188,4 +191,102 @@ export class Controller {
   onKeyDownProperties() {
     console.log(this.appView);
   }
+
+  keyUpProperties() {
+    const childrenFunctionalAreaContainer = this.appView.functionalAreaContainer.childNodes;
+    for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
+      const label = [...childrenFunctionalAreaContainer[i].childNodes].filter((item) => item.tagName === 'LABEL');
+      for (let j = 0; j < label.length; j += 1) {
+        const input = label[j].childNodes[1];
+        input.addEventListener('keyup', () => {
+          const objSVG = this.canvas.selectElements[0];
+          if (input.value.length === 0) {
+            switch (label[j].childNodes[0].textContent) {
+              case 'angle':
+                objSVG.rotate(0);
+                break;
+              case 'blur':
+                break;
+              case 'size':
+                objSVG.attr('font-size', input.getAttribute('placeholder'));
+                break;
+              default:
+                objSVG.attr(`${label[j].textContent}`, input.getAttribute('placeholder'));
+                break;
+            }
+          } else {
+            switch (label[j].childNodes[0].textContent) {
+              case 'angle':
+                objSVG.rotate(`${input.value}`);
+                break;
+              case 'blur':
+                break;
+              case 'size':
+                objSVG.attr('font-size', input.value);
+                break;
+              default:
+                objSVG.attr(`${label[j].textContent}`, input.value);
+                break;
+            }
+          }
+        });
+      }
+    }
+  }
+
+  clickAlignPanel() {
+    const alignPanelBtn = this.appView.functionalAreaContainer.childNodes[this.appView.functionalAreaContainer.childNodes.length - 1].childNodes;
+    for (let i = 0; i < alignPanelBtn.length; i += 1) {
+      alignPanelBtn[i].addEventListener('click', () => {
+        switch (i) {
+          case 2:
+            this.canvas.selectElements.forEach((item) => item.x(0));
+            break;
+          case 3:
+            this.canvas.selectElements.forEach((item) => {
+              if (item.type === 'text') {
+                item.x(this.canvas.canvas.width() - item.length());
+              } else {
+                item.x(this.canvas.canvas.width() - item.width());
+              }
+            });
+            break;
+          case 4:
+            this.canvas.selectElements.forEach((item) => item.y(0));
+            break;
+          case 5:
+            this.canvas.selectElements.forEach((item) => {
+              if (item.type === 'text') {
+                item.y(this.canvas.canvas.height() - 1.11 * item.attr('size'));
+              } else {
+                item.y(this.canvas.canvas.height() - item.height());
+              }
+            });
+            break;
+          case 6:
+            this.canvas.selectElements.forEach((item) => item.cx(this.canvas.canvas.width() / 2));
+            break;
+          case 7:
+            this.canvas.selectElements.forEach((item) => item.cy(this.canvas.canvas.height() / 2));
+            break;
+        }
+      });
+    }
+  }
+
+  clickDelete() {
+    const childrenFunctionalAreaContainer = this.appView.functionalAreaContainer.childNodes;
+    for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
+      const deleteBtn = [...childrenFunctionalAreaContainer[i].childNodes].filter((item) => item.tagName === 'BUTTON')[0];
+      deleteBtn.addEventListener('click', () => {
+        for (let j = 0; j < this.canvas.selectElements.length; j += 1) {
+          this.canvas.selectElements[j].resize('stop').selectize(false);
+          this.canvas.selectElements[j].remove();
+        }
+        this.canvas.selectElements = [];
+      });
+    }
+  }
+
+
 }
