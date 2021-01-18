@@ -30,7 +30,8 @@ export class SVGCanvas {
         return e.offsetY;
       }
     };
-    // let selectElements = [];
+    //let selectElements = [];
+    let setSelectElements = new Set();
     let isDraw = false;
     let pressKey = '';
     let x, y, cxLast, cyLast, line, circle, rect, ellipse, text;
@@ -44,14 +45,18 @@ export class SVGCanvas {
     });
 
     const viewApp = this.app;
-    this.canvas.mousedown(function (e) {
+    this.canvas.mousedown((e) => {
       if (pressKey !== 'Control') {
+        setSelectElements.clear();
+        _that.selectElements = [...setSelectElements];
+        this.removeSelect();
         canvas.each(function (i, children) {
+          /*
           if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('selectedElem');
             this.resize('stop').selectize(false);
-            _that.selectElements = [];
-          }
+            selectElements = [];
+          }*/
           if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('inputText');
           }
@@ -92,17 +97,15 @@ export class SVGCanvas {
           });
           break;
         case 'select':
+          if (pressKey !== 'Control') {
+            setSelectElements.clear();
+            //this.removeSelect();
+          }
           canvas.each(function (i, children) {
             if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-              if (this.hasClass('selectedElem')) {
-                _that.selectElements = [];
-                _that.selectElements.push(this);
-              } else {
-                _that.selectElements.push(this);
-              }
-              // if (!this.hasClass('selectedElem')) {
-              //   _that.selectElements.push(this);
-              // }
+
+              setSelectElements.add(this);
+              _that.selectElements = [...setSelectElements];         // Возможно и дальше использовать множество? И массив тогда лишняя переменная.
               this.addClass('selectedElem');
               this.selectize().resize();
               _that.onMouseMoveG();
@@ -187,6 +190,15 @@ export class SVGCanvas {
   removeLastEvent() {
     this.canvas.mousedown(null);
     this.canvas.mousemove(null);
+  }
+
+  removeSelect() {
+    this.canvas.each(function (i, children) {
+      if (this.hasClass('selectedElem')) {
+        this.removeClass('selectedElem');
+        this.resize('stop').selectize(false);
+      }
+    })
   }
 
   fillElem(color) {
