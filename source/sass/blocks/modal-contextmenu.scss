@@ -1,0 +1,21 @@
+.modal-contextmenu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  margin: 5px;
+
+  &__btn-delete,
+  &__btn-bring-to-front,
+  &__btn-send-to-back {
+    border: none;
+    padding: 10px;
+    outline: none;
+    box-shadow: 1px 1px 5px -1px rgba(0,0,0,1) inset;
+    background-color: #fff;
+    cursor: pointer;
+  }
+}
+
+.visibility-modal {
+  display: none;
+}
