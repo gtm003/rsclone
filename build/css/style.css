@@ -751,6 +751,12 @@ button,
     display: flex;
     min-height: 40px;
     background-color: gray; }
+    .tools-top__functional-area__rect, .tools-top__functional-area__circle, .tools-top__functional-area__line, .tools-top__functional-area__text, .tools-top__functional-area__ellipse, .tools-top__functional-area__align {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      min-height: 40px;
+      background-color: gray; }
     .tools-top__functional-area__btn-delete, .tools-top__functional-area__btn-convert, .tools-top__functional-area__btn-left, .tools-top__functional-area__btn-right, .tools-top__functional-area__btn-top, .tools-top__functional-area__btn-bottom, .tools-top__functional-area__btn-center, .tools-top__functional-area__btn-middle {
       display: -webkit-box;
       display: -ms-flexbox;

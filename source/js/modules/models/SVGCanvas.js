@@ -7,6 +7,7 @@ export class SVGCanvas {
     this.rootElement = rootElement;
     this.canvas = null;
     this.app = app;
+    this.selectElements = [];
   }
 
   init() {
@@ -20,6 +21,7 @@ export class SVGCanvas {
 
   drawElem(type) {
     const canvas = this.canvas;
+    const _that = this;
     let mouse = {
       getX: function (e) {
         return e.offsetX;
@@ -28,7 +30,7 @@ export class SVGCanvas {
         return e.offsetY;
       }
     };
-    let selectElements = [];
+    // let selectElements = [];
     let isDraw = false;
     let pressKey = '';
     let x, y, cxLast, cyLast, line, circle, rect, ellipse, text;
@@ -48,7 +50,7 @@ export class SVGCanvas {
           if (this.hasClass('selectedElem') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('selectedElem');
             this.resize('stop').selectize(false);
-            selectElements = [];
+            _that.selectElements = [];
           }
           if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('inputText');
@@ -59,7 +61,6 @@ export class SVGCanvas {
       isDraw = true;
       x = mouse.getX(e);
       y = mouse.getY(e);
-      viewApp.removeFunctionalAreaDataElements();
       switch (type) {
         case 'line':
           line = canvas.line(x, y, x, y).stroke('black');
@@ -94,127 +95,23 @@ export class SVGCanvas {
           canvas.each(function (i, children) {
             if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
               if (this.hasClass('selectedElem')) {
-                selectElements = [];
-                selectElements.push(this);
+                _that.selectElements = [];
+                _that.selectElements.push(this);
               } else {
-                selectElements.push(this);
+                _that.selectElements.push(this);
               }
+              // if (!this.hasClass('selectedElem')) {
+              //   _that.selectElements.push(this);
+              // }
               this.addClass('selectedElem');
               this.selectize().resize();
-              const arrayG = [...document.querySelector('#SvgjsSvg1001').childNodes].filter((value) => value.tagName === 'g');
-              const arrayElementG = [...arrayG[0].childNodes];
-              arrayElementG.shift();
-              for (let i = 0; i < arrayElementG.length; i += 1) {
-                arrayElementG[i].addEventListener('mousemove', () => {
-                  if (selectElements.length === 1) {
-                    viewApp.updateFunctionalArea(selectElements[0], true, false);
-                  }
-                });
-              }
+              _that.onMouseMoveG();
               cxLast = this.cx();
               cyLast = this.cy();
             }
           });
-
-          viewApp.functionalAreaContainer.classList.remove('visibility');
-          if (selectElements.length === 1) {
-            viewApp.updateFunctionalArea(selectElements[0], true, true);
-            const arraySelect = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'SELECT');
-            if (arraySelect.length !== 0) {
-              viewApp.createEventForSelect(arraySelect[0], selectElements[0], 'family');
-            }
-
-            const arrayProperties = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-            for (let i = 0; i < arrayProperties.length; i += 1) {
-              arrayProperties[i].childNodes[1].addEventListener('keyup', () => {
-                const objSVG = selectElements[0];
-                if (arrayProperties[i].childNodes[1].value.length === 0) {
-                  switch (arrayProperties[i].textContent) {
-                    case 'angle':
-                      objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
-                      break;
-                    case 'blur':
-
-                      break;
-                    case 'size':
-                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].getAttribute('placeholder'));
-                      break;
-                    default:
-                      objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].getAttribute('placeholder'));
-                      break;
-                  }
-                } else {
-                  switch (arrayProperties[i].textContent) {
-                    case 'angle':
-                      objSVG.rotate(`${arrayProperties[i].childNodes[1].value}`);
-                      break;
-                    case 'blur':
-
-                      break;
-                    case 'size':
-                      objSVG.attr('font-size', arrayProperties[i].childNodes[1].value);
-                      break;
-                    default:
-                      objSVG.attr(`${arrayProperties[i].textContent}`, arrayProperties[i].childNodes[1].value);
-                      break;
-                  }
-                }
-              });
-            }
-          } else if (selectElements.length > 1) {
-            viewApp.updateFunctionalArea(selectElements, false, true);
-            const arrayAlignment = viewApp.functionalAreaContainer.childNodes;
-            for (let i = 0; i < arrayAlignment.length; i += 1) {
-              arrayAlignment[i].addEventListener('click', () => {
-                switch (i) {
-                  case 2:
-                    selectElements.forEach((item) => item.x(0));
-                    break;
-                  case 3:
-                    selectElements.forEach((item) => {
-                      if (item.type === 'text') {
-                        item.x(canvas.width() - item.length());
-                      } else {
-                        item.x(canvas.width() - item.width());
-                      }
-                    });
-                    break;
-                  case 4:
-                    selectElements.forEach((item) => item.y(0));
-                    break;
-                  case 5:
-                    selectElements.forEach((item) => {
-                      if (item.type === 'text') {
-                        item.y(canvas.height() - 1.11 * item.attr('size'));
-                      } else {
-                        item.y(canvas.height() - item.height());
-                      }
-                    });
-                    break;
-                  case 6:
-                    selectElements.forEach((item) => item.cx(canvas.width() / 2));
-                    break;
-                  case 7:
-                    selectElements.forEach((item) => item.cy(canvas.height() / 2));
-                    break;
-                }
-              });
-            }
-          } else {
-            viewApp.removeFunctionalAreaDataElements();
-          }
-          // Delete SVG Element
-          const deleteBtn = [...viewApp.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'BUTTON')[0];
-          if (typeof deleteBtn !== 'undefined') {
-            deleteBtn.addEventListener('click', () => {
-              for (let i = 0; i < selectElements.length; i += 1) {
-                selectElements[i].resize('stop').selectize(false);
-                selectElements[i].remove();
-              }
-              selectElements = [];
-              viewApp.removeFunctionalAreaDataElements();
-            });
-          }
+          viewApp.removeVisibilityPanel(_that.selectElements);
+          viewApp.updateFunctionalArea(_that.selectElements);
           break;
       }
     });
@@ -267,14 +164,12 @@ export class SVGCanvas {
             })
             break;
           case 'select':
-            if (pressKey !== 'Control' && selectElements.length === 1) {
+            if (pressKey !== 'Control' && _that.selectElements.length === 1) {
               canvas.each(function (i, children) {
                 if (this.hasClass('selectedElem')) {
                   this.cx(mouse.getX(e) - x + cxLast);
                   this.cy(mouse.getY(e) - y + cyLast);
-                  if (selectElements.length === 1) {
-                    viewApp.updateFunctionalArea(this, true, false);
-                  }
+                  viewApp.updateFunctionalArea(_that.selectElements);
                 }
               });
             }
@@ -302,5 +197,18 @@ export class SVGCanvas {
       })
       //canvas.children().filter((item) => item.inside(e.offsetX, e.offsetY)).fill(color);
     })
+  }
+
+  onMouseMoveG() {
+    const arrayG = [...[...this.app.sheet.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
+    const arrayElementG = [...arrayG[0].childNodes];
+    arrayElementG.shift();
+    for (let i = 0; i < arrayElementG.length; i += 1) {
+      arrayElementG[i].addEventListener('mousemove', () => {
+        if (this.selectElements.length === 1) {
+          this.app.updateFunctionalArea(this.selectElements);
+        }
+      });
+    }
   }
 }

@@ -45,6 +45,17 @@
 
         background-color: gray;
 
+        &__rect,
+        &__circle,
+        &__line,
+        &__text,
+        &__ellipse,
+        &__align {
+          display: flex;
+          min-height: 40px;
+          background-color: gray;
+        }
+
         &__btn-delete,
         &__btn-convert,
         &__btn-left,
