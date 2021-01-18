@@ -5,6 +5,7 @@ import {ColorPicker} from './colorPicker';
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
 const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
 
 export class appView {
   constructor(rootElement) {
@@ -156,6 +157,21 @@ export class appView {
     saveModal.append(this.errorMessage, this.inputFileName, saveButton, closeButton);
 
     return saveModal;
+  }
+
+  createContextMenuModal() {
+    const contextMenuModal = document.createElement('div');
+    contextMenuModal.classList.add('modal-contextmenu', 'visibility-modal');
+
+    CONTEXTMENU_NAMES.forEach((item) => {
+      const button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.classList.add(`modal-contextmenu__btn-${item.toLowerCase().split(' ').join('-')}`);
+      button.textContent = item;
+      contextMenuModal.append(button);
+    });
+
+    return contextMenuModal;
   }
 
   createMenuContainer() {
@@ -457,6 +473,7 @@ export class appView {
     this.svgCodeModalWindow = this.createSvgCodeModal();
     this.settingsModalWindow = this.createSettingsModal();
     this.saveModalWindow = this.createSaveModal();
+    this.contextMenuWindow = this.createContextMenuModal();
     this.toolsTopContainer = this.createToolsTop();
     this.toolsBottomContainer = this.createToolsBottom();
     this.toolsLeftContainer = this.createToolsLeft();
@@ -472,7 +489,7 @@ export class appView {
 
     this.toolsRightContainer.className = 'tools-right';
 
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow, this.contextMenuWindow);
   }
 
   renderFooter() {

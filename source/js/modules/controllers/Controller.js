@@ -29,6 +29,8 @@ export class Controller {
     this.keyUpProperties();
     this.clickAlignPanel();
     this.clickDelete();
+    this.appearContextMenu();
+    this.clickContextMenuElements();
   }
 
   getActivToolsLeftBtn() {
@@ -72,6 +74,7 @@ export class Controller {
   }
 
   onMenuButtonsClick({target}) {
+    this.deleteVisibilityContextMenu();
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
     }
@@ -288,5 +291,38 @@ export class Controller {
     }
   }
 
+  appearContextMenu() {
+    const svgArea = this.appView.sheet.childNodes[0];
+    svgArea.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      if (this.canvas.selectElements.length > 0) {
+        this.appView.contextMenuWindow.classList.remove('visibility-modal');
+        this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
+        this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
+      } else {
+        this.appView.contextMenuWindow.classList.add('visibility-modal');
+      }
+    });
 
+    svgArea.addEventListener('mousedown', () => {
+      this.deleteVisibilityContextMenu();
+    });
+  }
+
+  deleteVisibilityContextMenu() {
+    this.appView.contextMenuWindow.classList.add('visibility-modal');
+  }
+
+  clickContextMenuElements() {
+    const deleteBtn = this.appView.contextMenuWindow.childNodes[0];
+
+    deleteBtn.addEventListener('click', () => {
+      for (let i = 0; i < this.canvas.selectElements.length; i += 1) {
+        this.canvas.selectElements[i].resize('stop').selectize(false);
+        this.canvas.selectElements[i].remove();
+      }
+      this.canvas.selectElements = [];
+      this.deleteVisibilityContextMenu();
+    });
+  }
 }
