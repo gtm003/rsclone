@@ -13,10 +13,46 @@
         height: 44px;
         border-radius: 5px;
         margin: 1px;
+        position: relative;
     }
-    
+
     button:hover {
         cursor: pointer;
         background: rgb(220, 200, 180);
+
+        .tooltip {
+          display: flex;
+          opacity: 1;
+        }
+    }
+
+    .tooltip {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #05F2AE;
+      height: 25px;
+      border-radius: 5px;
+      padding: 5px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      display: none;
+      opacity: 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -10px;
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 10px solid #05F2AE;
+        border-bottom: 10px solid transparent;
+      }
+    }
+
+    .tooltip-right {
+      left: 70px;
     }
 }

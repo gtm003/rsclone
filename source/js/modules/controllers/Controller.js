@@ -77,6 +77,7 @@ export class Controller {
     this.deleteVisibilityContextMenu();
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
+      this.appearContextMenu();
     }
 
     if (target.dataset['menu'] === 'Save SVG') {
