@@ -3,11 +3,11 @@ import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './colorPicker';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
-const toolsLeftBtnName = ['select', 'rect', 'circle', 'line', 'polyline', 'text', 'path', 'ellipse'];
+const toolsLeftBtnName = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'];
 const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
 const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
 
-export class appView {
+export class AppView {
   constructor(rootElement) {
     this.rootElement = rootElement;
     this.headerElement = null;
