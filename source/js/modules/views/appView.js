@@ -1,11 +1,15 @@
 // import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './colorPicker';
+import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN} from '../../utils/btn-names';
 
-const toolsBottomBtnName = ['red', 'green', 'blue'];
-const toolsLeftBtnName = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'];
-// const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
-// const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
+// const toolsBottomBtnName = ['red', 'green', 'blue'];
+// const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+// const CONTEXTMENU_NAMES_EN = ['Delete', 'Bring to Front', 'Send to Back'];
+// const TOOLS_LEFT_NAMES_EN = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'];
+// const MENU_BUTTONS_NAMES_RUS = ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'];
+// const CONTEXTMENU_NAMES_RUS = ['Удалить', 'На передний план', 'На задний план'];
+// const TOOLS_LEFT_NAMES_RUS = ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'];
 
 export class AppView {
   constructor(rootElement) {
@@ -40,14 +44,14 @@ export class AppView {
 
     this.palleteCanvas = null;
 
-    this.objNames = {
-      menuButtonsNamesEn: ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'],
-      contextMenuNamesEn: ['Delete', 'Bring to Front', 'Send to Back'],
-      toolsLeftBtnNameEn: ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'],
-      menuButtonsNamesRus: ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'],
-      contextMenuNamesRus: ['Удалить', 'На передний план', 'На задний план'],
-      toolsLeftBtnNameRus: ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'],
-    };
+    // this.objNames = {
+    //   menuButtonsNamesEn: ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'],
+    //   contextMenuNamesEn: ['Delete', 'Bring to Front', 'Send to Back'],
+    //   toolsLeftBtnNameEn: ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'],
+    //   menuButtonsNamesRus: ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'],
+    //   contextMenuNamesRus: ['Удалить', 'На передний план', 'На задний план'],
+    //   toolsLeftBtnNameRus: ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'],
+    // };
   }
 
   init() {
@@ -174,7 +178,7 @@ export class AppView {
     const contextMenuModal = document.createElement('div');
     contextMenuModal.classList.add('modal-contextmenu', 'visibility-modal');
 
-    this.objNames.contextMenuNamesEn.forEach((item) => {
+    CONTEXTMENU_NAMES_EN.forEach((item) => {
       const button = document.createElement('button');
       button.setAttribute('type', 'button');
       button.classList.add(`modal-contextmenu__btn-${item.toLowerCase().split(' ').join('-')}`);
@@ -189,7 +193,7 @@ export class AppView {
     const menuContainer = document.createElement('div');
     menuContainer.classList.add('tools-top__menu-area');
 
-    this.objNames.menuButtonsNamesEn.forEach((item) => {
+    MENU_BUTTONS_NAMES_EN.forEach((item) => {
       if (item !== 'Import SVG') {
         const button = document.createElement('button');
         button.setAttribute('type', 'button');
@@ -472,7 +476,7 @@ export class AppView {
     const toolsLeftContainer = document.createElement('div');
     toolsLeftContainer.className = 'tools-left';
 
-    this.objNames.toolsLeftBtnNameEn.forEach((item) => {
+    TOOLS_LEFT_NAMES_EN.forEach((item) => {
       const tooltip = document.createElement('span');
       tooltip.classList.add('tooltip', 'tooltip-right');
       tooltip.textContent = item;
