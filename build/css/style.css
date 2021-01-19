@@ -708,7 +708,6 @@ button,
     top: 0;
     left: 0;
     background: #05F2AE;
-    height: 25px;
     border-radius: 5px;
     padding: 5px;
     -webkit-box-align: center;
@@ -835,6 +834,46 @@ button,
       max-height: 30px;
       margin: 5px;
       border-radius: 5px; }
+  .tools-top__switcher-area__switcher-lang {
+    display: none; }
+  .tools-top__switcher-area [for="switcher-lang"] {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    width: 100px;
+    height: 10px;
+    padding: 15px;
+    border-radius: 50px;
+    color: #31b3ff;
+    line-height: 10px;
+    background: #474747;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 5px #3c3c3c, inset 0 6px 6px rgba(0, 0, 0, 0.5), inset 0 -6px 1px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 5px #3c3c3c, inset 0 6px 6px rgba(0, 0, 0, 0.5), inset 0 -6px 1px rgba(255, 255, 255, 0.2);
+    cursor: pointer; }
+  .tools-top__switcher-area [for="switcher-lang"]::before {
+    content: "OFF";
+    position: absolute;
+    right: 15px;
+    color: #000; }
+  .tools-top__switcher-area [for="switcher-lang"]::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    display: block;
+    width: 45px;
+    height: 20px;
+    border-radius: 50px;
+    background: #ccc -webkit-gradient(linear, left top, left bottom, from(#fcfff4), color-stop(40%, #dfe5d7), to(#b3bead));
+    background: #ccc linear-gradient(#fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+    -webkit-transition: .5s;
+    transition: .5s; }
+  .tools-top__switcher-area__switcher-lang:checked ~ [for="switcher-lang"]::after {
+    left: 50px; }
 
 .visibility {
   display: none; }

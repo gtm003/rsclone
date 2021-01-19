@@ -4,8 +4,8 @@ import {ColorPicker} from './colorPicker';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
 const toolsLeftBtnName = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'];
-const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
-const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
+// const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+// const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
 
 export class AppView {
   constructor(rootElement) {
@@ -23,11 +23,13 @@ export class AppView {
     this.workAreaContainer = null;
     this.menuContainer = null;
     this.functionalAreaContainer = null;
+    this.switcherContainer = null;
     this.saveModalWindow = null;
     this.inputFileName = null;
     this.sheet = null;
     this.settingsModalWindow = null;
     this.svgCodeModalWindow = null;
+    this.contextMenuWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
@@ -37,6 +39,15 @@ export class AppView {
     // this.countAnchor = 3;
 
     this.palleteCanvas = null;
+
+    this.objNames = {
+      menuButtonsNamesEn: ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'],
+      contextMenuNamesEn: ['Delete', 'Bring to Front', 'Send to Back'],
+      toolsLeftBtnNameEn: ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'],
+      menuButtonsNamesRus: ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'],
+      contextMenuNamesRus: ['Удалить', 'На передний план', 'На задний план'],
+      toolsLeftBtnNameRus: ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'],
+    };
   }
 
   init() {
@@ -163,7 +174,7 @@ export class AppView {
     const contextMenuModal = document.createElement('div');
     contextMenuModal.classList.add('modal-contextmenu', 'visibility-modal');
 
-    CONTEXTMENU_NAMES.forEach((item) => {
+    this.objNames.contextMenuNamesEn.forEach((item) => {
       const button = document.createElement('button');
       button.setAttribute('type', 'button');
       button.classList.add(`modal-contextmenu__btn-${item.toLowerCase().split(' ').join('-')}`);
@@ -178,7 +189,7 @@ export class AppView {
     const menuContainer = document.createElement('div');
     menuContainer.classList.add('tools-top__menu-area');
 
-    MENU_BUTTONS_NAMES.forEach((item) => {
+    this.objNames.menuButtonsNamesEn.forEach((item) => {
       if (item !== 'Import SVG') {
         const button = document.createElement('button');
         button.setAttribute('type', 'button');
@@ -400,12 +411,29 @@ export class AppView {
     return functionalArea;
   }
 
+  createSwitcherContainer() {
+    const switcherContainer = document.createElement('div');
+    switcherContainer.classList.add('tools-top__switcher-area');
+
+    const checkSwitcher = document.createElement('input');
+    const labelForSwitcher = document.createElement('label');
+    checkSwitcher.classList.add('tools-top__switcher-area__switcher-lang');
+    checkSwitcher.setAttribute('type', 'checkbox');
+    checkSwitcher.setAttribute('id', 'switcher-lang');
+    labelForSwitcher.setAttribute('for', 'switcher-lang');
+    labelForSwitcher.textContent = 'RU';
+    switcherContainer.append(checkSwitcher, labelForSwitcher);
+
+    return switcherContainer;
+  }
+
   createToolsTop() {
     const toolsTop = document.createElement('div');
     toolsTop.classList.add('tools-top');
     this.menuContainer = this.createMenuContainer();
     this.functionalAreaContainer = this.createFunctionalArea();
-    toolsTop.append(this.menuContainer, this.functionalAreaContainer);
+    this.switcherContainer = this.createSwitcherContainer();
+    toolsTop.append(this.menuContainer, this.functionalAreaContainer, this.switcherContainer);
 
     return toolsTop;
   }
@@ -444,7 +472,7 @@ export class AppView {
     const toolsLeftContainer = document.createElement('div');
     toolsLeftContainer.className = 'tools-left';
 
-    toolsLeftBtnName.forEach((item) => {
+    this.objNames.toolsLeftBtnNameEn.forEach((item) => {
       const tooltip = document.createElement('span');
       tooltip.classList.add('tooltip', 'tooltip-right');
       tooltip.textContent = item;

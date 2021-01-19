@@ -22,24 +22,24 @@ export class Model {
     this.y = null;
 
     this.onSVGAreaMouseDown = {
-      select : (e) => this.selectElem(e),
-      rect : (e) => this.createRect(e),
-      ellipse : (e) => this.createEllipse(e),
-      line : (e) => this.createLine(e),
-      text : (e) => this.createText(e),
-      polyline : (e) => this.createPolyline(e),
-      path : (e) => this.createPath(e),
-      color : (e) => this.colorElem(e),
+      select: (e) => this.selectElem(e),
+      rect: (e) => this.createRect(e),
+      ellipse: (e) => this.createEllipse(e),
+      line: (e) => this.createLine(e),
+      text: (e) => this.createText(e),
+      polyline: (e) => this.createPolyline(e),
+      path: (e) => this.createPath(e),
+      color: (e) => this.colorElem(e),
     };
 
     this.onSVGAreaMouseMove = {
-      select : (e) => this.moveElem(e),
-      rect : (e) => this.drawRect(e),
-      ellipse : (e) => this.drawEllipse(e),
-      line : (e) => this.drawLine(e),
-      text : (e) => this.drawText(e),
-      polyline : (e) => this.drawPolyline(e),
-      path : (e) => this.drawPath(e),
+      select: (e) => this.moveElem(e),
+      rect: (e) => this.drawRect(e),
+      ellipse: (e) => this.drawEllipse(e),
+      line: (e) => this.drawLine(e),
+      text: (e) => this.drawText(e),
+      polyline: (e) => this.drawPolyline(e),
+      path: (e) => this.drawPath(e),
       //color : (e) => this.colorElem(e),
     };
   }
@@ -85,13 +85,13 @@ export class Model {
       family: 'Helvetica',
       size: 16,
       anchor: 'left',
-      leading: '0em'
-    })
+      leading: '0em',
+    });
     let textInput = '';
     document.addEventListener('keydown', (event) => {
       if (this.text.hasClass('inputText') && event.key.length < 2) {
         textInput += event.key;
-        this.text.plain(`${textInput}`)
+        this.text.plain(`${textInput}`);
       }
     });
   }
@@ -109,7 +109,7 @@ export class Model {
     }
   }
   drawRect(e) {
-    let xNew, yNew;
+    let xNew; let yNew;
     if (e.offsetX < this.x) {
       xNew = e.offsetX;
     } else if (e.offsetX >= this.x) {
@@ -136,14 +136,14 @@ export class Model {
   drawLine(e) {
     this.line.attr({
       x2: e.offsetX,
-      y2: e.offsetY
+      y2: e.offsetY,
     });
   }
   drawText(e) {
     this.text.font({
       family: 'Helvetica',
       size: Math.abs(e.offsetY - this.y),
-    })
+    });
   }
 
   onSVGAreaEvent() {
@@ -152,6 +152,7 @@ export class Model {
     this.svgArea.mousedown((e) => {
       if (!e.ctrlKey) {
         this.removeSelect();
+        this.app.removeVisibilityPanel(this.selectElements);
         this.svgArea.each(function (i, children) {
           if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('inputText');
@@ -194,8 +195,8 @@ export class Model {
     this.svgArea.mousedown((e) => {
       this.svgArea.each(function (i, children) {
         if (this.inside(e.offsetX, e.offsetY)) this.fill(color);
-      })
-    })
+      });
+    });
   }
 
   onMouseMoveG() {

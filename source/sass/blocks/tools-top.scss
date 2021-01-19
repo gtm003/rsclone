@@ -191,6 +191,54 @@
         }
     }
 
+    &__switcher-area {
+
+      &__switcher-lang {
+        display: none;
+      }
+
+      [for="switcher-lang"] {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100px;
+        height: 10px;
+        padding: 15px;
+        border-radius: 50px;
+        color: #31b3ff;
+        line-height: 10px;
+        background: rgb(71, 71, 71);
+        box-shadow:
+          0 1px 0 rgba(255,255,255,.2),
+          inset 0 0 0 5px rgb(60, 60, 60),
+          inset 0 6px 6px rgba(0,0,0,.5),
+          inset 0 -6px 1px rgba(255,255,255,.2);
+        cursor: pointer;
+      }
+
+      [for="switcher-lang"]::before {
+        content: "OFF";
+        position: absolute;
+        right: 15px;
+        color: #000;
+      }
+
+      [for="switcher-lang"]::after {
+        content: "";
+        position: absolute;
+        left: 5px; top: 5px;
+        display: block;
+        width: 45px;
+        height: 20px;
+        border-radius: 50px;
+        background: #ccc linear-gradient(#fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+        transition: .5s;
+      }
+
+      &__switcher-lang:checked ~ [for="switcher-lang"]::after {
+        left: 50px;
+      }
+    }
 }
 
 .visibility {
