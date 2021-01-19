@@ -6,9 +6,8 @@ export class Controller {
   constructor(appView, placeForSVGCanvas) {
     this.fill = 'none';
     this.stroke = 'black';
-    this.activToolsLeftBtn = 'select';
-    this.select = null;
-    this.mouse = null;
+    //this.select = null;
+    //this.mouse = null;
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
@@ -21,6 +20,8 @@ export class Controller {
   init() {
     this.model.init();
     this.onToolsLeftClick();
+    this.changeColor();
+    //[...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][0].addEventListener('click', this.changeColor);
     this.getFill();
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
@@ -42,10 +43,29 @@ export class Controller {
           this.model.type = target.id;
           this.model.removeLastEvent();
           this.model.onSVGAreaEvent();
+          if (target.id === 'fill' || target.id === 'stroke') {
+            this.appView.palleteCanvas.openColorPicker();
+          }
           return;
         }
         target = target.parentNode;
       }
+    });
+  }
+
+  changeColor() {
+    [...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][0].addEventListener('click', () => {
+      if (this.model.type === 'fill') {
+        this.model.fillColor = this.appView.palleteCanvas.color;
+        [...this.appView.toolsLeftContainer.childNodes][7].style.background = this.appView.palleteCanvas.color;
+      }
+      else if (this.model.type === 'stroke') {
+        this.model.strokeColor = this.appView.palleteCanvas.color;
+      }
+      this.appView.palleteCanvas.closeColorPicker();
+    });
+    [...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][1].addEventListener('click', () => {
+      this.appView.palleteCanvas.closeColorPicker();
     });
   }
 
@@ -76,8 +96,8 @@ export class Controller {
     this.deleteVisibilityContextMenu();
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
-      this.canvas.selectElements = [];
-      this.appView.removeVisibilityPanel(this.canvas.selectElements);
+      this.model.selectElements = [];
+      this.appView.removeVisibilityPanel(this.model.selectElements);
       this.appearContextMenu();
     }
 
@@ -326,7 +346,7 @@ export class Controller {
       }
       this.model.selectElements = [];
       this.deleteVisibilityContextMenu();
-      this.appView.removeVisibilityPanel(this.canvas.selectElements);
+      this.appView.removeVisibilityPanel(this.model.selectElements);
     });
   }
 }

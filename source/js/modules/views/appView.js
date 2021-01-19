@@ -3,7 +3,7 @@ import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './colorPicker';
 
 const toolsBottomBtnName = ['red', 'green', 'blue'];
-const toolsLeftBtnName = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'];
+const toolsLeftBtnName = ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'fill', 'stroke'];
 const MENU_BUTTONS_NAMES = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
 const CONTEXTMENU_NAMES = ['Delete', 'Bring to Front', 'Send to Back'];
 
@@ -47,11 +47,11 @@ export class AppView {
     this.rootElement.appendChild(wrapper);
     wrapper.append(this.headerElement, this.contentElement, this.footerElement);
 
-    const controller = new Controller(this, this.sheet);
-    controller.init();
-
     this.palleteCanvas = new ColorPicker(this.workAreaContainer);
     this.palleteCanvas.init();
+
+    const controller = new Controller(this, this.sheet);
+    controller.init();
   }
 
   getCurrentRotation(item) {
