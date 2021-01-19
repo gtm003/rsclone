@@ -25,26 +25,31 @@ export class Model {
     this.y = null;
 
     this.onSVGAreaMouseDown = {
-      select : (e) => this.selectElem(e),
-      rect : (e) => this.createRect(e),
-      ellipse : (e) => this.createEllipse(e),
-      line : (e) => this.createLine(e),
-      text : (e) => this.createText(e),
-      polyline : (e) => this.createPolyline(e),
-      path : (e) => this.createPath(e),
-      color : (e) => this.colorElem(e),
+      select: (e) => this.selectElem(e),
+      rect: (e) => this.createRect(e),
+      ellipse: (e) => this.createEllipse(e),
+      line: (e) => this.createLine(e),
+      text: (e) => this.createText(e),
+      polyline: (e) => this.createPolyline(e),
+      path: (e) => this.createPath(e),
+      color: (e) => this.colorElem(e),
     };
 
     this.onSVGAreaMouseMove = {
-      select : (e) => this.moveElem(e),
-      rect : (e) => this.drawRect(e),
-      ellipse : (e) => this.drawEllipse(e),
-      line : (e) => this.drawLine(e),
-      text : (e) => this.drawText(e),
-      polyline : (e) => this.drawPolyline(e),
-      path : (e) => this.drawPath(e),
+      select: (e) => this.moveElem(e),
+      rect: (e) => this.drawRect(e),
+      ellipse: (e) => this.drawEllipse(e),
+      line: (e) => this.drawLine(e),
+      text: (e) => this.drawText(e),
+      polyline: (e) => this.drawPolyline(e),
+      path: (e) => this.drawPath(e),
       //color : (e) => this.colorElem(e),
     };
+
+    this.history = [];
+    this.historyPosition = -1;
+    this.unDo = this.unDo.bind(this);
+    this.reDo = this.reDo.bind(this);
   }
 
   init() {
@@ -55,6 +60,7 @@ export class Model {
     this.svgArea = SVG(this.rootElement).size(svgWidth, svgHeight);
     this.svgArea.node.classList.add('svg-work-area');
   }
+
   selectElem(e) {
     const _that = this;
     this.svgArea.each(function (i, children) {
@@ -71,16 +77,20 @@ export class Model {
     _that.app.removeVisibilityPanel(_that.selectElements);
     _that.app.updateFunctionalArea(_that.selectElements);
   }
+
   createRect(e) {
     this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
+
   createEllipse(e) {
     this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     //console.log(this.ellipse);
   }
+
   createLine(e) {
     this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
+
   createText(e) {
     this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     this.text.addClass('inputText');
@@ -88,13 +98,13 @@ export class Model {
       family: 'Helvetica',
       size: 16,
       anchor: 'left',
-      leading: '0em'
-    })
+      leading: '0em',
+    });
     let textInput = '';
     document.addEventListener('keydown', (event) => {
       if (this.text.hasClass('inputText') && event.key.length < 2) {
         textInput += event.key;
-        this.text.plain(`${textInput}`)
+        this.text.plain(`${textInput}`);
       }
     });
   }
@@ -107,12 +117,14 @@ export class Model {
           this.cx(e.offsetX - _that.x + _that.cxLast);
           this.cy(e.offsetY - _that.y + _that.cyLast);
           _that.app.updateFunctionalArea(_that.selectElements);
+          // _that.saveHistory();
         }
       });
     }
   }
+
   drawRect(e) {
-    let xNew, yNew;
+    let xNew; let yNew;
     if (e.offsetX < this.x) {
       xNew = e.offsetX;
     } else if (e.offsetX >= this.x) {
@@ -130,23 +142,26 @@ export class Model {
       y: yNew,
     });
   }
+
   drawEllipse(e) {
     this.ellipse.attr({
       rx: Math.abs(e.offsetX - this.x),
       ry: Math.abs(e.offsetY - this.y),
     });
   }
+
   drawLine(e) {
     this.line.attr({
       x2: e.offsetX,
-      y2: e.offsetY
+      y2: e.offsetY,
     });
   }
+
   drawText(e) {
     this.text.font({
       family: 'Helvetica',
       size: Math.abs(e.offsetY - this.y),
-    })
+    });
   }
 
   onSVGAreaEvent() {
@@ -155,6 +170,7 @@ export class Model {
     this.svgArea.mousedown((e) => {
       if (!e.ctrlKey) {
         this.removeSelect();
+        this.app.removeVisibilityPanel(this.selectElements);
         this.svgArea.each(function (i, children) {
           if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
             this.removeClass('inputText');
@@ -173,6 +189,7 @@ export class Model {
     });
     this.svgArea.mouseup(function (e) {
       isDraw = false;
+      _that.saveHistory();
     });
   }
 
@@ -194,11 +211,15 @@ export class Model {
   }
 
   fillElem(color) {
+    const _that = this;
     this.svgArea.mousedown((e) => {
       this.svgArea.each(function (i, children) {
-        if (this.inside(e.offsetX, e.offsetY)) this.fill(color);
-      })
-    })
+        if (this.inside(e.offsetX, e.offsetY)) {
+          this.fill(color);
+          _that.saveHistory();
+        }
+      });
+    });
   }
 
   onMouseMoveG() {
@@ -212,5 +233,35 @@ export class Model {
         }
       });
     }
+  }
+
+  saveHistory() {
+    this.history = this.history.slice(0, this.historyPosition + 1);
+    this.history.push(this.rootElement.childNodes[0].innerHTML);
+    this.incrementPosition();
+  }
+
+  incrementPosition() {
+    this.historyPosition += 1;
+  }
+
+  decrementPosition() {
+    this.historyPosition -= 1;
+  }
+
+  unDo() {
+    if (this.historyPosition < 0) return;
+    this.decrementPosition();
+    this.rootElement.innerHTML = '';
+    this.init();
+    this.svgArea.svg(this.history[this.historyPosition]);
+  }
+
+  reDo() {
+    if (this.historyPosition > this.history.length - 2) return;
+    this.incrementPosition();
+    this.rootElement.innerHTML = '';
+    this.init();
+    this.svgArea.svg(this.history[this.historyPosition]);
   }
 }

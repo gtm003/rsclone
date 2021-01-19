@@ -1,4 +1,5 @@
 import {Model} from '../models/SVGAreaModel';
+import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 const FILE_TYPE = 'svg';
 
@@ -15,6 +16,7 @@ export class Controller {
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
     this.onImportSvgChange = this.onImportSvgChange.bind(this);
+    this.copiedElements = [];
   }
 
   init() {
@@ -33,6 +35,8 @@ export class Controller {
     this.clickDelete();
     this.appearContextMenu();
     this.clickContextMenuElements();
+    this.changeLanguage();
+    this.clickHotKeys();
   }
 
   onToolsLeftClick() {
@@ -76,7 +80,7 @@ export class Controller {
       while (target !== toolsBottom) {
         if (target.nodeName === 'BUTTON') {
           this.fill = target.id;
-          console.log(this.fill);
+          // console.log(this.fill);
           this.model.removeLastEvent();
           this.model.fillElem(target.id);
           return;
@@ -112,11 +116,20 @@ export class Controller {
     if (target.dataset['menu'] === 'Get SVG-code') {
       this.openModalSvgCode();
     }
+
+    if (target.dataset['menu'] === 'Undo') {
+      this.model.unDo();
+    }
+
+    if (target.dataset['menu'] === 'Redo') {
+      this.model.reDo();
+    }
   }
 
   openModalSvgCode() {
     this.appView.svgCodeModalWindow.innerHTML = '';
     this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.model.removeSelect();
     this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
@@ -177,6 +190,7 @@ export class Controller {
       return;
     }
     this.closeModalSave();
+    this.model.removeSelect();
     this.download(this.model.svgArea.svg(), fileName, 'image/svg+xml');
   }
 
@@ -224,6 +238,7 @@ export class Controller {
       for (let j = 0; j < label.length; j += 1) {
         const input = label[j].childNodes[1];
         input.addEventListener('keyup', () => {
+          this.deleteVisibilityContextMenu();
           const objSVG = this.model.selectElements[0];
           if (input.value.length === 0) {
             switch (label[j].childNodes[0].textContent) {
@@ -254,6 +269,7 @@ export class Controller {
                 break;
             }
           }
+          this.model.saveHistory();
         });
       }
     }
@@ -295,8 +311,18 @@ export class Controller {
             this.model.selectElements.forEach((item) => item.cy(this.model.svgArea.height() / 2));
             break;
         }
+        this.model.saveHistory();
       });
     }
+  }
+
+  deleteElements() {
+    for (let i = 0; i < this.model.selectElements.length; i += 1) {
+      this.model.selectElements[i].resize('stop').selectize(false);
+      this.model.selectElements[i].remove();
+    }
+    this.model.selectElements = [];
+    this.appView.removeVisibilityPanel(this.model.selectElements);
   }
 
   clickDelete() {
@@ -304,12 +330,9 @@ export class Controller {
     for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
       const deleteBtn = [...childrenFunctionalAreaContainer[i].childNodes].filter((item) => item.tagName === 'BUTTON')[0];
       deleteBtn.addEventListener('click', () => {
-        for (let j = 0; j < this.model.selectElements.length; j += 1) {
-          this.model.selectElements[j].resize('stop').selectize(false);
-          this.model.selectElements[j].remove();
-        }
-        this.model.selectElements = [];
-        this.appView.removeVisibilityPanel(this.model.selectElements);
+        this.deleteElements();
+        this.deleteVisibilityContextMenu();
+        this.model.saveHistory();
       });
     }
   }
@@ -340,13 +363,83 @@ export class Controller {
     const deleteBtn = this.appView.contextMenuWindow.childNodes[0];
 
     deleteBtn.addEventListener('click', () => {
-      for (let i = 0; i < this.model.selectElements.length; i += 1) {
-        this.model.selectElements[i].resize('stop').selectize(false);
-        this.model.selectElements[i].remove();
-      }
-      this.model.selectElements = [];
+      this.deleteElements();
       this.deleteVisibilityContextMenu();
       this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.model.saveHistory();
+    });
+  }
+
+  changeLanguage() {
+    const checkbox = this.appView.switcherContainer.childNodes[0];
+    const menuButtons = [...this.appView.menuContainer.childNodes].filter((item) => item.textContent.length !== 0);
+    const toolTips = [...this.appView.toolsLeftContainer.childNodes].map((item) => item.lastChild);
+    const contextMenuButtons = [...this.appView.contextMenuWindow.childNodes];
+    checkbox.addEventListener('click', () => {
+      this.deleteVisibilityContextMenu();
+      if (checkbox.checked) {
+        menuButtons.forEach((item, index) => {
+          if (item.textContent.length !== 0) {
+            item.textContent = MENU_BUTTONS_NAMES_RUS[index];
+          }
+        });
+
+        toolTips.forEach((item, index) => {
+          item.textContent = TOOLS_LEFT_NAMES_RUS[index];
+        });
+
+        contextMenuButtons.forEach((item, index) => {
+          item.textContent = CONTEXTMENU_NAMES_RUS[index];
+        });
+      } else {
+        menuButtons.forEach((item, index) => {
+          if (item.textContent.length !== 0) {
+            item.textContent = MENU_BUTTONS_NAMES_EN[index];
+          }
+        });
+
+        toolTips.forEach((item, index) => {
+          item.textContent = TOOLS_LEFT_NAMES_EN[index];
+        });
+
+        contextMenuButtons.forEach((item, index) => {
+          item.textContent = CONTEXTMENU_NAMES_EN[index];
+        });
+      }
+    });
+  }
+
+  clickHotKeys() {
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'Delete') {
+        this.deleteElements();
+        this.deleteVisibilityContextMenu();
+      } else if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'C')) { // копировать
+        this.copiedElements = this.model.selectElements;
+      } else if ((e.ctrlKey && e.key === 'x') || (e.ctrlKey && e.key === 'X')) { // вырезать
+        this.copiedElements = this.model.selectElements;
+        this.deleteElements();
+      } else if ((e.ctrlKey && e.key === 'v') || (e.ctrlKey && e.key === 'V')) {
+        if (this.copiedElements.length > 0) {
+          for (let i = 0; i < this.copiedElements.length; i += 1) { // вставить
+            switch (this.copiedElements[i].type) {
+              case 'rect':
+
+                break;
+              case 'ellipse':
+                break;
+              case 'line':
+                break;
+              case 'text':
+                break;
+              case 'polyline':
+                break;
+              case 'path':
+                break;
+            }
+          }
+        }
+      }
     });
   }
 }
