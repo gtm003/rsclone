@@ -60,7 +60,7 @@ export class Controller {
       while (target !== toolsBottom) {
         if (target.nodeName === 'BUTTON') {
           this.fill = target.id;
-          console.log(this.fill);
+          // console.log(this.fill);
           this.model.removeLastEvent();
           this.model.fillElem(target.id);
           return;
@@ -96,11 +96,20 @@ export class Controller {
     if (target.dataset['menu'] === 'Get SVG-code') {
       this.openModalSvgCode();
     }
+
+    if (target.dataset['menu'] === 'Undo') {
+      this.model.unDo();
+    }
+
+    if (target.dataset['menu'] === 'Redo') {
+      this.model.reDo();
+    }
   }
 
   openModalSvgCode() {
     this.appView.svgCodeModalWindow.innerHTML = '';
     this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.model.removeSelect();
     this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
@@ -161,6 +170,7 @@ export class Controller {
       return;
     }
     this.closeModalSave();
+    this.model.removeSelect();
     this.download(this.model.svgArea.svg(), fileName, 'image/svg+xml');
   }
 
@@ -239,6 +249,7 @@ export class Controller {
                 break;
             }
           }
+          this.model.saveHistory();
         });
       }
     }
@@ -280,6 +291,7 @@ export class Controller {
             this.model.selectElements.forEach((item) => item.cy(this.model.svgArea.height() / 2));
             break;
         }
+        this.model.saveHistory();
       });
     }
   }
@@ -300,6 +312,7 @@ export class Controller {
       deleteBtn.addEventListener('click', () => {
         this.deleteElements();
         this.deleteVisibilityContextMenu();
+        this.model.saveHistory();
       });
     }
   }
@@ -332,6 +345,8 @@ export class Controller {
     deleteBtn.addEventListener('click', () => {
       this.deleteElements();
       this.deleteVisibilityContextMenu();
+      this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.model.saveHistory();
     });
   }
 

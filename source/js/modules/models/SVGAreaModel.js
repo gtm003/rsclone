@@ -42,6 +42,11 @@ export class Model {
       path: (e) => this.drawPath(e),
       //color : (e) => this.colorElem(e),
     };
+
+    this.history = [];
+    this.historyPosition = -1;
+    this.unDo = this.unDo.bind(this);
+    this.reDo = this.reDo.bind(this);
   }
 
   init() {
@@ -52,6 +57,7 @@ export class Model {
     this.svgArea = SVG(this.rootElement).size(svgWidth, svgHeight);
     this.svgArea.node.classList.add('svg-work-area');
   }
+
   selectElem(e) {
     const _that = this;
     this.svgArea.each(function (i, children) {
@@ -68,16 +74,20 @@ export class Model {
     _that.app.removeVisibilityPanel(_that.selectElements);
     _that.app.updateFunctionalArea(_that.selectElements);
   }
+
   createRect(e) {
     this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
   }
+
   createEllipse(e) {
     this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
     //console.log(this.ellipse);
   }
+
   createLine(e) {
     this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke('black');
   }
+
   createText(e) {
     this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke('none').fill('black');
     this.text.addClass('inputText');
@@ -104,10 +114,12 @@ export class Model {
           this.cx(e.offsetX - _that.x + _that.cxLast);
           this.cy(e.offsetY - _that.y + _that.cyLast);
           _that.app.updateFunctionalArea(_that.selectElements);
+          // _that.saveHistory();
         }
       });
     }
   }
+
   drawRect(e) {
     let xNew; let yNew;
     if (e.offsetX < this.x) {
@@ -127,18 +139,21 @@ export class Model {
       y: yNew,
     });
   }
+
   drawEllipse(e) {
     this.ellipse.attr({
       rx: Math.abs(e.offsetX - this.x),
       ry: Math.abs(e.offsetY - this.y),
     });
   }
+
   drawLine(e) {
     this.line.attr({
       x2: e.offsetX,
       y2: e.offsetY,
     });
   }
+
   drawText(e) {
     this.text.font({
       family: 'Helvetica',
@@ -171,6 +186,7 @@ export class Model {
     });
     this.svgArea.mouseup(function (e) {
       isDraw = false;
+      _that.saveHistory();
     });
   }
 
@@ -192,9 +208,13 @@ export class Model {
   }
 
   fillElem(color) {
+    const _that = this;
     this.svgArea.mousedown((e) => {
       this.svgArea.each(function (i, children) {
-        if (this.inside(e.offsetX, e.offsetY)) this.fill(color);
+        if (this.inside(e.offsetX, e.offsetY)) {
+          this.fill(color);
+          _that.saveHistory();
+        }
       });
     });
   }
@@ -210,5 +230,35 @@ export class Model {
         }
       });
     }
+  }
+
+  saveHistory() {
+    this.history = this.history.slice(0, this.historyPosition + 1);
+    this.history.push(this.rootElement.childNodes[0].innerHTML);
+    this.incrementPosition();
+  }
+
+  incrementPosition() {
+    this.historyPosition += 1;
+  }
+
+  decrementPosition() {
+    this.historyPosition -= 1;
+  }
+
+  unDo() {
+    if (this.historyPosition < 0) return;
+    this.decrementPosition();
+    this.rootElement.innerHTML = '';
+    this.init();
+    this.svgArea.svg(this.history[this.historyPosition]);
+  }
+
+  reDo() {
+    if (this.historyPosition > this.history.length - 2) return;
+    this.incrementPosition();
+    this.rootElement.innerHTML = '';
+    this.init();
+    this.svgArea.svg(this.history[this.historyPosition]);
   }
 }
