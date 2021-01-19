@@ -181,7 +181,7 @@ export class Controller {
   uploadSVG(input) {
     const file = input.files[0];
     const fileName = file.name.toLowerCase();
-сд
+
     if(fileName.endsWith(FILE_TYPE)) {
       const reader = new FileReader();
 
@@ -326,6 +326,7 @@ export class Controller {
       }
       this.model.selectElements = [];
       this.deleteVisibilityContextMenu();
+      this.appView.removeVisibilityPanel(this.canvas.selectElements);
     });
   }
 }
