@@ -31,22 +31,18 @@ export class Model {
     this.svgArea = SVG(this.rootElement).size(svgWidth, svgHeight);
     this.svgArea.node.classList.add('svg-work-area');
   }
-
   createRect(e) {
-    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('blue').fill('transparent');
+    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
   }
-
   createEllipse(e) {
-    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke('red').fill('transparent');
+    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
     //console.log(this.ellipse);
   }
-
   createLine(e) {
-    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke('blue');
+    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke('black');
   }
-
   createText(e) {
-    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke('none').fill('blue');
+    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke('none').fill('black');
     this.text.addClass('inputText');
     this.text.font({
       family: 'Helvetica',

@@ -445,9 +445,16 @@ export class AppView {
     toolsLeftContainer.className = 'tools-left';
 
     toolsLeftBtnName.forEach((item) => {
+      const tooltip = document.createElement('span');
+      tooltip.classList.add('tooltip', 'tooltip-right');
+      tooltip.textContent = item;
+      toolsLeftContainer.append(tooltip);
+
       let btn = document.createElement('button');
       btn.id = `${item}`;
       btn.innerHTML = item;
+      btn.append(tooltip);
+
       toolsLeftContainer.append(btn);
     });
 
