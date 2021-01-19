@@ -16,13 +16,34 @@ export class Model {
     this.line = null;
     this.text = null;
 
-    this.createElem = {
+    this.cxLast = null;
+    this.cyLast = null;
+    this.x = null;
+    this.y = null;
+
+    this.onSVGAreaMouseDown = {
+      select : (e) => this.selectElem(e),
       rect : (e) => this.createRect(e),
       ellipse : (e) => this.createEllipse(e),
       line : (e) => this.createLine(e),
       text : (e) => this.createText(e),
+      polyline : (e) => this.createPolyline(e),
+      path : (e) => this.createPath(e),
+      color : (e) => this.colorElem(e),
+    };
+
+    this.onSVGAreaMouseMove = {
+      select : (e) => this.moveElem(e),
+      rect : (e) => this.drawRect(e),
+      ellipse : (e) => this.drawEllipse(e),
+      line : (e) => this.drawLine(e),
+      text : (e) => this.drawText(e),
+      polyline : (e) => this.drawPolyline(e),
+      path : (e) => this.drawPath(e),
+      //color : (e) => this.colorElem(e),
     };
   }
+
   init() {
     this.createSvgWorkArea('600', '400');
   }
@@ -30,6 +51,22 @@ export class Model {
   createSvgWorkArea(svgWidth, svgHeight) {
     this.svgArea = SVG(this.rootElement).size(svgWidth, svgHeight);
     this.svgArea.node.classList.add('svg-work-area');
+  }
+  selectElem(e) {
+    const _that = this;
+    this.svgArea.each(function (i, children) {
+      if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
+        _that.setSelectElements.add(this);
+        _that.selectElements = [..._that.setSelectElements];
+        this.addClass('selectedElem');
+        this.selectize().resize();
+        _that.onMouseMoveG();
+        _that.cxLast = this.cx();
+        _that.cyLast = this.cy();
+      }
+    });
+    _that.app.removeVisibilityPanel(_that.selectElements);
+    _that.app.updateFunctionalArea(_that.selectElements);
   }
   createRect(e) {
     this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
@@ -59,10 +96,59 @@ export class Model {
     });
   }
 
-  drawElem() {
+  moveElem(e) {
+    const _that = this;
+    if (!e.ctrlKey && _that.selectElements.length === 1) {
+      _that.svgArea.each(function (i, children) {
+        if (this.hasClass('selectedElem')) {
+          this.cx(e.offsetX - _that.x + _that.cxLast);
+          this.cy(e.offsetY - _that.y + _that.cyLast);
+          _that.app.updateFunctionalArea(_that.selectElements);
+        }
+      });
+    }
+  }
+  drawRect(e) {
+    let xNew, yNew;
+    if (e.offsetX < this.x) {
+      xNew = e.offsetX;
+    } else if (e.offsetX >= this.x) {
+      xNew = this.x;
+    }
+    if (e.offsetY < this.y) {
+      yNew = e.offsetY;
+    } else if (e.offsetY >= this.y) {
+      yNew = this.y;
+    }
+    this.rect.attr({
+      width: Math.abs(e.offsetX - this.x),
+      height: Math.abs(e.offsetY - this.y),
+      x: xNew,
+      y: yNew,
+    });
+  }
+  drawEllipse(e) {
+    this.ellipse.attr({
+      rx: Math.abs(e.offsetX - this.x),
+      ry: Math.abs(e.offsetY - this.y),
+    });
+  }
+  drawLine(e) {
+    this.line.attr({
+      x2: e.offsetX,
+      y2: e.offsetY
+    });
+  }
+  drawText(e) {
+    this.text.font({
+      family: 'Helvetica',
+      size: Math.abs(e.offsetY - this.y),
+    })
+  }
+
+  onSVGAreaEvent() {
     const _that = this;
     let isDraw = false;
-    let x, y, cxLast, cyLast;
     this.svgArea.mousedown((e) => {
       if (!e.ctrlKey) {
         this.removeSelect();
@@ -73,88 +159,15 @@ export class Model {
         });
       }
       isDraw = true;
-      x = e.offsetX;
-      y = e.offsetY;
-      switch (this.type) {
-        case 'line':
-        case 'ellipse':
-        case 'rect':
-        case 'text':
-          _that.createElem[this.type](e);
-        break;
-        case 'select':
-          _that.svgArea.each(function (i, children) {
-            if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-              _that.setSelectElements.add(this);
-              _that.selectElements = [..._that.setSelectElements];
-              this.addClass('selectedElem');
-              this.selectize().resize();
-              _that.onMouseMoveG();
-              cxLast = this.cx();
-              cyLast = this.cy();
-            }
-          });
-          _that.app.removeVisibilityPanel(_that.selectElements);
-          _that.app.updateFunctionalArea(_that.selectElements);
-          break;
-      }
+      this.x = e.offsetX;
+      this.y = e.offsetY;
+      this.onSVGAreaMouseDown[this.type](e);
     });
-
     this.svgArea.mousemove((e) => {
       if (isDraw) {
-        switch (this.type) {
-          case 'line':
-            _that.line.attr({
-              x2: e.offsetX,
-              y2: e.offsetY
-            });
-            break;
-          case 'ellipse':
-            _that.ellipse.attr({
-              rx: Math.abs(e.offsetX - x),
-              ry: Math.abs(e.offsetY - y),
-            });
-            break;
-          case 'rect':
-            let xNew, yNew;
-            if (e.offsetX < x) {
-              xNew = e.offsetX;
-            } else if (e.offsetX >= x) {
-              xNew = x;
-            }
-            if (e.offsetY < y) {
-              yNew = e.offsetY;
-            } else if (e.offsetY >= y) {
-              yNew = y;
-            }
-            _that.rect.attr({
-              width: Math.abs(e.offsetX - x),
-              height: Math.abs(e.offsetY - y),
-              x: xNew,
-              y: yNew,
-            });
-            break;
-          case 'text':
-            _that.text.font({
-              family: 'Helvetica',
-              size: Math.abs(e.offsetY - y),
-            })
-            break;
-          case 'select':
-            if (!e.ctrlKey && _that.selectElements.length === 1) {
-              _that.svgArea.each(function (i, children) {
-                if (this.hasClass('selectedElem')) {
-                  this.cx(e.offsetX - x + cxLast);
-                  this.cy(e.offsetY - y + cyLast);
-                  _that.app.updateFunctionalArea(_that.selectElements);
-                }
-              });
-            }
-            break;
-        }
+        this.onSVGAreaMouseMove[this.type](e);
       }
     });
-
     this.svgArea.mouseup(function (e) {
       isDraw = false;
     });
@@ -163,6 +176,7 @@ export class Model {
   removeLastEvent() {
     this.svgArea.mousedown(null);
     this.svgArea.mousemove(null);
+    this.svgArea.mouseup(null);
   }
 
   removeSelect() {

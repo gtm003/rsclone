@@ -41,7 +41,7 @@ export class Controller {
         if (target.nodeName === 'BUTTON') {
           this.model.type = target.id;
           this.model.removeLastEvent();
-          this.model.drawElem(target.id);
+          this.model.onSVGAreaEvent();
           return;
         }
         target = target.parentNode;
