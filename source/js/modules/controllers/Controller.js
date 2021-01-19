@@ -32,6 +32,7 @@ export class Controller {
     this.clickDelete();
     this.appearContextMenu();
     this.clickContextMenuElements();
+    this.changeLanguage();
   }
 
   onToolsLeftClick() {
@@ -76,8 +77,8 @@ export class Controller {
     this.deleteVisibilityContextMenu();
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
-      this.canvas.selectElements = [];
-      this.appView.removeVisibilityPanel(this.canvas.selectElements);
+      this.model.selectElements = [];
+      this.appView.removeVisibilityPanel(this.model.selectElements);
       this.appearContextMenu();
     }
 
@@ -204,6 +205,7 @@ export class Controller {
       for (let j = 0; j < label.length; j += 1) {
         const input = label[j].childNodes[1];
         input.addEventListener('keyup', () => {
+          this.deleteVisibilityContextMenu();
           const objSVG = this.model.selectElements[0];
           if (input.value.length === 0) {
             switch (label[j].childNodes[0].textContent) {
@@ -326,7 +328,46 @@ export class Controller {
       }
       this.model.selectElements = [];
       this.deleteVisibilityContextMenu();
-      this.appView.removeVisibilityPanel(this.canvas.selectElements);
+      this.appView.removeVisibilityPanel(this.model.selectElements);
+    });
+  }
+
+  changeLanguage() {
+    const checkbox = this.appView.switcherContainer.childNodes[0];
+    const menuButtons = [...this.appView.menuContainer.childNodes].filter((item) => item.textContent.length !== 0);
+    const toolTips = [...this.appView.toolsLeftContainer.childNodes].map((item) => item.lastChild);
+    const contextMenuButtons = [...this.appView.contextMenuWindow.childNodes];
+    checkbox.addEventListener('click', () => {
+      this.deleteVisibilityContextMenu();
+      if (checkbox.checked) {
+        menuButtons.forEach((item, index) => {
+          if (item.textContent.length !== 0) {
+            item.textContent = this.appView.objNames.menuButtonsNamesRus[index];
+          }
+        });
+
+        toolTips.forEach((item, index) => {
+          item.textContent = this.appView.objNames.toolsLeftBtnNameRus[index];
+        });
+
+        contextMenuButtons.forEach((item, index) => {
+          item.textContent = this.appView.objNames.contextMenuNamesRus[index];
+        });
+      } else {
+        menuButtons.forEach((item, index) => {
+          if (item.textContent.length !== 0) {
+            item.textContent = this.appView.objNames.menuButtonsNamesEn[index];
+          }
+        });
+
+        toolTips.forEach((item, index) => {
+          item.textContent = this.appView.objNames.toolsLeftBtnNameEn[index];
+        });
+
+        contextMenuButtons.forEach((item, index) => {
+          item.textContent = this.appView.objNames.contextMenuNamesEn[index];
+        });
+      }
     });
   }
 }
