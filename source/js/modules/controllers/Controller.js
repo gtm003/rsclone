@@ -1,4 +1,4 @@
-import {SVGCanvas} from '../models/SVGCanvas';
+import {Model} from '../models/SVGAreaModel';
 
 const FILE_TYPE = 'svg';
 
@@ -11,7 +11,7 @@ export class Controller {
     this.mouse = null;
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
-    this.canvas = new SVGCanvas(this.appView, this.placeForSVGCanvas);
+    this.model = new Model(this.appView, this.placeForSVGCanvas);
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
@@ -19,13 +19,14 @@ export class Controller {
   }
 
   init() {
-    this.getActivToolsLeftBtn();
+    this.model.init();
+    this.onToolsLeftClick();
     this.getFill();
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
-    this.canvas.init();
+
     this.keyUpProperties();
     this.clickAlignPanel();
     this.clickDelete();
@@ -33,16 +34,14 @@ export class Controller {
     this.clickContextMenuElements();
   }
 
-  getActivToolsLeftBtn() {
-    const toolsLeft = document.querySelector('.tools-left');
-    toolsLeft.addEventListener('click', (event) => {
+  onToolsLeftClick() {
+    this.appView.toolsLeftContainer.addEventListener('click', (event) => {
       let target = event.target;
-      while (target !== toolsLeft) {
+      while (target !== this.appView.toolsLeftContainer) {
         if (target.nodeName === 'BUTTON') {
-          this.activToolsLeftBtn = target.id;
-          // console.log(this.activToolsLeftBtn);
-          this.canvas.removeLastEvent();
-          this.canvas.drawElem(target.id);
+          this.model.type = target.id;
+          this.model.removeLastEvent();
+          this.model.drawElem(target.id);
           return;
         }
         target = target.parentNode;
@@ -58,8 +57,8 @@ export class Controller {
         if (target.nodeName === 'BUTTON') {
           this.fill = target.id;
           console.log(this.fill);
-          this.canvas.removeLastEvent();
-          this.canvas.fillElem(target.id);
+          this.model.removeLastEvent();
+          this.model.fillElem(target.id);
           return;
         }
         target = target.parentNode;
@@ -124,7 +123,7 @@ export class Controller {
     const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas.createSvgWorkArea(svgWidth, svgHeight);
+    this.model.createSvgWorkArea(svgWidth, svgHeight);
   }
 
   onSaveModalClick({target}) {
@@ -149,7 +148,7 @@ export class Controller {
 
   createNewImage() {
     this.placeForSVGCanvas.innerHTML = '';
-    this.canvas.createSvgWorkArea('600', '400');
+    this.model.createSvgWorkArea('600', '400');
   }
 
   saveFile(fileName) {
@@ -158,7 +157,7 @@ export class Controller {
       return;
     }
     this.closeModalSave();
-    this.download(this.canvas.canvas.svg(), fileName, 'image/svg+xml');
+    this.download(this.model.svgArea.svg(), fileName, 'image/svg+xml');
   }
 
   download(data, filename, type) {
@@ -187,7 +186,7 @@ export class Controller {
       const reader = new FileReader();
 
       reader.addEventListener('load', () => {
-        this.canvas.canvas.svg(reader.result);
+        this.model.svgArea.svg(reader.result);
       });
 
       reader.readAsText(file);
@@ -205,7 +204,7 @@ export class Controller {
       for (let j = 0; j < label.length; j += 1) {
         const input = label[j].childNodes[1];
         input.addEventListener('keyup', () => {
-          const objSVG = this.canvas.selectElements[0];
+          const objSVG = this.model.selectElements[0];
           if (input.value.length === 0) {
             switch (label[j].childNodes[0].textContent) {
               case 'angle':
@@ -246,34 +245,34 @@ export class Controller {
       alignPanelBtn[i].addEventListener('click', () => {
         switch (i) {
           case 2:
-            this.canvas.selectElements.forEach((item) => item.x(0));
+            this.model.selectElements.forEach((item) => item.x(0));
             break;
           case 3:
-            this.canvas.selectElements.forEach((item) => {
+            this.model.selectElements.forEach((item) => {
               if (item.type === 'text') {
-                item.x(this.canvas.canvas.width() - item.length());
+                item.x(this.model.svgArea.width() - item.length());
               } else {
-                item.x(this.canvas.canvas.width() - item.width());
+                item.x(this.model.svgArea.width() - item.width());
               }
             });
             break;
           case 4:
-            this.canvas.selectElements.forEach((item) => item.y(0));
+            this.model.selectElements.forEach((item) => item.y(0));
             break;
           case 5:
-            this.canvas.selectElements.forEach((item) => {
+            this.model.selectElements.forEach((item) => {
               if (item.type === 'text') {
-                item.y(this.canvas.canvas.height() - 1.11 * item.attr('size'));
+                item.y(this.model.svgArea.height() - 1.11 * item.attr('size'));
               } else {
-                item.y(this.canvas.canvas.height() - item.height());
+                item.y(this.model.svgArea.height() - item.height());
               }
             });
             break;
           case 6:
-            this.canvas.selectElements.forEach((item) => item.cx(this.canvas.canvas.width() / 2));
+            this.model.selectElements.forEach((item) => item.cx(this.model.svgArea.width() / 2));
             break;
           case 7:
-            this.canvas.selectElements.forEach((item) => item.cy(this.canvas.canvas.height() / 2));
+            this.model.selectElements.forEach((item) => item.cy(this.model.svgArea.height() / 2));
             break;
         }
       });
@@ -285,12 +284,12 @@ export class Controller {
     for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
       const deleteBtn = [...childrenFunctionalAreaContainer[i].childNodes].filter((item) => item.tagName === 'BUTTON')[0];
       deleteBtn.addEventListener('click', () => {
-        for (let j = 0; j < this.canvas.selectElements.length; j += 1) {
-          this.canvas.selectElements[j].resize('stop').selectize(false);
-          this.canvas.selectElements[j].remove();
+        for (let j = 0; j < this.model.selectElements.length; j += 1) {
+          this.model.selectElements[j].resize('stop').selectize(false);
+          this.model.selectElements[j].remove();
         }
-        this.canvas.selectElements = [];
-        this.appView.removeVisibilityPanel(this.canvas.selectElements);
+        this.model.selectElements = [];
+        this.appView.removeVisibilityPanel(this.model.selectElements);
       });
     }
   }
@@ -299,7 +298,7 @@ export class Controller {
     const svgArea = this.appView.sheet.childNodes[0];
     svgArea.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      if (this.canvas.selectElements.length > 0) {
+      if (this.model.selectElements.length > 0) {
         this.appView.contextMenuWindow.classList.remove('visibility-modal');
         this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
         this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
@@ -321,11 +320,11 @@ export class Controller {
     const deleteBtn = this.appView.contextMenuWindow.childNodes[0];
 
     deleteBtn.addEventListener('click', () => {
-      for (let i = 0; i < this.canvas.selectElements.length; i += 1) {
-        this.canvas.selectElements[i].resize('stop').selectize(false);
-        this.canvas.selectElements[i].remove();
+      for (let i = 0; i < this.model.selectElements.length; i += 1) {
+        this.model.selectElements[i].resize('stop').selectize(false);
+        this.model.selectElements[i].remove();
       }
-      this.canvas.selectElements = [];
+      this.model.selectElements = [];
       this.deleteVisibilityContextMenu();
     });
   }
