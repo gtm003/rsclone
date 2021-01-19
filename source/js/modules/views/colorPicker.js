@@ -1,29 +1,36 @@
 const RGBA = ['R', 'G', 'B', 'A'];
+const USER_ANSWER = ['OK', 'CANSEL']
 
 export class ColorPicker {
   constructor(rootElement){
     this.rootElement = rootElement;
+    this.selectColorContainer =null
     this.pallete = null;
     this.ctxPallete = null;
     this.transparencyPicker = null;
     this.ctxTransparencyPicker = null;
-    this.RGBAValueContainer = null;
+    this.btnRGBAContainer = null;
+    this.currenColorContainer = null;
     this.dataColor = [0, 0, 0, 255];
-    this.color = 'rgba(0, 0, 0, 1)'
+    this.color = 'rgba(0, 0, 0, 1)';
   }
   init() {
-    let selectColorContainer = document.createElement('div');
-    selectColorContainer.classList.add('container__color-picker');
-    this.rootElement.append(selectColorContainer);
+    this.selectColorContainer = document.createElement('div');
+    this.selectColorContainer.classList.add('container__color-picker');
+    this.rootElement.append(this.selectColorContainer);
 
-    this.renderPallete(selectColorContainer);
-    this.renderTransparencyPicker(selectColorContainer);
-    this.renderCurrentColor(selectColorContainer);
-    this.renderNewColor(selectColorContainer);
-    this.RGBAValueContainer = this.renderInputValue(selectColorContainer, RGBA);
-    //this.renderInputValue(selectColorContainer, RGBA);
+    this.renderPallete(this.selectColorContainer);
+    this.renderTransparencyPicker(this.selectColorContainer);
+    this.renderNewColor(this.selectColorContainer);
+    this.renderBtnRGBAContainer(this.selectColorContainer, RGBA);
+    this.renderBtnUserAnswerContainer(this.selectColorContainer, USER_ANSWER);
 
-    this.pallete.addEventListener('click', (e) => this.pickColor(e));
+    this.pallete.addEventListener('click', (e) => {
+      this.pickColor(e);
+      this.changeTransparencyPicker();
+      this.changeInputValue();
+      this.changeNewColor();
+    });
   }
 
   renderPallete(rootElement) {
@@ -60,49 +67,52 @@ export class ColorPicker {
   renderTransparencyPicker(rootElement) {
     this.transparencyPicker = document.createElement('canvas');
     this.transparencyPicker.classList.add('transparency-picker');
-    this.transparencyPicker.width = 150;
+    this.transparencyPicker.width = 225;
     this.transparencyPicker.height = 40;
     rootElement.append(this.transparencyPicker);
     this.ctxTransparencyPicker = this.transparencyPicker.getContext('2d');
 
     // Create gradient
-    let gradient = this.ctxTransparencyPicker.createLinearGradient(0, 0, 140, 0);
+    let gradient = this.ctxTransparencyPicker.createLinearGradient(0, 0, 215, 0);
     gradient.addColorStop(0, this.color);
     gradient.addColorStop(1, "white");
 
     // Fill with gradient
     this.ctxTransparencyPicker.fillStyle = gradient;
-    this.ctxTransparencyPicker.fillRect(5, 5, 140, 30);
+    this.ctxTransparencyPicker.fillRect(5, 5, 215, 30);
 
-  }
-  renderCurrentColor(rootElement) {
-    const currenColorContainer = document.createElement('div');
-    currenColorContainer.classList.add('current-color');
-    rootElement.append(currenColorContainer);
   }
   renderNewColor(rootElement) {
-    const newColorContainer = document.createElement('div');
-    newColorContainer.classList.add('new-color');
-    rootElement.append(newColorContainer);
+    this.newColorContainer = document.createElement('div');
+    this.newColorContainer.classList.add('new-color');
+    rootElement.append(this.newColorContainer);
   }
-  renderInputValue(rootElement, valueNames) {
+  renderBtnRGBAContainer(rootElement, valueNames) {
+    this.btnRGBAContainer = document.createElement('div');
+    this.btnRGBAContainer.classList.add('btn-RGBA_container');
+    rootElement.append(this.btnRGBAContainer);
     valueNames.forEach((elem) => {
-      let container = document.createElement('div');
-      container.classList.add(`container-${elem}`);
-      rootElement.append(container);
-
       let name = document.createElement('span');
       name.innerHTML = `${elem}: `;
 
-      let valueBtn = document.createElement('input');
-      valueBtn.setAttribute('type', 'text');
-      valueBtn.id = `input-${elem}`;
-      container.append(name, valueBtn);
+      let btnValue = document.createElement('input');
+      btnValue.setAttribute('type', 'text');
+      btnValue.id = `input-${elem}`;
+      this.btnRGBAContainer.append(name, btnValue);
     })
-    //const R = document.createElement('input');
-    //R.classList.add('input-R')
-    //rootElement.append(R);
+  }
 
+  renderBtnUserAnswerContainer(rootElement, value) {
+    this.btnUserAnswerContainer = document.createElement('div');
+    this.btnUserAnswerContainer.classList.add('btn-user-answer_container');
+    rootElement.append(this.btnUserAnswerContainer);
+    value.forEach((elem) => {
+      let btn = document.createElement('input');
+      btn.setAttribute('type', 'button');
+      btn.setAttribute('value', elem);
+      btn.setAttribute('id', elem);
+      this.btnUserAnswerContainer.append(btn);
+    })
   }
 
   pickColor(e) {
@@ -114,23 +124,28 @@ export class ColorPicker {
     let rgba = 'rgba(' + data[0] + ', ' + data[1] +
            ', ' + data[2] + ', ' + (data[3] / 255) + ')';
     this.color = `rgba(${this.dataColor[0]}, ${this.dataColor[1]}, ${this.dataColor[2]}, 1)`
-    console.log(this.dataColor);
-    console.log(this.color);
-    return data;
   }
-
   pickTransparency(e) {
 
   }
+  changeTransparencyPicker() {
+    let gradient = this.ctxTransparencyPicker.createLinearGradient(0, 0, 215, 0);
+    gradient.addColorStop(0, this.color);
+    gradient.addColorStop(1, "white");
+    this.ctxTransparencyPicker.fillStyle = gradient;
+    this.ctxTransparencyPicker.fillRect(5, 5, 215, 30);
+  }
   changeNewColor() {
-
+    this.newColorContainer.style.background = this.color;
   }
   changeInputValue() {
-    console.log(this.RGBAValueContainer);
-
+    const btnValue = [...this.btnRGBAContainer.childNodes].filter((node) => node.tagName === 'INPUT');
+    btnValue.forEach((btn, index) => btn.setAttribute('placeholder', `${this.dataColor[index]}`));
   }
-
-
-
-
+  openColorPicker() {
+    this.selectColorContainer.classList.add('open');
+  }
+  closeColorPicker() {
+    this.selectColorContainer.classList.remove('open');
+  }
 }

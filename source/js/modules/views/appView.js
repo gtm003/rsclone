@@ -62,11 +62,11 @@ export class AppView {
     this.rootElement.appendChild(wrapper);
     wrapper.append(this.headerElement, this.contentElement, this.footerElement);
 
-    const controller = new Controller(this, this.sheet);
-    controller.init();
-
     this.palleteCanvas = new ColorPicker(this.workAreaContainer);
     this.palleteCanvas.init();
+
+    const controller = new Controller(this, this.sheet);
+    controller.init();
   }
 
   getCurrentRotation(item) {

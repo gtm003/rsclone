@@ -11,6 +11,9 @@ export class Model {
     this.selectElements = [];
     this.setSelectElements = new Set();
 
+    this.fillColor = 'transparent';
+    this.strokeColor = 'rgba(0, 0, 0, 1)';
+
     this.rect = null;
     this.ellipse = null;
     this.line = null;
@@ -76,20 +79,20 @@ export class Model {
   }
 
   createRect(e) {
-    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
+    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createEllipse(e) {
-    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke('black').fill('transparent');
+    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     //console.log(this.ellipse);
   }
 
   createLine(e) {
-    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke('black');
+    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createText(e) {
-    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke('none').fill('black');
+    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     this.text.addClass('inputText');
     this.text.font({
       family: 'Helvetica',
