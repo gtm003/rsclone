@@ -16,16 +16,20 @@ export class Controller {
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
     this.onImportSvgChange = this.onImportSvgChange.bind(this);
+
+    this.onChangeColorClick = this.onChangeColorClick.bind(this);
+    this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
+
     this.copiedElements = [];
     this.counter = this.makeCounter();
   }
 
   init() {
     this.model.init();
-    this.onToolsLeftClick();
-    this.changeColor();
-    //[...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][0].addEventListener('click', this.changeColor);
-    this.getFill();
+
+    this.appView.palleteCanvas.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
+    this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
+
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
@@ -40,26 +44,23 @@ export class Controller {
     this.clickHotKeys();
   }
 
-  onToolsLeftClick() {
-    this.appView.toolsLeftContainer.addEventListener('click', (event) => {
-      let target = event.target;
-      while (target !== this.appView.toolsLeftContainer) {
-        if (target.nodeName === 'BUTTON') {
-          this.model.type = target.id;
-          this.model.removeLastEvent();
-          this.model.onSVGAreaEvent();
-          if (target.id === 'fill' || target.id === 'stroke') {
-            this.appView.palleteCanvas.openColorPicker();
-          }
-          return;
+  onToolsLeftClick({target}) {
+    while (target !== this.appView.toolsLeftContainer) {
+      if (target.nodeName === 'BUTTON') {
+        this.model.type = target.id;
+        this.model.removeLastEvent();
+        this.model.onSVGAreaEvent();
+        if (target.id === 'fill' || target.id === 'stroke') {
+          this.appView.palleteCanvas.openColorPicker();
         }
-        target = target.parentNode;
+        return;
       }
-    });
+      target = target.parentNode;
+    }
   }
 
-  changeColor() {
-    [...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][0].addEventListener('click', () => {
+  onChangeColorClick({target}) {
+    if (target.id === 'OK') {
       if (this.model.type === 'fill') {
         this.model.fillColor = this.appView.palleteCanvas.color;
         [...this.appView.toolsLeftContainer.childNodes][7].style.background = this.appView.palleteCanvas.color;
@@ -68,27 +69,10 @@ export class Controller {
         this.model.strokeColor = this.appView.palleteCanvas.color;
       }
       this.appView.palleteCanvas.closeColorPicker();
-    });
-    [...this.appView.palleteCanvas.btnUserAnswerContainer.childNodes][1].addEventListener('click', () => {
+    }
+    if (target.id === 'CANSEL') {
       this.appView.palleteCanvas.closeColorPicker();
-    });
-  }
-
-  getFill() {
-    const toolsBottom = document.querySelector('.tools-bottom');
-    toolsBottom.addEventListener('click', (event) => {
-      let target = event.target;
-      while (target !== toolsBottom) {
-        if (target.nodeName === 'BUTTON') {
-          this.fill = target.id;
-          // console.log(this.fill);
-          this.model.removeLastEvent();
-          this.model.fillElem(target.id);
-          return;
-        }
-        target = target.parentNode;
-      }
-    });
+    }
   }
 
   onImportSvgChange({target}) {

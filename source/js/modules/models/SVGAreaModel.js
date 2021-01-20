@@ -32,7 +32,8 @@ export class Model {
       text: (e) => this.createText(e),
       polyline: (e) => this.createPolyline(e),
       path: (e) => this.createPath(e),
-      color: (e) => this.colorElem(e),
+      fill: (e) => this.changeFillColor(e),
+      stroke: (e) => this.changeStrokeColor(e),
     };
 
     this.onSVGAreaMouseMove = {
@@ -43,7 +44,7 @@ export class Model {
       text: (e) => this.drawText(e),
       polyline: (e) => this.drawPolyline(e),
       path: (e) => this.drawPath(e),
-      //color : (e) => this.colorElem(e),
+      //fill : (e) => this.colorElem(e),
     };
 
     this.history = [];
@@ -109,6 +110,26 @@ export class Model {
     });
   }
 
+  changeFillColor(e) {
+    const _that = this;
+    this.svgArea.each(function () {
+      if (this.inside(e.offsetX, e.offsetY)) {
+        this.fill(_that.fillColor);
+        _that.saveHistory();
+      }
+    });
+  }
+
+  changeStrokeColor(e) {
+    const _that = this;
+    this.svgArea.each(function () {
+      if (this.inside(e.offsetX, e.offsetY)) {
+        this.stroke(_that.strokeColor);
+        _that.saveHistory();
+      }
+    });
+  }
+
   moveElem(e) {
     const _that = this;
     if (!e.ctrlKey && _that.selectElements.length === 1) {
@@ -124,37 +145,82 @@ export class Model {
   }
 
   drawRect(e) {
-    let xNew; let yNew;
-    if (e.offsetX < this.x) {
-      xNew = e.offsetX;
-    } else if (e.offsetX >= this.x) {
-      xNew = this.x;
+    let xNew, yNew, xDelta, yDelta;
+    xDelta = Math.abs(e.offsetX - this.x);
+    yDelta = Math.abs(e.offsetY - this.y);
+    if (e.shiftKey) {
+      if (e.offsetX < this.x) {
+        xNew = this.x - Math.max(xDelta, yDelta);
+      } else if (e.offsetX >= this.x) {
+        xNew = this.x;
+      }
+      if (e.offsetY < this.y) {
+        yNew = this.y - Math.max(xDelta, yDelta);
+      } else if (e.offsetY >= this.y) {
+        yNew = this.y;
+      }
+      this.rect.attr({
+        width: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
+        height: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
+        x: xNew,
+        y: yNew,
+      });
+    } else {
+      xNew = Math.min(e.offsetX, this.x);
+      yNew = Math.min(e.offsetY, this.y);
+      this.rect.attr({
+        width: Math.abs(e.offsetX - this.x),
+        height: Math.abs(e.offsetY - this.y),
+        x: xNew,
+        y: yNew,
+      });
     }
-    if (e.offsetY < this.y) {
-      yNew = e.offsetY;
-    } else if (e.offsetY >= this.y) {
-      yNew = this.y;
-    }
-    this.rect.attr({
-      width: Math.abs(e.offsetX - this.x),
-      height: Math.abs(e.offsetY - this.y),
-      x: xNew,
-      y: yNew,
-    });
   }
 
   drawEllipse(e) {
-    this.ellipse.attr({
-      rx: Math.abs(e.offsetX - this.x),
-      ry: Math.abs(e.offsetY - this.y),
-    });
+    if (e.shiftKey) {
+      this.ellipse.attr({
+        rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
+        ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
+      });
+    } else {
+      this.ellipse.attr({
+        rx: Math.abs(e.offsetX - this.x),
+        ry: Math.abs(e.offsetY - this.y),
+      });
+    }
   }
 
   drawLine(e) {
-    this.line.attr({
-      x2: e.offsetX,
-      y2: e.offsetY,
-    });
+
+    if (e.shiftKey) {
+      let xDelta = Math.abs(e.offsetX - this.x);
+      let yDelta = Math.abs(e.offsetY - this.y);
+      let xSign = (e.offsetX - this.x) / Math.abs(e.offsetX - this.x);
+      let ySign = (e.offsetY - this.y) / Math.abs(e.offsetY - this.y);
+      let xEnd, yEnd;
+      if (Math.min(xDelta, yDelta) / Math.max(xDelta, yDelta) > 0.5) {
+        xEnd = this.x + xSign * Math.max(xDelta, yDelta);
+        yEnd = this.y + ySign * Math.max(xDelta, yDelta);
+      } else {
+        if (xDelta < yDelta) {
+          xEnd = this.x;
+          yEnd = e.offsetY
+        } else {
+          xEnd = e.offsetX;
+          yEnd = this.y;
+        }
+      }
+      this.line.attr({
+        x2: xEnd,
+        y2: yEnd,
+      })
+    } else {
+      this.line.attr({
+        x2: e.offsetX,
+        y2: e.offsetY,
+      });
+    }
   }
 
   drawText(e) {
@@ -208,18 +274,6 @@ export class Model {
     })
     this.setSelectElements.clear();
     this.selectElements = [...this.setSelectElements];
-  }
-
-  fillElem(color) {
-    const _that = this;
-    this.svgArea.mousedown((e) => {
-      this.svgArea.each(function (i, children) {
-        if (this.inside(e.offsetX, e.offsetY)) {
-          this.fill(color);
-          _that.saveHistory();
-        }
-      });
-    });
   }
 
   onMouseMoveG() {
