@@ -32,7 +32,8 @@ export class Model {
       text: (e) => this.createText(e),
       polyline: (e) => this.createPolyline(e),
       path: (e) => this.createPath(e),
-      color: (e) => this.colorElem(e),
+      fill: (e) => this.changeFillColor(e),
+      stroke: (e) => this.changeStrokeColor(e),
     };
 
     this.onSVGAreaMouseMove = {
@@ -43,7 +44,7 @@ export class Model {
       text: (e) => this.drawText(e),
       polyline: (e) => this.drawPolyline(e),
       path: (e) => this.drawPath(e),
-      //color : (e) => this.colorElem(e),
+      //fill : (e) => this.colorElem(e),
     };
 
     this.history = [];
@@ -105,6 +106,26 @@ export class Model {
       if (this.text.hasClass('inputText') && event.key.length < 2) {
         textInput += event.key;
         this.text.plain(`${textInput}`);
+      }
+    });
+  }
+
+  changeFillColor(e) {
+    const _that = this;
+    this.svgArea.each(function () {
+      if (this.inside(e.offsetX, e.offsetY)) {
+        this.fill(_that.fillColor);
+        _that.saveHistory();
+      }
+    });
+  }
+
+  changeStrokeColor(e) {
+    const _that = this;
+    this.svgArea.each(function () {
+      if (this.inside(e.offsetX, e.offsetY)) {
+        this.stroke(_that.strokeColor);
+        _that.saveHistory();
       }
     });
   }
@@ -208,18 +229,6 @@ export class Model {
     })
     this.setSelectElements.clear();
     this.selectElements = [...this.setSelectElements];
-  }
-
-  fillElem(color) {
-    const _that = this;
-    this.svgArea.mousedown((e) => {
-      this.svgArea.each(function (i, children) {
-        if (this.inside(e.offsetX, e.offsetY)) {
-          this.fill(color);
-          _that.saveHistory();
-        }
-      });
-    });
   }
 
   onMouseMoveG() {
