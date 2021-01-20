@@ -236,9 +236,26 @@ export class Model {
   }
 
   saveHistory() {
+    const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
     this.history = this.history.slice(0, this.historyPosition + 1);
-    this.history.push(this.rootElement.childNodes[0].innerHTML);
+    this.history.push(svgInnerWithoutSelect);
     this.incrementPosition();
+  }
+
+  getSvgInnerWithoutSelect() {
+    const svgWorkAreaNode = this.rootElement.childNodes[0];
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
+
+    [...tempDivElement.childNodes].forEach(item => {
+      if (item.tagName.toLowerCase() === 'g') item.remove();
+      if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
+    })
+
+    const svgInnerWithoutSelect = tempDivElement.innerHTML;
+    tempDivElement.remove();
+
+    return svgInnerWithoutSelect;
   }
 
   incrementPosition() {
