@@ -19,6 +19,7 @@ export class Controller {
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
     this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
+    this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
 
     this.copiedElements = [];
     this.counter = this.makeCounter();
@@ -42,6 +43,7 @@ export class Controller {
     this.clickContextMenuElements();
     this.changeLanguage();
     this.clickHotKeys();
+    window.addEventListener('beforeunload', this.onWindowBeforeUnload);
   }
 
   onToolsLeftClick({target}) {
@@ -142,8 +144,7 @@ export class Controller {
   changeProperties() {
     const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
-    this.placeForSVGCanvas.innerHTML = '';
-    this.model.createSvgWorkArea(svgWidth, svgHeight);
+    this.model.resizeSvgArea(svgWidth, svgHeight);
   }
 
   onSaveModalClick({target}) {
@@ -168,7 +169,7 @@ export class Controller {
 
   createNewImage() {
     this.placeForSVGCanvas.innerHTML = '';
-    this.model.createSvgWorkArea('600', '400');
+    this.model.createNewSvgWorkArea();
   }
 
   saveFile(fileName) {
@@ -445,5 +446,9 @@ export class Controller {
         this.pasteElements(this.counter);
       }
     });
+  }
+
+  onWindowBeforeUnload() {
+    this.model.saveLastCondition();
   }
 }
