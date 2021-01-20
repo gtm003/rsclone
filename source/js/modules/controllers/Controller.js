@@ -21,6 +21,7 @@ export class Controller {
     this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
 
     this.copiedElements = [];
+    this.counter = this.makeCounter();
   }
 
   init() {
@@ -103,10 +104,12 @@ export class Controller {
 
     if (target.dataset['menu'] === 'Undo') {
       this.model.unDo();
+      this.appearContextMenu();
     }
 
     if (target.dataset['menu'] === 'Redo') {
       this.model.reDo();
+      this.appearContextMenu();
     }
   }
 
@@ -309,6 +312,22 @@ export class Controller {
     this.appView.removeVisibilityPanel(this.model.selectElements);
   }
 
+  copyElements() {
+    this.copiedElements = this.model.selectElements;
+  }
+
+  pasteElements() {
+    if (this.copiedElements.length > 0) {
+      let offset = this.counter();
+      this.copiedElements.forEach((item) => {
+        const elementCopy = item.clone();
+        elementCopy.attr('x', elementCopy.cx() + offset);
+        elementCopy.attr('y', elementCopy.cy() + offset);
+        this.model.svgArea.add(elementCopy);
+      });
+    }
+  }
+
   clickDelete() {
     const childrenFunctionalAreaContainer = this.appView.functionalAreaContainer.childNodes;
     for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
@@ -345,11 +364,25 @@ export class Controller {
 
   clickContextMenuElements() {
     const deleteBtn = this.appView.contextMenuWindow.childNodes[0];
+    const copyBtn = this.appView.contextMenuWindow.childNodes[1];
+    const pasteBtn = this.appView.contextMenuWindow.childNodes[2];
 
     deleteBtn.addEventListener('click', () => {
       this.deleteElements();
       this.deleteVisibilityContextMenu();
       this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.model.saveHistory();
+    });
+
+    copyBtn.addEventListener('click', () => {
+      this.copyElements();
+      this.deleteVisibilityContextMenu();
+      this.model.saveHistory();
+    });
+
+    pasteBtn.addEventListener('click', () => {
+      this.pasteElements();
+      this.deleteVisibilityContextMenu();
       this.model.saveHistory();
     });
   }
@@ -393,36 +426,23 @@ export class Controller {
     });
   }
 
+  makeCounter() {
+    let count = 0;
+    return function () {
+      count += 10;
+      return count;
+    };
+  }
+
   clickHotKeys() {
     document.addEventListener('keyup', (e) => {
       if (e.key === 'Delete') {
         this.deleteElements();
         this.deleteVisibilityContextMenu();
-      } else if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'C')) { // копировать
-        this.copiedElements = this.model.selectElements;
-      } else if ((e.ctrlKey && e.key === 'x') || (e.ctrlKey && e.key === 'X')) { // вырезать
-        this.copiedElements = this.model.selectElements;
-        this.deleteElements();
-      } else if ((e.ctrlKey && e.key === 'v') || (e.ctrlKey && e.key === 'V')) {
-        if (this.copiedElements.length > 0) {
-          for (let i = 0; i < this.copiedElements.length; i += 1) { // вставить
-            switch (this.copiedElements[i].type) {
-              case 'rect':
-
-                break;
-              case 'ellipse':
-                break;
-              case 'line':
-                break;
-              case 'text':
-                break;
-              case 'polyline':
-                break;
-              case 'path':
-                break;
-            }
-          }
-        }
+      } else if (e.ctrlKey && e.keyCode === 67) { // копировать
+        this.copyElements();
+      } else if (e.ctrlKey && e.keyCode === 86) {
+        this.pasteElements(this.counter);
       }
     });
   }
