@@ -718,7 +718,8 @@ button,
             justify-content: center;
     font-size: 14px;
     display: none;
-    opacity: 0; }
+    opacity: 0;
+    z-index: 1; }
     .tools-left .tooltip::before {
       content: "";
       position: absolute;
@@ -855,7 +856,7 @@ button,
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 5px #3c3c3c, inset 0 6px 6px rgba(0, 0, 0, 0.5), inset 0 -6px 1px rgba(255, 255, 255, 0.2);
     cursor: pointer; }
   .tools-top__switcher-area [for="switcher-lang"]::before {
-    content: "OFF";
+    content: "EN";
     position: absolute;
     right: 15px;
     color: #000; }
@@ -1148,7 +1149,7 @@ button,
           flex-direction: column;
   position: absolute;
   margin: 5px; }
-  .modal-contextmenu__btn-delete, .modal-contextmenu__btn-bring-to-front, .modal-contextmenu__btn-send-to-back {
+  .modal-contextmenu__btn-delete, .modal-contextmenu__btn-copy, .modal-contextmenu__btn-paste, .modal-contextmenu__btn-bring-to-front, .modal-contextmenu__btn-send-to-back {
     border: none;
     padding: 10px;
     outline: none;
