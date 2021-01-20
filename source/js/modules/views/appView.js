@@ -461,13 +461,14 @@ export class AppView {
   createToolsBottom() {
     const toolsBottomContainer = document.createElement('div');
     toolsBottomContainer.className = 'tools-bottom';
-
+    toolsBottomContainer.innerHTML = "УБРАТЬ?"
+    /*
     toolsBottomBtnName.forEach((item) => {
       let btn = document.createElement('button');
       btn.id = `${item}`;
       btn.style.background = item;
       toolsBottomContainer.append(btn);
-    });
+    });*/
 
     return toolsBottomContainer;
   }
