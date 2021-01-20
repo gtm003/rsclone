@@ -106,12 +106,12 @@ export class Controller {
 
     if (target.dataset['menu'] === 'Undo') {
       this.model.unDo();
-      this.appearContextMenu();
+      // this.appearContextMenu();
     }
 
     if (target.dataset['menu'] === 'Redo') {
       this.model.reDo();
-      this.appearContextMenu();
+      // this.appearContextMenu();
     }
   }
 

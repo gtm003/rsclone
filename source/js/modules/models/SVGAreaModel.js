@@ -310,7 +310,8 @@ export class Model {
     tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
 
     [...tempDivElement.childNodes].forEach(item => {
-      if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
+      // if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
+      if (item.tagName.toLowerCase() === 'g') item.remove();
       if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
     })
 
@@ -323,16 +324,18 @@ export class Model {
   unDo() {
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
-    this.rootElement.innerHTML = '';
-    this.createNewSvgWorkArea();
+    // this.rootElement.innerHTML = '';
+    // this.createNewSvgWorkArea();
+    this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
 
   reDo() {
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
-    this.rootElement.innerHTML = '';
-    this.createNewSvgWorkArea();
+    // this.rootElement.innerHTML = '';
+    // this.createNewSvgWorkArea();
+    this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
 
