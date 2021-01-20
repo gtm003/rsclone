@@ -107,11 +107,13 @@ export class Controller {
     if (target.dataset['menu'] === 'Undo') {
       this.model.unDo();
       // this.appearContextMenu();
+      this.appView.removeVisibilityPanel(this.model.selectElements);
     }
 
     if (target.dataset['menu'] === 'Redo') {
       this.model.reDo();
       // this.appearContextMenu();
+      this.appView.removeVisibilityPanel(this.model.selectElements);
     }
   }
 
@@ -310,6 +312,7 @@ export class Controller {
       this.model.selectElements[i].remove();
     }
     this.model.selectElements = [];
+    this.copiedElements = [];
     this.appView.removeVisibilityPanel(this.model.selectElements);
   }
 
@@ -322,8 +325,8 @@ export class Controller {
       let offset = this.counter();
       this.copiedElements.forEach((item) => {
         const elementCopy = item.clone();
-        elementCopy.attr('x', elementCopy.cx() + offset);
-        elementCopy.attr('y', elementCopy.cy() + offset);
+        elementCopy.attr('x', this.model.x + offset);
+        elementCopy.attr('y', this.model.y + offset);
         this.model.svgArea.add(elementCopy);
       });
     }
@@ -345,12 +348,16 @@ export class Controller {
     const svgArea = this.appView.sheet.childNodes[0];
     svgArea.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      if (this.model.selectElements.length > 0) {
-        this.appView.contextMenuWindow.classList.remove('visibility-modal');
-        this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
-        this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
-      } else {
-        this.appView.contextMenuWindow.classList.add('visibility-modal');
+      this.appView.contextMenuWindow.classList.remove('visibility-modal');
+      this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
+      this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
+      if (this.model.selectElements.length > 0 && this.copiedElements.length === 0) { // выделено, но не скопировали (вызывается на Element)
+        this.appView.contextMenuWindow.childNodes[2].disabled = true;
+      } else if (this.model.selectElements.length >= 0 && this.copiedElements.length > 0) { // выделено, и скопировали (вызывается на Element)
+        this.appView.contextMenuWindow.childNodes[2].disabled = false;
+      } else if (this.model.selectElements.length === 0 && this.copiedElements.length === 0) { // не выделено, и скопировали (вызывается на svgArea)
+        this.appView.contextMenuWindow.childNodes[1].disabled = true;
+        this.appView.contextMenuWindow.childNodes[2].disabled = true;
       }
     });
 
