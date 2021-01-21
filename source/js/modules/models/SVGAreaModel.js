@@ -87,6 +87,12 @@ export class Model {
         _that.cyLast = this.cy();
       }
     });
+    this.svgArea.each(function (i, children) {
+      if (this.hasClass('selectedElem')) {
+        this.cxLast = this.cx();
+        this.cyLast = this.cy();
+      }
+    });
     _that.app.removeVisibilityPanel(_that.selectElements);
     _that.app.updateFunctionalArea(_that.selectElements);
   }
@@ -97,7 +103,6 @@ export class Model {
 
   createEllipse(e) {
     this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    //console.log(this.ellipse);
   }
 
   createLine(e) {
@@ -163,7 +168,18 @@ export class Model {
       _that.svgArea.each(function (i, children) {
         if (this.hasClass('selectedElem')) {
           this.cx(e.offsetX - _that.x + _that.cxLast);
+          //console.log(this.cx());
           this.cy(e.offsetY - _that.y + _that.cyLast);
+          _that.app.updateFunctionalArea(_that.selectElements);
+          // _that.saveHistory();
+        }
+      });
+    } else if(!e.ctrlKey && _that.selectElements.length > 1) {
+      _that.svgArea.each(function (i, children) {
+        if (this.hasClass('selectedElem')) {
+          this.cx(e.offsetX - _that.x + this.cxLast);
+          this.cy(e.offsetY - _that.y + this.cyLast);
+          //console.log(this.cx());
           _that.app.updateFunctionalArea(_that.selectElements);
           // _that.saveHistory();
         }
@@ -279,7 +295,10 @@ export class Model {
     let isDraw = false;
     this.svgArea.mousedown((e) => {
       if (e.which === 1) {
-        if (!e.ctrlKey) {
+        //console.log(this.setSelectElements.size);
+        let isOnSelect = this.selectElements.filter((item) => item.inside(e.offsetX, e.offsetY)).length;
+        //console.log(isOnSelect);
+        if (!e.ctrlKey && !isOnSelect) {
           this.removeSelect();
           this.app.removeVisibilityPanel(this.selectElements);
           this.svgArea.each(function (i, children) {
