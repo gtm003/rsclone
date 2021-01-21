@@ -80,6 +80,7 @@ export class Model {
       if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
         _that.setSelectElements.add(this);
         _that.selectElements = [..._that.setSelectElements];
+        console.log(this.size());
         this.addClass('selectedElem');
         this.selectize().resize();
         _that.onMouseMoveG();
@@ -306,6 +307,7 @@ export class Model {
         console.log(_that.segmentPathStraight);
       } else {
         isDraw = false;
+        _that.purgeSVGArea();
         _that.saveHistory();
       }
     });
@@ -318,7 +320,7 @@ export class Model {
   }
 
   removeSelect() {
-    this.svgArea.each(function (i, children) {
+    this.svgArea.each(function () {
       if (this.hasClass('selectedElem')) {
         this.removeClass('selectedElem');
         this.resize('stop').selectize(false);
@@ -401,6 +403,15 @@ export class Model {
     const svgAreaNode = this.rootElement.childNodes[0];
     [...svgAreaNode.childNodes].forEach(item => {
       if (item.tagName.toLowerCase() === 'defs') item.remove();
+    })
+  }
+
+  purgeSVGArea() {
+    this.svgArea.each(function() {
+      //console.log(`${this.type}, ${this.width()}, ${this.height()}`);
+      if (!(this.type === 'text' || this.type === 'defs') && this.width() === 0 && this.height() === 0) {
+        this.remove();
+      }
     })
   }
 }
