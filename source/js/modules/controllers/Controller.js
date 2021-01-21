@@ -22,7 +22,6 @@ export class Controller {
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
 
     this.copiedElements = [];
-    this.counter = this.makeCounter();
   }
 
   init() {
@@ -36,13 +35,14 @@ export class Controller {
     this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
 
-    this.keyUpProperties();
-    this.clickAlignPanel();
+    this.onPropertiesKeyUp();
+    this.onAlignPanelClick();
     this.clickDelete();
-    this.appearContextMenu();
-    this.clickContextMenuElements();
-    this.changeLanguage();
-    this.clickHotKeys();
+    this.onContextMenuClick();
+    this.onContextMenuElementsClick();
+    this.onSwitcherLanguageClick();
+    this.onHotKeysKeyUp();
+    this.bringToFront();
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
   }
 
@@ -89,7 +89,7 @@ export class Controller {
       this.createNewImage();
       this.model.selectElements = [];
       this.appView.removeVisibilityPanel(this.model.selectElements);
-      this.appearContextMenu();
+      this.onContextMenuClick();
     }
 
     if (target.dataset['menu'] === 'Save SVG') {
@@ -206,7 +206,7 @@ export class Controller {
     const file = input.files[0];
     const fileName = file.name.toLowerCase();
 
-    if(fileName.endsWith(FILE_TYPE)) {
+    if (fileName.endsWith(FILE_TYPE)) {
       const reader = new FileReader();
 
       reader.addEventListener('load', () => {
@@ -217,11 +217,7 @@ export class Controller {
     }
   }
 
-  onKeyDownProperties() {
-    console.log(this.appView);
-  }
-
-  keyUpProperties() {
+  onPropertiesKeyUp() {
     const childrenFunctionalAreaContainer = this.appView.functionalAreaContainer.childNodes;
     for (let i = 0; i < childrenFunctionalAreaContainer.length; i += 1) {
       const label = [...childrenFunctionalAreaContainer[i].childNodes].filter((item) => item.tagName === 'LABEL');
@@ -265,7 +261,7 @@ export class Controller {
     }
   }
 
-  clickAlignPanel() {
+  onAlignPanelClick() {
     const alignPanelBtn = this.appView.functionalAreaContainer.childNodes[this.appView.functionalAreaContainer.childNodes.length - 1].childNodes;
     for (let i = 0; i < alignPanelBtn.length; i += 1) {
       alignPanelBtn[i].addEventListener('click', () => {
@@ -322,11 +318,10 @@ export class Controller {
 
   pasteElements() {
     if (this.copiedElements.length > 0) {
-      let offset = this.counter();
       this.copiedElements.forEach((item) => {
         const elementCopy = item.clone();
-        elementCopy.attr('x', this.model.x + offset);
-        elementCopy.attr('y', this.model.y + offset);
+        elementCopy.attr('x', this.model.x);
+        elementCopy.attr('y', this.model.y);
         this.model.svgArea.add(elementCopy);
       });
     }
@@ -344,20 +339,41 @@ export class Controller {
     }
   }
 
-  appearContextMenu() {
+  bringToFront() {
+    console.log(this.appView.sheet);
+  }
+
+  onContextMenuClick() {
     const svgArea = this.appView.sheet.childNodes[0];
     svgArea.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       this.appView.contextMenuWindow.classList.remove('visibility-modal');
       this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
       this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
-      if (this.model.selectElements.length > 0 && this.copiedElements.length === 0) { // выделено, но не скопировали (вызывается на Element)
-        this.appView.contextMenuWindow.childNodes[2].disabled = true;
-      } else if (this.model.selectElements.length >= 0 && this.copiedElements.length > 0) { // выделено, и скопировали (вызывается на Element)
+      if (this.model.selectElements.length === 0 && this.copiedElements.length > 0) { // выделено, скопировали (вызывается на svgArea)
+        this.appView.contextMenuWindow.childNodes[0].disabled = true;
+        this.appView.contextMenuWindow.childNodes[1].disabled = true;
         this.appView.contextMenuWindow.childNodes[2].disabled = false;
-      } else if (this.model.selectElements.length === 0 && this.copiedElements.length === 0) { // не выделено, и скопировали (вызывается на svgArea)
+        this.appView.contextMenuWindow.childNodes[3].disabled = true;
+        this.appView.contextMenuWindow.childNodes[4].disabled = true;
+      } else if (this.model.selectElements.length > 0 && this.copiedElements.length === 0) { // выделено, и не скопировали (вызывается на Element)
+        this.appView.contextMenuWindow.childNodes[0].disabled = false;
+        this.appView.contextMenuWindow.childNodes[1].disabled = false;
+        this.appView.contextMenuWindow.childNodes[2].disabled = true;
+        this.appView.contextMenuWindow.childNodes[3].disabled = false;
+        this.appView.contextMenuWindow.childNodes[4].disabled = false;
+      } else if (this.model.selectElements.length === 0 && this.copiedElements.length === 0) {
+        this.appView.contextMenuWindow.childNodes[0].disabled = true;
         this.appView.contextMenuWindow.childNodes[1].disabled = true;
         this.appView.contextMenuWindow.childNodes[2].disabled = true;
+        this.appView.contextMenuWindow.childNodes[3].disabled = true;
+        this.appView.contextMenuWindow.childNodes[4].disabled = true;
+      } else if (this.model.selectElements.length > 0 && this.copiedElements.length > 0) {
+        this.appView.contextMenuWindow.childNodes[0].disabled = false;
+        this.appView.contextMenuWindow.childNodes[1].disabled = false;
+        this.appView.contextMenuWindow.childNodes[2].disabled = false;
+        this.appView.contextMenuWindow.childNodes[3].disabled = false;
+        this.appView.contextMenuWindow.childNodes[4].disabled = false;
       }
     });
 
@@ -370,7 +386,7 @@ export class Controller {
     this.appView.contextMenuWindow.classList.add('visibility-modal');
   }
 
-  clickContextMenuElements() {
+  onContextMenuElementsClick() {
     const deleteBtn = this.appView.contextMenuWindow.childNodes[0];
     const copyBtn = this.appView.contextMenuWindow.childNodes[1];
     const pasteBtn = this.appView.contextMenuWindow.childNodes[2];
@@ -385,7 +401,7 @@ export class Controller {
     copyBtn.addEventListener('click', () => {
       this.copyElements();
       this.deleteVisibilityContextMenu();
-      this.model.saveHistory();
+      // this.model.saveHistory();
     });
 
     pasteBtn.addEventListener('click', () => {
@@ -395,7 +411,7 @@ export class Controller {
     });
   }
 
-  changeLanguage() {
+  onSwitcherLanguageClick() {
     const checkbox = this.appView.switcherContainer.childNodes[0];
     const menuButtons = [...this.appView.menuContainer.childNodes].filter((item) => item.textContent.length !== 0);
     const toolTips = [...this.appView.toolsLeftContainer.childNodes].map((item) => item.lastChild);
@@ -434,15 +450,7 @@ export class Controller {
     });
   }
 
-  makeCounter() {
-    let count = 0;
-    return function () {
-      count += 10;
-      return count;
-    };
-  }
-
-  clickHotKeys() {
+  onHotKeysKeyUp() {
     document.addEventListener('keyup', (e) => {
       if (e.key === 'Delete') {
         this.deleteElements();

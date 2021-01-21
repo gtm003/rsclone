@@ -5,5 +5,6 @@ const TOOLS_LEFT_NAMES_EN = ['select', 'rect', 'ellipse', 'line', 'text', 'penci
 const MENU_BUTTONS_NAMES_RUS = ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'];
 const CONTEXTMENU_NAMES_RUS = ['Удалить', 'Копировать', 'Вставить', 'На передний план', 'На задний план'];
 const TOOLS_LEFT_NAMES_RUS = ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Карандаш', 'Путь', 'Цвет заливки', 'Цвет контура'];
+const FUNCTIONAL_AREA_ICONS = ['delete.svg', 'path.svg', 'angle.svg', 'width.svg', 'height.svg'];
 
-export {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS};
+export {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS, FUNCTIONAL_AREA_ICONS};
