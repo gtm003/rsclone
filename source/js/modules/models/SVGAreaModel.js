@@ -53,18 +53,25 @@ export class Model {
     };
 
     this.history = [];
-    this.historyPosition = -1;
-    this.unDo = this.unDo.bind(this);
-    this.reDo = this.reDo.bind(this);
+    this.historyPosition = 0;
+    this.isFirstSaveHistory = false;
+    this.wasMoved = false;
   }
 
   init() {
-    this.createSvgWorkArea('600', '400');
+    this.createNewSvgWorkArea();
+    this.loadLastCondition();
+    this.isFirstSaveHistory = true;
+    this.saveHistory();
   }
 
-  createSvgWorkArea(svgWidth, svgHeight) {
-    this.svgArea = SVG(this.rootElement).size(svgWidth, svgHeight);
+  createNewSvgWorkArea() {
+    this.svgArea = SVG(this.rootElement).size('600', '400');
     this.svgArea.node.classList.add('svg-work-area');
+  }
+
+  resizeSvgArea(svgWidth, svgHeight) {
+    this.svgArea.size(svgWidth, svgHeight);
   }
 
   selectElem(e) {
@@ -335,32 +342,65 @@ export class Model {
   }
 
   saveHistory() {
+    const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
     this.history = this.history.slice(0, this.historyPosition + 1);
-    this.history.push(this.rootElement.childNodes[0].innerHTML);
-    this.incrementPosition();
+    this.history.push(svgInnerWithoutSelect);
+    if (!this.isFirstSaveHistory) this.historyPosition++;
+    this.isFirstSaveHistory = false;
   }
 
-  incrementPosition() {
-    this.historyPosition += 1;
-  }
+  getSvgInnerWithoutSelect() {
+    const svgWorkAreaNode = this.rootElement.childNodes[0];
+    const tempDivElement = document.createElement('div');
+    tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
 
-  decrementPosition() {
-    this.historyPosition -= 1;
+    [...tempDivElement.childNodes].forEach(item => {
+      // if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
+      if (item.tagName.toLowerCase() === 'g') item.remove();
+      if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
+    })
+
+    const svgInnerWithoutSelect = tempDivElement.innerHTML;
+    tempDivElement.remove();
+
+    return svgInnerWithoutSelect;
   }
 
   unDo() {
-    if (this.historyPosition < 0) return;
-    this.decrementPosition();
-    this.rootElement.innerHTML = '';
-    this.init();
+    if (!this.historyPosition) return;
+    this.historyPosition -= 1;
+    // this.rootElement.innerHTML = '';
+    // this.createNewSvgWorkArea();
+    this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
 
   reDo() {
     if (this.historyPosition > this.history.length - 2) return;
-    this.incrementPosition();
-    this.rootElement.innerHTML = '';
-    this.init();
+    this.historyPosition += 1;
+    // this.rootElement.innerHTML = '';
+    // this.createNewSvgWorkArea();
+    this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
+  }
+
+  saveLastCondition() {
+    this.removeSelect();
+    this.removeDefs();
+    const svgAreaInner = this.rootElement.childNodes[0].innerHTML;
+    localStorage.setItem('SvgEditor_lastCondition', svgAreaInner);
+  }
+
+  loadLastCondition() {
+    const lastCondition = localStorage.getItem('SvgEditor_lastCondition');
+    if (!lastCondition) return;
+    this.svgArea.svg(lastCondition);
+  }
+
+  removeDefs() {
+    const svgAreaNode = this.rootElement.childNodes[0];
+    [...svgAreaNode.childNodes].forEach(item => {
+      if (item.tagName.toLowerCase() === 'defs') item.remove();
+    })
   }
 }
