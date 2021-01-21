@@ -80,7 +80,6 @@ export class Model {
       if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
         _that.setSelectElements.add(this);
         _that.selectElements = [..._that.setSelectElements];
-        console.log(this.size());
         this.addClass('selectedElem');
         this.selectize().resize();
         _that.onMouseMoveG();
@@ -346,6 +345,10 @@ export class Model {
   saveHistory() {
     const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
     this.history = this.history.slice(0, this.historyPosition + 1);
+    //     Предлагаю такую проверку:
+    //if (!(svgInnerWithoutSelect === this.history[this.historyPosition])) {
+    //  this.history.push(svgInnerWithoutSelect);
+    //};
     this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
@@ -409,7 +412,7 @@ export class Model {
   purgeSVGArea() {
     this.svgArea.each(function() {
       //console.log(`${this.type}, ${this.width()}, ${this.height()}`);
-      if (!(this.type === 'text' || this.type === 'defs') && this.width() === 0 && this.height() === 0) {
+      if (!(this.type === 'text' || this.type === 'defs' || this.type === 'g') && this.width() === 0 && this.height() === 0) {
         this.remove();
       }
     })
