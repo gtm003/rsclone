@@ -88,7 +88,7 @@ export class Controller {
     if (target.dataset['menu'] === 'New Image') {
       this.createNewImage();
       this.model.selectElements = [];
-      this.appView.removeVisibilityPanel(this.model.selectElements);
+      // this.appView.removeVisibilityPanel(this.model.selectElements);
       this.onContextMenuClick();
     }
 
@@ -107,13 +107,13 @@ export class Controller {
     if (target.dataset['menu'] === 'Undo') {
       this.model.unDo();
       // this.appearContextMenu();
-      this.appView.removeVisibilityPanel(this.model.selectElements);
+      // this.appView.removeVisibilityPanel(this.model.selectElements);
     }
 
     if (target.dataset['menu'] === 'Redo') {
       this.model.reDo();
       // this.appearContextMenu();
-      this.appView.removeVisibilityPanel(this.model.selectElements);
+      // this.appView.removeVisibilityPanel(this.model.selectElements);
     }
   }
 
@@ -309,7 +309,7 @@ export class Controller {
     }
     this.model.selectElements = [];
     this.copiedElements = [];
-    this.appView.removeVisibilityPanel(this.model.selectElements);
+    // this.appView.removeVisibilityPanel(this.model.selectElements);
   }
 
   copyElements() {
@@ -394,7 +394,7 @@ export class Controller {
     deleteBtn.addEventListener('click', () => {
       this.deleteElements();
       this.deleteVisibilityContextMenu();
-      this.appView.removeVisibilityPanel(this.model.selectElements);
+      // this.appView.removeVisibilityPanel(this.model.selectElements);
       this.model.saveHistory();
     });
 
