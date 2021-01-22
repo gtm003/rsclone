@@ -79,7 +79,7 @@ export class Model {
     const _that = this;
     this.svgArea.each(function (i, children) {
       if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-        console.log(this);
+        //console.log(this);
         _that.setSelectElements.add(this);
         _that.selectElements = [..._that.setSelectElements];
         this.addClass('selectedElem');
@@ -113,7 +113,7 @@ export class Model {
   }
 
   createText(e) {
-    this.elem = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.text('text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     this.elem.addClass('inputText');
     this.elem.font({
       family: 'Helvetica',
@@ -140,7 +140,7 @@ export class Model {
       let arr = this.path.array().value;
       arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
       this.path.plot(arr);
-      console.log(arr);
+      //console.log(arr);
     } else {
       this.path = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
     }
@@ -307,11 +307,6 @@ export class Model {
         if (!e.ctrlKey && !isOnSelect) {
           this.removeSelect();
           this.app.removeVisibilityPanel(this.selectElements);
-          //this.svgArea.each(function (i, children) {
-          //  if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
-          //    this.removeClass('inputText');
-          //  }
-          //});
         }
         isDraw = true;
         this.x = e.offsetX;
@@ -325,6 +320,12 @@ export class Model {
       }
     });
     this.svgArea.mouseup(function (e) {
+      if (_that.elem !== null) {
+        if (_that.isEmptyElem(_that.elem)) {
+          console.log('create empty elem');
+          _that.remove();
+        }
+      }
       //console.log(_that.type === 'path');
       if (_that.type === 'path') {
         _that.segmentPathStraight = true;
@@ -338,7 +339,7 @@ export class Model {
         _that.selectElements = [..._that.setSelectElements];
         if (_that.type !== 'text') _that.elem = null;
         }
-        _that.purgeSVGArea();
+        //_that.purgeSVGArea();
         _that.saveHistory();
       }
     });
@@ -441,14 +442,22 @@ export class Model {
     })
   }
 
-  purgeSVGArea() {
+  isEmptyElem(elem) {
+    if ((elem.type === 'rect' || elem.type === 'ellipse' || elem.type === 'line' || elem.type === 'path') && elem.width() === 0 && elem.height() === 0)
+    return true;
+    if (elem.type === 'text' && elem.length() === 0)
+    return true;
+    else
+    return false;
+  }
+  /*  purgeSVGArea() {
     const _that = this;
     this.svgArea.each(function() {
-      //console.log(`${this.type}, ${this.width()}, ${this.height()}`);
+      console.log(`${this.type}, ${this.width()}, ${this.height()}, empty: ${_that.isEmptyElem(this)}`);
       if (!(this.type === 'text' || this.type === 'defs' || this.type === 'g') && this.width() === 0 && this.height() === 0) {
-        _that.removeSelect();
-        this.remove();
+        //_that.removeSelect();
+        //this.remove();
       }
     })
-  }
+  }*/
 }
