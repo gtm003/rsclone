@@ -87,6 +87,7 @@ export class Model {
         _that.cyLast = this.cy();
       }
     });
+
     this.svgArea.each(function (i, children) {
       if (this.hasClass('selectedElem')) {
         this.cxLast = this.cx();
@@ -295,9 +296,11 @@ export class Model {
     let isDraw = false;
     this.svgArea.mousedown((e) => {
       if (e.which === 1) {
-        //console.log(this.setSelectElements.size);
-        let isOnSelect = this.selectElements.filter((item) => item.inside(e.offsetX, e.offsetY)).length;
-        //console.log(isOnSelect);
+        let isOnSelect = false;
+        this.svgArea.each(function() {
+          if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
+        })
+        //let isOnSelect = this.selectElements.filter((item) => item.inside(e.offsetX, e.offsetY)).length;
         if (!e.ctrlKey && !isOnSelect) {
           this.removeSelect();
           this.app.removeVisibilityPanel(this.selectElements);
