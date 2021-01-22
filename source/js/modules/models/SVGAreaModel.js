@@ -14,12 +14,13 @@ export class Model {
     this.fillColor = 'transparent';
     this.strokeColor = 'rgba(0, 0, 0, 1)';
 
-    this.rect = null;
-    this.ellipse = null;
-    this.line = null;
-    this.text = null;
-    this.pencil = null;
-    this.pencilNodeCount = 0;
+    this.elem = null;
+    //this.rect = null;
+    //this.ellipse = null;
+    //this.line = null;
+    //this.text = null;
+    //this.pencil = null;
+    //this.pencilNodeCount = 0;
     this.path = null;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
@@ -46,7 +47,7 @@ export class Model {
       rect: (e) => this.drawRect(e),
       ellipse: (e) => this.drawEllipse(e),
       line: (e) => this.drawLine(e),
-      text: (e) => this.drawText(e),
+      text: (e) => this.sizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.addPathNewNode(e),
       //fill : (e) => this.colorElem(e),
@@ -78,6 +79,7 @@ export class Model {
     const _that = this;
     this.svgArea.each(function (i, children) {
       if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
+        console.log(this);
         _that.setSelectElements.add(this);
         _that.selectElements = [..._that.setSelectElements];
         this.addClass('selectedElem');
@@ -99,21 +101,21 @@ export class Model {
   }
 
   createRect(e) {
-    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createEllipse(e) {
-    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createLine(e) {
-    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createText(e) {
-    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    this.text.addClass('inputText');
-    this.text.font({
+    this.elem = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.addClass('inputText');
+    this.elem.font({
       family: 'Helvetica',
       size: 16,
       anchor: 'left',
@@ -121,15 +123,15 @@ export class Model {
     });
     let textInput = '';
     document.addEventListener('keydown', (event) => {
-      if (this.text.hasClass('inputText') && event.key.length < 2) {
+      if (this.type === 'text' && event.key.length < 2) {
         textInput += event.key;
-        this.text.plain(`${textInput}`);
+        this.elem.plain(`${textInput}`);
       }
     });
   }
 
   createPencilTrace(e) {
-    this.pencil = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   drawPath(e) {
@@ -203,7 +205,7 @@ export class Model {
       } else if (e.offsetY >= this.y) {
         yNew = this.y;
       }
-      this.rect.attr({
+      this.elem.attr({
         width: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
         height: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
         x: xNew,
@@ -212,7 +214,7 @@ export class Model {
     } else {
       xNew = Math.min(e.offsetX, this.x);
       yNew = Math.min(e.offsetY, this.y);
-      this.rect.attr({
+      this.elem.attr({
         width: Math.abs(e.offsetX - this.x),
         height: Math.abs(e.offsetY - this.y),
         x: xNew,
@@ -223,12 +225,12 @@ export class Model {
 
   drawEllipse(e) {
     if (e.shiftKey) {
-      this.ellipse.attr({
+      this.elem.attr({
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
     } else {
-      this.ellipse.attr({
+      this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),
         ry: Math.abs(e.offsetY - this.y),
       });
@@ -254,29 +256,30 @@ export class Model {
           yEnd = this.y;
         }
       }
-      this.line.attr({
+      this.elem.attr({
         x2: xEnd,
         y2: yEnd,
       })
     } else {
-      this.line.attr({
+      this.elem.attr({
         x2: e.offsetX,
         y2: e.offsetY,
       });
     }
   }
 
-  drawText(e) {
-    this.text.font({
+  sizeText(e) {
+    this.elem.font({
       family: 'Helvetica',
       size: Math.abs(e.offsetY - this.y),
+      y: e.offsetY,
     });
   }
 
   drawPencilTrace(e) {
-    let arr = this.pencil.array().value;
+    let arr = this.elem.array().value;
     arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-    this.pencil.plot(arr);
+    this.elem.plot(arr);
   }
 
   addPathNewNode(e) {
@@ -304,11 +307,11 @@ export class Model {
         if (!e.ctrlKey && !isOnSelect) {
           this.removeSelect();
           this.app.removeVisibilityPanel(this.selectElements);
-          this.svgArea.each(function (i, children) {
-            if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
-              this.removeClass('inputText');
-            }
-          });
+          //this.svgArea.each(function (i, children) {
+          //  if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
+          //    this.removeClass('inputText');
+          //  }
+          //});
         }
         isDraw = true;
         this.x = e.offsetX;
@@ -328,6 +331,13 @@ export class Model {
         console.log(_that.segmentPathStraight);
       } else {
         isDraw = false;
+        if (_that.elem !== null) {
+        _that.elem.selectize().resize();
+        _that.elem.addClass('selectedElem');
+        _that.setSelectElements.add(_that.elem);
+        _that.selectElements = [..._that.setSelectElements];
+        if (_that.type !== 'text') _that.elem = null;
+        }
         _that.purgeSVGArea();
         _that.saveHistory();
       }
@@ -432,9 +442,11 @@ export class Model {
   }
 
   purgeSVGArea() {
+    const _that = this;
     this.svgArea.each(function() {
       //console.log(`${this.type}, ${this.width()}, ${this.height()}`);
       if (!(this.type === 'text' || this.type === 'defs' || this.type === 'g') && this.width() === 0 && this.height() === 0) {
+        _that.removeSelect();
         this.remove();
       }
     })
