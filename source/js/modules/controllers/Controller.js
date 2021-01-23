@@ -25,7 +25,7 @@ export class Controller {
 
   init() {
     this.model.init();
-
+    this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
     this.appView.palleteCanvas.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
 
