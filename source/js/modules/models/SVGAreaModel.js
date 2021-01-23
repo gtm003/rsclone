@@ -38,12 +38,12 @@ export class Model {
     this.foo(e);
     this.getTypeOfMouseDownAction(this.type, e);
     this.svgArea.mousemove(this.onSvgAreaMouseMove);
+    this.svgArea.mouseup(this.onSvgAreaMouseUp);
   }
 
   onSvgAreaMouseMove(e) {
     this.getTypeOfMouseMoveAction(this.type, e);
     this.wasMoved = true;
-    this.svgArea.mouseup(this.onSvgAreaMouseUp);
   }
 
   onSvgAreaMouseUp() {
@@ -158,6 +158,8 @@ export class Model {
         this.text.plain(`${textInput}`);
       }
     });
+
+    this.saveHistory();
   }
 
   changeFillColor(e) {
@@ -188,7 +190,6 @@ export class Model {
           this.cx(e.offsetX - _that.x + _that.cxLast);
           this.cy(e.offsetY - _that.y + _that.cyLast);
           _that.app.updateFunctionalArea(_that.selectElements);
-          // _that.saveHistory();
         }
       });
     }
@@ -310,7 +311,6 @@ export class Model {
     this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
-    console.log(this.history);
   }
 
   getSvgInnerWithoutSelect() {
@@ -319,7 +319,6 @@ export class Model {
     tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
 
     [...tempDivElement.childNodes].forEach(item => {
-      // if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
       if (item.tagName.toLowerCase() === 'g') item.remove();
       if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
     })
@@ -333,8 +332,6 @@ export class Model {
   unDo() {
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
@@ -342,8 +339,6 @@ export class Model {
   reDo() {
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }

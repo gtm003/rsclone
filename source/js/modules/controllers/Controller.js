@@ -45,8 +45,8 @@ export class Controller {
   }
 
   onToolsLeftClick({ target }) {
-    const toolButtonId = target.closest('button').id;
-    if (toolButtonId) {
+    if (target.closest('button')) {
+      const toolButtonId = target.closest('button').id;
       this.model.type = toolButtonId;
       this.model.svgArea.mousedown(null);
       this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
