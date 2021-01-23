@@ -1,5 +1,5 @@
 import {Model} from '../models/SVGAreaModel';
-import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
+import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 const FILE_TYPE = 'svg';
 
@@ -7,8 +7,6 @@ export class Controller {
   constructor(appView, placeForSVGCanvas) {
     this.fill = 'none';
     this.stroke = 'black';
-    //this.select = null;
-    //this.mouse = null;
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
@@ -36,7 +34,7 @@ export class Controller {
 
   init() {
     this.model.init();
-
+    this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
     this.appView.palleteCanvas.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
 
@@ -61,23 +59,19 @@ export class Controller {
     this.appView.sheet.addEventListener('mousedown', this.onContextMenuMouseDown);
     this.appView.contextMenuWindow.addEventListener('click', this.onContextMenuElementsClick);
     this.appView.switcherContainer.addEventListener('click', this.onSwitcherLanguageClick);
-    // this.onHotKeysKeyUp();
     document.addEventListener('keyup', this.onHotKeysKeyUp);
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
   }
 
   onToolsLeftClick({target}) {
-    while (target !== this.appView.toolsLeftContainer) {
-      if (target.nodeName === 'BUTTON') {
-        this.model.type = target.id;
-        this.model.removeLastEvent();
-        this.model.onSVGAreaEvent();
-        if (target.id === 'fill' || target.id === 'stroke') {
-          this.appView.palleteCanvas.openColorPicker();
-        }
-        return;
+    if (target.closest('button')) {
+      const toolButtonId = target.closest('button').id;
+      this.model.type = toolButtonId;
+      this.model.svgArea.mousedown(null);
+      this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
+      if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
+        this.appView.palleteCanvas.openColorPicker();
       }
-      target = target.parentNode;
     }
   }
 
@@ -268,7 +262,7 @@ export class Controller {
   }
 
   onContextMenuClick(evt) {
-    if (evt.target.parentElement.tagName === 'svg') {
+    if (evt.target.parentElement.tagName === 'svg' || evt.target.tagName) {
       this.appearContextMenu(evt);
     }
   }
@@ -397,7 +391,6 @@ export class Controller {
       this.model.selectElements[i].remove();
     }
     this.model.selectElements = [];
-    this.copiedElements = [];
     this.appView.removeVisibilityPanel(this.model.selectElements);
     this.deleteVisibilityContextMenu();
     this.model.saveHistory();
