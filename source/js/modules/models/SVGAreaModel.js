@@ -14,48 +14,115 @@ export class Model {
     this.fillColor = 'transparent';
     this.strokeColor = 'rgba(0, 0, 0, 1)';
 
-    this.rect = null;
-    this.ellipse = null;
-    this.line = null;
-    this.text = null;
-    this.pencil = null;
-    this.pencilNodeCount = 0;
+    this.elem = null;
+    //this.rect = null;
+    //this.ellipse = null;
+    //this.line = null;
+    //this.text = null;
     this.path = null;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
+    this.target = null;
     this.cxLast = null;
     this.cyLast = null;
     this.x = null;
     this.y = null;
 
-    this.onSVGAreaMouseDown = {
+    this.history = [];
+    this.historyPosition = 0;
+    this.isFirstSaveHistory = false;
+    this.wasMoved = false;
+
+    this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
+    this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
+    this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
+  }
+
+  onSvgAreaMouseDown(e) {
+    this.target = e.target.nodeName;
+    console.log(this.target);
+    this.checkSelectedElem(e);
+    this.getTypeOfMouseDownAction(this.type, e);
+    if (this.type !== 'fill' && this.type !== 'stroke') { // This is a temporary option
+      this.svgArea.mousemove(this.onSvgAreaMouseMove);
+    }
+    this.svgArea.mouseup(this.onSvgAreaMouseUp);
+  }
+
+  onSvgAreaMouseMove(e) {
+    this.getTypeOfMouseMoveAction(this.type, e);
+    this.wasMoved = true;
+  }
+
+  onSvgAreaMouseUp() {
+    this.getTypeOfMouseUpAction(this.type);
+    if (this.wasMoved) this.saveHistory();
+    this.wasMoved = false;
+    this.svgArea.mousemove(null);
+    this.svgArea.mouseup(null);
+  }
+
+  getTypeOfMouseDownAction(type, e) {
+    const mouseDownActions = {
       select: (e) => this.selectElem(e),
       rect: (e) => this.createRect(e),
       ellipse: (e) => this.createEllipse(e),
       line: (e) => this.createLine(e),
       text: (e) => this.createText(e),
       pencil : (e) => this.createPencilTrace(e),
-      path: (e) => this.drawPath(e),
+      path: (e) => this.createPath(e),
       fill: (e) => this.changeFillColor(e),
       stroke: (e) => this.changeStrokeColor(e),
-    };
+    }
 
-    this.onSVGAreaMouseMove = {
+    return mouseDownActions[type](e);
+  }
+
+  getTypeOfMouseMoveAction(type, e) {
+    const mouseMoveActions = {
       select: (e) => this.moveElem(e),
       rect: (e) => this.drawRect(e),
       ellipse: (e) => this.drawEllipse(e),
       line: (e) => this.drawLine(e),
-      text: (e) => this.drawText(e),
+      text: (e) => this.sizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.addPathNewNode(e),
-      //fill : (e) => this.colorElem(e),
-    };
+      fill : (e) => this.thinkAboutIt(e),
+      stroke : (e) => this.thinkAboutIt(e),
+    }
 
-    this.history = [];
-    this.historyPosition = 0;
-    this.isFirstSaveHistory = false;
-    this.wasMoved = false;
+    return mouseMoveActions[type](e);
+  }
+
+  getTypeOfMouseUpAction(type) {
+    const mouseUpActions = {
+      select: () => this.stopMoveElem(),
+      rect: () => this.finishDrawElem(),
+      ellipse: () => this.finishDrawElem(),
+      line: () => this.finishDrawElem(),
+      text: () => this.finishResizeText(),
+      pencil: () => this.finishDrawElem(),
+      path: () => this.thinkAboutIt(),
+      fill : () => this.thinkAboutIt(),
+      stroke : () => this.thinkAboutIt(),
+    }
+
+    return mouseUpActions[type]();
+  }
+
+  checkSelectedElem(e) {
+    let isOnSelect = false;
+    this.svgArea.each(function() {
+      if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
+    })
+    if (!e.ctrlKey && !isOnSelect) {
+      this.removeSelect();
+      this.app.removeVisibilityPanel(this.selectElements);
+    }
+    this.isDraw = true;
+    this.x = e.offsetX;
+    this.y = e.offsetY;
   }
 
   init() {
@@ -74,6 +141,10 @@ export class Model {
     this.svgArea.size(svgWidth, svgHeight);
   }
 
+  thinkAboutIt(e) {
+    console.log(`${this.type}: mouseEvent: ${e.type}. Whats should happen?`)
+  }
+
   selectElem(e) {
     const _that = this;
     this.svgArea.each(function (i, children) {
@@ -87,6 +158,7 @@ export class Model {
         _that.cyLast = this.cy();
       }
     });
+
     this.svgArea.each(function (i, children) {
       if (this.hasClass('selectedElem')) {
         this.cxLast = this.cx();
@@ -98,21 +170,21 @@ export class Model {
   }
 
   createRect(e) {
-    this.rect = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createEllipse(e) {
-    this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createLine(e) {
-    this.line = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createText(e) {
-    this.text = this.svgArea.text('input text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    this.text.addClass('inputText');
-    this.text.font({
+    this.elem = this.svgArea.text('text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.addClass('inputText');
+    this.elem.font({
       family: 'Helvetica',
       size: 16,
       anchor: 'left',
@@ -120,15 +192,16 @@ export class Model {
     });
     let textInput = '';
     document.addEventListener('keydown', (event) => {
-      if (this.text.hasClass('inputText') && event.key.length < 2) {
+      if (this.type === 'text' && event.key.length < 2) {
         textInput += event.key;
-        this.text.plain(`${textInput}`);
+        this.elem.plain(`${textInput}`);
       }
     });
+    this.saveHistory();
   }
 
   createPencilTrace(e) {
-    this.pencil = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
   }
 
   drawPath(e) {
@@ -137,7 +210,7 @@ export class Model {
       let arr = this.path.array().value;
       arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
       this.path.plot(arr);
-      console.log(arr);
+      //console.log(arr);
     } else {
       this.path = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
     }
@@ -202,7 +275,7 @@ export class Model {
       } else if (e.offsetY >= this.y) {
         yNew = this.y;
       }
-      this.rect.attr({
+      this.elem.attr({
         width: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
         height: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
         x: xNew,
@@ -211,7 +284,7 @@ export class Model {
     } else {
       xNew = Math.min(e.offsetX, this.x);
       yNew = Math.min(e.offsetY, this.y);
-      this.rect.attr({
+      this.elem.attr({
         width: Math.abs(e.offsetX - this.x),
         height: Math.abs(e.offsetY - this.y),
         x: xNew,
@@ -222,12 +295,12 @@ export class Model {
 
   drawEllipse(e) {
     if (e.shiftKey) {
-      this.ellipse.attr({
+      this.elem.attr({
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
     } else {
-      this.ellipse.attr({
+      this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),
         ry: Math.abs(e.offsetY - this.y),
       });
@@ -253,29 +326,29 @@ export class Model {
           yEnd = this.y;
         }
       }
-      this.line.attr({
+      this.elem.attr({
         x2: xEnd,
         y2: yEnd,
       })
     } else {
-      this.line.attr({
+      this.elem.attr({
         x2: e.offsetX,
         y2: e.offsetY,
       });
     }
   }
 
-  drawText(e) {
-    this.text.font({
+  sizeText(e) {
+    this.elem.font({
       family: 'Helvetica',
       size: Math.abs(e.offsetY - this.y),
     });
   }
 
   drawPencilTrace(e) {
-    let arr = this.pencil.array().value;
+    let arr = this.elem.array().value;
     arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-    this.pencil.plot(arr);
+    this.elem.plot(arr);
   }
 
   addPathNewNode(e) {
@@ -290,51 +363,40 @@ export class Model {
     }
   }
 
-  onSVGAreaEvent() {
-    const _that = this;
-    let isDraw = false;
-    this.svgArea.mousedown((e) => {
-      if (e.which === 1) {
-        //console.log(this.setSelectElements.size);
-        let isOnSelect = this.selectElements.filter((item) => item.inside(e.offsetX, e.offsetY)).length;
-        //console.log(isOnSelect);
-        if (!e.ctrlKey && !isOnSelect) {
-          this.removeSelect();
-          this.app.removeVisibilityPanel(this.selectElements);
-          this.svgArea.each(function (i, children) {
-            if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
-              this.removeClass('inputText');
-            }
-          });
-        }
-        isDraw = true;
-        this.x = e.offsetX;
-        this.y = e.offsetY;
-        this.onSVGAreaMouseDown[this.type](e);
-      }
-    });
-    this.svgArea.mousemove((e) => {
-      if (isDraw) {
-        this.onSVGAreaMouseMove[this.type](e);
-      }
-    });
-    this.svgArea.mouseup(function (e) {
-      //console.log(_that.type === 'path');
-      if (_that.type === 'path') {
-        _that.segmentPathStraight = true;
-        console.log(_that.segmentPathStraight);
-      } else {
-        isDraw = false;
-        _that.purgeSVGArea();
-        _that.saveHistory();
-      }
-    });
+  finishDrawElem() {
+    if (this.isEmptyElem(this.elem)) {
+      console.log('create empty elem');
+      this.elem.remove();
+      //console.log(e.target);
+      this.elem = this.svgArea.last();
+      //console.log(elem);
+    }
+    if (this.target === 'svg') {
+      this.isDraw = false;
+      console.log(`finish mouse up ${this.elem.type}`);
+      this.elem.selectize().resize();
+      this.elem.addClass('selectedElem');
+      this.setSelectElements.add(this.elem);
+      this.selectElements = [...this.setSelectElements];
+    } else {
+      this.type = 'select';
+    }
   }
 
-  removeLastEvent() {
-    this.svgArea.mousedown(null);
-    this.svgArea.mousemove(null);
-    this.svgArea.mouseup(null);
+  finishResizeText() {
+    if (this.isEmptyElem(this.elem)) {
+      this.elem.remove();
+      this.elem = this.svgArea.last();
+    }
+    this.isDraw = false;
+    this.elem.selectize().resize();
+    this.elem.addClass('selectedElem');
+    this.setSelectElements.add(this.elem);
+    this.selectElements = [...this.setSelectElements];
+  }
+
+  stopMoveElem() {
+    this.isDraw = false;
   }
 
   removeSelect() {
@@ -364,10 +426,6 @@ export class Model {
   saveHistory() {
     const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
     this.history = this.history.slice(0, this.historyPosition + 1);
-    //     Предлагаю такую проверку:
-    //if (!(svgInnerWithoutSelect === this.history[this.historyPosition])) {
-    //  this.history.push(svgInnerWithoutSelect);
-    //};
     this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
@@ -379,7 +437,6 @@ export class Model {
     tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
 
     [...tempDivElement.childNodes].forEach(item => {
-      // if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
       if (item.tagName.toLowerCase() === 'g') item.remove();
       if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
     })
@@ -393,8 +450,6 @@ export class Model {
   unDo() {
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
@@ -402,8 +457,6 @@ export class Model {
   reDo() {
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
@@ -428,12 +481,12 @@ export class Model {
     })
   }
 
-  purgeSVGArea() {
-    this.svgArea.each(function() {
-      //console.log(`${this.type}, ${this.width()}, ${this.height()}`);
-      if (!(this.type === 'text' || this.type === 'defs' || this.type === 'g') && this.width() === 0 && this.height() === 0) {
-        this.remove();
-      }
-    })
+  isEmptyElem(elem) {
+    if ((elem.type === 'rect' || elem.type === 'ellipse' || elem.type === 'line' || elem.type === 'path') && elem.width() === 0 && elem.height() === 0)
+    return true;
+    if (elem.type === 'text' && elem.length() === 0)
+    return true;
+    else
+    return false;
   }
 }
