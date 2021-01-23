@@ -37,7 +37,9 @@ export class Model {
   onSvgAreaMouseDown(e) {
     this.foo(e);
     this.getTypeOfMouseDownAction(this.type, e);
-    this.svgArea.mousemove(this.onSvgAreaMouseMove);
+    if (this.type !== 'fill' && this.type !== 'stroke') {
+      this.svgArea.mousemove(this.onSvgAreaMouseMove);
+    }
     this.svgArea.mouseup(this.onSvgAreaMouseUp);
   }
 
