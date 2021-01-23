@@ -53,6 +53,10 @@ export class Model {
     this.wasMoved = false;
   }
 
+  // onSVGAreaMouseDown() {
+  //   this.getActionType()
+  // }
+
   init() {
     this.createNewSvgWorkArea();
     this.loadLastCondition();
@@ -92,7 +96,6 @@ export class Model {
 
   createEllipse(e) {
     this.ellipse = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    //console.log(this.ellipse);
   }
 
   createLine(e) {
@@ -238,7 +241,6 @@ export class Model {
   }
 
   onSVGAreaEvent() {
-    const _that = this;
     let isDraw = false;
     this.svgArea.mousedown((e) => {
       if (!e.ctrlKey) {
@@ -260,9 +262,9 @@ export class Model {
         this.onSVGAreaMouseMove[this.type](e);
       }
     });
-    this.svgArea.mouseup(function (e) {
+    this.svgArea.mouseup((e) => {
       isDraw = false;
-      _that.saveHistory();
+      this.saveHistory();
     });
   }
 

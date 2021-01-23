@@ -46,18 +46,28 @@ export class Controller {
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
   }
 
-  onToolsLeftClick({target}) {
-    while (target !== this.appView.toolsLeftContainer) {
-      if (target.nodeName === 'BUTTON') {
-        this.model.type = target.id;
-        this.model.removeLastEvent();
-        this.model.onSVGAreaEvent();
-        if (target.id === 'fill' || target.id === 'stroke') {
-          this.appView.palleteCanvas.openColorPicker();
-        }
-        return;
+  // getTypeOfAction(type) {
+
+  //   return function() {
+
+  //   };
+  // }
+
+  // addListenersOnSvgArea(type) {
+  //   this.svgArea.addEventListener('mousedown', onSvgAreaMousedown)
+  //   this.svgArea.addEventListener('mousemove', onSvgAreaMousemove)
+  //   this.svgArea.addEventListener('mouseup', onSvgAreaMouseup)
+  // }
+
+  onToolsLeftClick({ target }) {
+    const toolButtonId = target.closest('button').id;
+    if (toolButtonId) {
+      this.model.type = toolButtonId;
+      this.model.removeLastEvent();
+      this.model.onSVGAreaEvent();
+      if (target.id === 'fill' || target.id === 'stroke') {
+        this.appView.palleteCanvas.openColorPicker();
       }
-      target = target.parentNode;
     }
   }
 
