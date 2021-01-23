@@ -25,6 +25,7 @@ export class Model {
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
+    this.isDraw = false;
     this.cxLast = null;
     this.cyLast = null;
     this.x = null;
@@ -50,7 +51,20 @@ export class Model {
       text: (e) => this.sizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.addPathNewNode(e),
-      //fill : (e) => this.colorElem(e),
+      fill : (e) => this.thinkAboutIt(e),
+      stroke : (e) => this.thinkAboutIt(e),
+    };
+
+    this.onSVGAreaMouseUp = {
+      select: (e) => this.stopMoveElem(),
+      rect: (e) => this.finishDrawElem(this.elem, e),
+      ellipse: (e) => this.finishDrawElem(this.elem, e),
+      line: (e) => this.finishDrawElem(this.elem, e),
+      text: (e) => this.finishResizeText(this.elem, e),
+      pencil: (e) => this.finishDrawElem(this.elem, e),
+      path: (e) => this.thinkAboutIt(e),
+      fill : (e) => this.thinkAboutIt(e),
+      stroke : (e) => this.thinkAboutIt(e),
     };
 
     this.history = [];
@@ -73,6 +87,10 @@ export class Model {
 
   resizeSvgArea(svgWidth, svgHeight) {
     this.svgArea.size(svgWidth, svgHeight);
+  }
+
+  thinkAboutIt(e) {
+    console.log(`${this.type}: mouseEvent: ${e.type}. Whats should happen?`)
   }
 
   selectElem(e) {
@@ -101,6 +119,7 @@ export class Model {
   }
 
   createRect(e) {
+    console.log('create elem');
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
@@ -294,9 +313,41 @@ export class Model {
     }
   }
 
+  finishDrawElem(elem, e) {
+    if (this.isEmptyElem(elem)) {
+      console.log('create empty elem');
+      elem.remove();
+      console.log(e.target);
+      elem = this.svgArea.last();
+      //console.log(elem);
+    }
+    this.isDraw = false;
+    console.log(`finish mouse up ${elem.type}`);
+    elem.selectize().resize();
+    elem.addClass('selectedElem');
+    this.setSelectElements.add(elem);
+    this.selectElements = [...this.setSelectElements];
+  }
+
+  finishResizeText(elem) {
+    if (this.isEmptyElem(elem)) {
+      elem.remove();
+      elem = this.svgArea.last();
+    }
+    this.isDraw = false;
+    elem.selectize().resize();
+    elem.addClass('selectedElem');
+    this.setSelectElements.add(elem);
+    this.selectElements = [...this.setSelectElements];
+  }
+
+  stopMoveElem() {
+    this.isDraw = false;
+  }
+
   onSVGAreaEvent() {
     const _that = this;
-    let isDraw = false;
+    //let isDraw = false;
     this.svgArea.mousedown((e) => {
       if (e.which === 1) {
         let isOnSelect = false;
@@ -308,22 +359,28 @@ export class Model {
           this.removeSelect();
           this.app.removeVisibilityPanel(this.selectElements);
         }
-        isDraw = true;
+        this.isDraw = true;
         this.x = e.offsetX;
         this.y = e.offsetY;
         this.onSVGAreaMouseDown[this.type](e);
       }
     });
     this.svgArea.mousemove((e) => {
-      if (isDraw) {
+      if (this.isDraw) {
         this.onSVGAreaMouseMove[this.type](e);
       }
     });
-    this.svgArea.mouseup(function (e) {
+    this.svgArea.mouseup((e) => {
+      //console.log(this.elem);
+      this.onSVGAreaMouseUp[this.type](e);
+      this.saveHistory();
+      /*
       if (_that.elem !== null) {
         if (_that.isEmptyElem(_that.elem)) {
           console.log('create empty elem');
-          _that.remove();
+          _that.elem.remove();
+          _that.elem = _that.svgArea.last();
+          console.log(_that.elem);
         }
       }
       //console.log(_that.type === 'path');
@@ -331,7 +388,7 @@ export class Model {
         _that.segmentPathStraight = true;
         console.log(_that.segmentPathStraight);
       } else {
-        isDraw = false;
+        _that.isDraw = false;
         if (_that.elem !== null) {
         _that.elem.selectize().resize();
         _that.elem.addClass('selectedElem');
@@ -341,7 +398,7 @@ export class Model {
         }
         //_that.purgeSVGArea();
         _that.saveHistory();
-      }
+      }*/
     });
   }
 
