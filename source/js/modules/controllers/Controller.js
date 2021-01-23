@@ -7,8 +7,6 @@ export class Controller {
   constructor(appView, placeForSVGCanvas) {
     this.fill = 'none';
     this.stroke = 'black';
-    //this.select = null;
-    //this.mouse = null;
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
@@ -46,26 +44,13 @@ export class Controller {
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
   }
 
-  // getTypeOfAction(type) {
-
-  //   return function() {
-
-  //   };
-  // }
-
-  // addListenersOnSvgArea(type) {
-  //   this.svgArea.addEventListener('mousedown', onSvgAreaMousedown)
-  //   this.svgArea.addEventListener('mousemove', onSvgAreaMousemove)
-  //   this.svgArea.addEventListener('mouseup', onSvgAreaMouseup)
-  // }
-
   onToolsLeftClick({ target }) {
     const toolButtonId = target.closest('button').id;
     if (toolButtonId) {
       this.model.type = toolButtonId;
-      this.model.removeLastEvent();
-      this.model.onSVGAreaEvent();
-      if (target.id === 'fill' || target.id === 'stroke') {
+      this.model.svgArea.mousedown(null);
+      this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
+      if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
         this.appView.palleteCanvas.openColorPicker();
       }
     }
@@ -116,12 +101,10 @@ export class Controller {
 
     if (target.dataset['menu'] === 'Undo') {
       this.model.unDo();
-      // this.appearContextMenu();
     }
 
     if (target.dataset['menu'] === 'Redo') {
       this.model.reDo();
-      // this.appearContextMenu();
     }
   }
 

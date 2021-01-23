@@ -24,7 +24,51 @@ export class Model {
     this.x = null;
     this.y = null;
 
-    this.onSVGAreaMouseDown = {
+    this.history = [];
+    this.historyPosition = 0;
+    this.isFirstSaveHistory = false;
+    this.wasMoved = false;
+
+    this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
+    this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
+    this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
+  }
+
+  onSvgAreaMouseDown(e) {
+    this.foo(e);
+    this.getTypeOfMouseDownAction(this.type, e);
+    this.svgArea.mousemove(this.onSvgAreaMouseMove);
+  }
+
+  onSvgAreaMouseMove(e) {
+    this.getTypeOfMouseMoveAction(this.type, e);
+    this.wasMoved = true;
+    this.svgArea.mouseup(this.onSvgAreaMouseUp);
+  }
+
+  onSvgAreaMouseUp() {
+    if (this.wasMoved) this.saveHistory();
+    this.wasMoved = false;
+    this.svgArea.mousemove(null);
+    this.svgArea.mouseup(null);
+  }
+
+  getTypeOfMouseMoveAction(type, e) {
+    const mouseMoveActions = {
+      select: (e) => this.moveElem(e),
+      rect: (e) => this.drawRect(e),
+      ellipse: (e) => this.drawEllipse(e),
+      line: (e) => this.drawLine(e),
+      text: (e) => this.drawText(e),
+      polyline: (e) => this.drawPolyline(e),
+      path: (e) => this.drawPath(e),
+    }
+
+    return mouseMoveActions[type](e);
+  }
+
+  getTypeOfMouseDownAction(type, e) {
+    const mouseDownActions = {
       select: (e) => this.selectElem(e),
       rect: (e) => this.createRect(e),
       ellipse: (e) => this.createEllipse(e),
@@ -34,28 +78,24 @@ export class Model {
       path: (e) => this.createPath(e),
       fill: (e) => this.changeFillColor(e),
       stroke: (e) => this.changeStrokeColor(e),
-    };
+    }
 
-    this.onSVGAreaMouseMove = {
-      select: (e) => this.moveElem(e),
-      rect: (e) => this.drawRect(e),
-      ellipse: (e) => this.drawEllipse(e),
-      line: (e) => this.drawLine(e),
-      text: (e) => this.drawText(e),
-      polyline: (e) => this.drawPolyline(e),
-      path: (e) => this.drawPath(e),
-      //fill : (e) => this.colorElem(e),
-    };
-
-    this.history = [];
-    this.historyPosition = 0;
-    this.isFirstSaveHistory = false;
-    this.wasMoved = false;
+    return mouseDownActions[type](e);
   }
 
-  // onSVGAreaMouseDown() {
-  //   this.getActionType()
-  // }
+  foo(e) {
+    if (!e.ctrlKey) {
+      this.removeSelect();
+      this.app.removeVisibilityPanel(this.selectElements);
+      this.svgArea.each(function () {
+        if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
+          this.removeClass('inputText');
+        }
+      });
+    }
+    this.x = e.offsetX;
+    this.y = e.offsetY;
+  }
 
   init() {
     this.createNewSvgWorkArea();
@@ -240,42 +280,8 @@ export class Model {
     });
   }
 
-  onSVGAreaEvent() {
-    let isDraw = false;
-    this.svgArea.mousedown((e) => {
-      if (!e.ctrlKey) {
-        this.removeSelect();
-        this.app.removeVisibilityPanel(this.selectElements);
-        this.svgArea.each(function (i, children) {
-          if (this.hasClass('inputText') && !this.inside(e.offsetX, e.offsetY)) {
-            this.removeClass('inputText');
-          }
-        });
-      }
-      isDraw = true;
-      this.x = e.offsetX;
-      this.y = e.offsetY;
-      this.onSVGAreaMouseDown[this.type](e);
-    });
-    this.svgArea.mousemove((e) => {
-      if (isDraw) {
-        this.onSVGAreaMouseMove[this.type](e);
-      }
-    });
-    this.svgArea.mouseup((e) => {
-      isDraw = false;
-      this.saveHistory();
-    });
-  }
-
-  removeLastEvent() {
-    this.svgArea.mousedown(null);
-    this.svgArea.mousemove(null);
-    this.svgArea.mouseup(null);
-  }
-
   removeSelect() {
-    this.svgArea.each(function (i, children) {
+    this.svgArea.each(function () {
       if (this.hasClass('selectedElem')) {
         this.removeClass('selectedElem');
         this.resize('stop').selectize(false);
@@ -304,6 +310,7 @@ export class Model {
     this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
+    console.log(this.history);
   }
 
   getSvgInnerWithoutSelect() {
