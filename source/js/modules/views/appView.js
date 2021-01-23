@@ -1,7 +1,7 @@
 // import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './colorPicker';
-import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS} from '../../utils/btn-names';
+import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -38,6 +38,8 @@ export class AppView {
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
     this.settingsElementsDataAttribute = 'modalSettings';
+    this.propertiesDataAttribute = 'property';
+    this.alignPanelDataAttribute = 'align';
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -49,15 +51,8 @@ export class AppView {
     this.ellipseContainerPanel = null;
     this.textContainerPanel = null;
     this.pencilContainerPanel = null;
-
-    // this.objNames = {
-    //   menuButtonsNamesEn: ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'],
-    //   contextMenuNamesEn: ['Delete', 'Bring to Front', 'Send to Back'],
-    //   toolsLeftBtnNameEn: ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'],
-    //   menuButtonsNamesRus: ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'],
-    //   contextMenuNamesRus: ['Удалить', 'На передний план', 'На задний план'],
-    //   toolsLeftBtnNameRus: ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'],
-    // };
+    this.alignContainerPanel = null;
+    this.selectProperty = null;
   }
 
   init() {
@@ -187,6 +182,7 @@ export class AppView {
     CONTEXTMENU_NAMES_EN.forEach((item) => {
       const button = document.createElement('button');
       button.setAttribute('type', 'button');
+      button.dataset[this.propertiesDataAttribute] = item;
       button.classList.add(`modal-contextmenu__btn-${item.toLowerCase().split(' ').join('-')}`);
       button.textContent = item;
       contextMenuModal.append(button);
@@ -230,24 +226,21 @@ export class AppView {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
       switch (selectElements[0].type) {
         case 'rect':
-          this.functionalAreaContainer.childNodes[0].classList.remove('visibility');
-          break;
-        case 'circle':
-          this.functionalAreaContainer.childNodes[1].classList.remove('visibility');
+          this.rectContainerPanel.classList.remove('visibility');
           break;
         case 'line':
-          this.functionalAreaContainer.childNodes[2].classList.remove('visibility');
+          this.lineContainerPanel.classList.remove('visibility');
           break;
         case 'text':
-          this.functionalAreaContainer.childNodes[3].classList.remove('visibility');
+          this.textContainerPanel.classList.remove('visibility');
           break;
         case 'ellipse':
-          this.functionalAreaContainer.childNodes[4].classList.remove('visibility');
+          this.ellipseContainerPanel.classList.remove('visibility');
           break;
       }
     } else {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
-      this.functionalAreaContainer.childNodes[5].classList.remove('visibility');
+      this.alignContainerPanel.classList.remove('visibility');
     }
   }
 
@@ -314,29 +307,29 @@ export class AppView {
   }
 
   createSelectElement(typeElement) {
-    const select = document.createElement('select');
-    select.classList.add(`tools-top__functional-area__container--${typeElement}`);
+    this.selectProperty = document.createElement('select');
+    this.selectProperty.classList.add(`tools-top__functional-area__container--${typeElement}`);
     if (typeElement === 'family') {
       const familyClasses = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
       for (let i = 0; i < this.countFamily; i += 1) {
         const option = document.createElement('option');
         option.textContent = familyClasses[i];
-        select.append(option);
+        this.selectProperty.append(option);
       }
     }
 
-    return select;
+    return this.selectProperty;
   }
 
-  createFunctionalAreaAlignmentElements(containerPanel, arrayBtn) {
-    const alignmentIcons = ['disabled_by_default', 'timeline', 'align_horizontal_left', 'align_horizontal_right', 'align_vertical_top', 'align_vertical_bottom', 'align_horizontal_center', 'align_vertical_center'];
-    for (let i = 0; i < arrayBtn.length; i += 1) {
+  createFunctionalAreaAlignmentElements(containerPanel) {
+    ALIGNMENT_ICONS.forEach((item) => {
       const btn = document.createElement('button');
       btn.setAttribute('type', 'button');
-      btn.classList.add(`tools-top__functional-area__btn-${arrayBtn[i]}`);
-      btn.innerHTML = `<i class="material-icons">${alignmentIcons[i]}</i>`;
+      btn.dataset[this.alignPanelDataAttribute] = item;
+      btn.classList.add('tools-top__functional-area__container__btn--click');
+      btn.innerHTML = `<i class="material-icons">${item}</i>`;
       containerPanel.append(btn);
-    }
+    });
   }
 
   createFunctionalAreaElements(containerPanel, arrayBtn) {
@@ -346,7 +339,7 @@ export class AppView {
       containerButton.classList.add('tools-top__functional-area__container');
       if (arrayBtn[i] === 'delete' || arrayBtn[i] === 'convert') {
         const button = document.createElement('button');
-        button.dataset[`${arrayBtn[i]}`] = arrayBtn[i];
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--click');
         if (arrayBtn[i] === 'delete') {
           button.innerHTML = '<i class="material-icons">disabled_by_default</i>';
@@ -361,7 +354,7 @@ export class AppView {
         icon.setAttribute('alt', arrayBtn[i]);
         const button = document.createElement('input');
         button.setAttribute('input', 'text');
-        button.dataset[`${arrayBtn[i]}`] = arrayBtn[i];
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         containerButton.append(icon, button);
         containerPanel.append(containerButton);
@@ -374,7 +367,7 @@ export class AppView {
         span.textContent = arrayBtn[i];
         const button = document.createElement('input');
         button.setAttribute('input', 'text');
-        button.dataset[`${arrayBtn[i]}`] = arrayBtn[i];
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         containerButton.append(span, button);
         containerPanel.append(containerButton);
@@ -405,8 +398,7 @@ export class AppView {
 
     this.alignContainerPanel = document.createElement('div');
     this.alignContainerPanel.classList.add('tools-top__functional-area__align', 'visibility');
-    const arrayAlignBtn = this.createArrayNameBtn();
-    this.createFunctionalAreaAlignmentElements(this.alignContainerPanel, arrayAlignBtn);
+    this.createFunctionalAreaAlignmentElements(this.alignContainerPanel);
 
     functionalArea.append(this.rectContainerPanel, this.lineContainerPanel, this.textContainerPanel, this.ellipseContainerPanel, this.alignContainerPanel);
   }
@@ -423,14 +415,14 @@ export class AppView {
     const switcherContainer = document.createElement('div');
     switcherContainer.classList.add('tools-top__switcher-area');
 
-    const checkSwitcher = document.createElement('input');
+    this.checkSwitcher = document.createElement('input');
     const labelForSwitcher = document.createElement('label');
-    checkSwitcher.classList.add('tools-top__switcher-area__switcher-lang');
-    checkSwitcher.setAttribute('type', 'checkbox');
-    checkSwitcher.setAttribute('id', 'switcher-lang');
+    this.checkSwitcher.classList.add('tools-top__switcher-area__switcher-lang');
+    this.checkSwitcher.setAttribute('type', 'checkbox');
+    this.checkSwitcher.setAttribute('id', 'switcher-lang');
     labelForSwitcher.setAttribute('for', 'switcher-lang');
     labelForSwitcher.textContent = 'RU';
-    switcherContainer.append(checkSwitcher, labelForSwitcher);
+    switcherContainer.append(this.checkSwitcher, labelForSwitcher);
 
     return switcherContainer;
   }
