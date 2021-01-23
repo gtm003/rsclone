@@ -19,31 +19,68 @@ export class Model {
     //this.ellipse = null;
     //this.line = null;
     //this.text = null;
-    //this.pencil = null;
-    //this.pencilNodeCount = 0;
     this.path = null;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
-    this.isDraw = false;
+    this.target = null;
     this.cxLast = null;
     this.cyLast = null;
     this.x = null;
     this.y = null;
 
-    this.onSVGAreaMouseDown = {
+    this.history = [];
+    this.historyPosition = 0;
+    this.isFirstSaveHistory = false;
+    this.wasMoved = false;
+
+    this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
+    this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
+    this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
+  }
+
+  onSvgAreaMouseDown(e) {
+    this.target = e.target.nodeName;
+    console.log(this.target);
+    this.checkSelectedElem(e);
+    this.getTypeOfMouseDownAction(this.type, e);
+    if (this.type !== 'fill' && this.type !== 'stroke') { // This is a temporary option
+      this.svgArea.mousemove(this.onSvgAreaMouseMove);
+    }
+    this.svgArea.mouseup(this.onSvgAreaMouseUp);
+  }
+
+  onSvgAreaMouseMove(e) {
+    this.getTypeOfMouseMoveAction(this.type, e);
+    this.wasMoved = true;
+  }
+
+  onSvgAreaMouseUp() {
+    this.getTypeOfMouseUpAction(this.type);
+    if (this.wasMoved) this.saveHistory();
+    this.wasMoved = false;
+    this.svgArea.mousemove(null);
+    this.svgArea.mouseup(null);
+  }
+
+  getTypeOfMouseDownAction(type, e) {
+    const mouseDownActions = {
       select: (e) => this.selectElem(e),
       rect: (e) => this.createRect(e),
       ellipse: (e) => this.createEllipse(e),
       line: (e) => this.createLine(e),
       text: (e) => this.createText(e),
       pencil : (e) => this.createPencilTrace(e),
-      path: (e) => this.drawPath(e),
+      path: (e) => this.createPath(e),
       fill: (e) => this.changeFillColor(e),
       stroke: (e) => this.changeStrokeColor(e),
-    };
+    }
 
-    this.onSVGAreaMouseMove = {
+    return mouseDownActions[type](e);
+  }
+
+  getTypeOfMouseMoveAction(type, e) {
+    const mouseMoveActions = {
       select: (e) => this.moveElem(e),
       rect: (e) => this.drawRect(e),
       ellipse: (e) => this.drawEllipse(e),
@@ -53,24 +90,39 @@ export class Model {
       path: (e) => this.addPathNewNode(e),
       fill : (e) => this.thinkAboutIt(e),
       stroke : (e) => this.thinkAboutIt(e),
-    };
+    }
 
-    this.onSVGAreaMouseUp = {
-      select: (e) => this.stopMoveElem(),
-      rect: (e) => this.finishDrawElem(this.elem, e),
-      ellipse: (e) => this.finishDrawElem(this.elem, e),
-      line: (e) => this.finishDrawElem(this.elem, e),
-      text: (e) => this.finishResizeText(this.elem, e),
-      pencil: (e) => this.finishDrawElem(this.elem, e),
-      path: (e) => this.thinkAboutIt(e),
-      fill : (e) => this.thinkAboutIt(e),
-      stroke : (e) => this.thinkAboutIt(e),
-    };
+    return mouseMoveActions[type](e);
+  }
 
-    this.history = [];
-    this.historyPosition = 0;
-    this.isFirstSaveHistory = false;
-    this.wasMoved = false;
+  getTypeOfMouseUpAction(type) {
+    const mouseUpActions = {
+      select: () => this.stopMoveElem(),
+      rect: () => this.finishDrawElem(),
+      ellipse: () => this.finishDrawElem(),
+      line: () => this.finishDrawElem(),
+      text: () => this.finishResizeText(),
+      pencil: () => this.finishDrawElem(),
+      path: () => this.thinkAboutIt(),
+      fill : () => this.thinkAboutIt(),
+      stroke : () => this.thinkAboutIt(),
+    }
+
+    return mouseUpActions[type]();
+  }
+
+  checkSelectedElem(e) {
+    let isOnSelect = false;
+    this.svgArea.each(function() {
+      if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
+    })
+    if (!e.ctrlKey && !isOnSelect) {
+      this.removeSelect();
+      this.app.removeVisibilityPanel(this.selectElements);
+    }
+    this.isDraw = true;
+    this.x = e.offsetX;
+    this.y = e.offsetY;
   }
 
   init() {
@@ -97,7 +149,6 @@ export class Model {
     const _that = this;
     this.svgArea.each(function (i, children) {
       if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-        //console.log(this);
         _that.setSelectElements.add(this);
         _that.selectElements = [..._that.setSelectElements];
         this.addClass('selectedElem');
@@ -119,7 +170,6 @@ export class Model {
   }
 
   createRect(e) {
-    console.log('create elem');
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
@@ -147,6 +197,7 @@ export class Model {
         this.elem.plain(`${textInput}`);
       }
     });
+    this.saveHistory();
   }
 
   createPencilTrace(e) {
@@ -291,7 +342,6 @@ export class Model {
     this.elem.font({
       family: 'Helvetica',
       size: Math.abs(e.offsetY - this.y),
-      y: e.offsetY,
     });
   }
 
@@ -313,99 +363,40 @@ export class Model {
     }
   }
 
-  finishDrawElem(elem, e) {
-    if (this.isEmptyElem(elem)) {
+  finishDrawElem() {
+    if (this.isEmptyElem(this.elem)) {
       console.log('create empty elem');
-      elem.remove();
-      console.log(e.target);
-      elem = this.svgArea.last();
+      this.elem.remove();
+      //console.log(e.target);
+      this.elem = this.svgArea.last();
       //console.log(elem);
     }
-    this.isDraw = false;
-    console.log(`finish mouse up ${elem.type}`);
-    elem.selectize().resize();
-    elem.addClass('selectedElem');
-    this.setSelectElements.add(elem);
-    this.selectElements = [...this.setSelectElements];
+    if (this.target === 'svg') {
+      this.isDraw = false;
+      console.log(`finish mouse up ${this.elem.type}`);
+      this.elem.selectize().resize();
+      this.elem.addClass('selectedElem');
+      this.setSelectElements.add(this.elem);
+      this.selectElements = [...this.setSelectElements];
+    } else {
+      this.type = 'select';
+    }
   }
 
-  finishResizeText(elem) {
-    if (this.isEmptyElem(elem)) {
-      elem.remove();
-      elem = this.svgArea.last();
+  finishResizeText() {
+    if (this.isEmptyElem(this.elem)) {
+      this.elem.remove();
+      this.elem = this.svgArea.last();
     }
     this.isDraw = false;
-    elem.selectize().resize();
-    elem.addClass('selectedElem');
-    this.setSelectElements.add(elem);
+    this.elem.selectize().resize();
+    this.elem.addClass('selectedElem');
+    this.setSelectElements.add(this.elem);
     this.selectElements = [...this.setSelectElements];
   }
 
   stopMoveElem() {
     this.isDraw = false;
-  }
-
-  onSVGAreaEvent() {
-    const _that = this;
-    //let isDraw = false;
-    this.svgArea.mousedown((e) => {
-      if (e.which === 1) {
-        let isOnSelect = false;
-        this.svgArea.each(function() {
-          if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
-        })
-        //let isOnSelect = this.selectElements.filter((item) => item.inside(e.offsetX, e.offsetY)).length;
-        if (!e.ctrlKey && !isOnSelect) {
-          this.removeSelect();
-          this.app.removeVisibilityPanel(this.selectElements);
-        }
-        this.isDraw = true;
-        this.x = e.offsetX;
-        this.y = e.offsetY;
-        this.onSVGAreaMouseDown[this.type](e);
-      }
-    });
-    this.svgArea.mousemove((e) => {
-      if (this.isDraw) {
-        this.onSVGAreaMouseMove[this.type](e);
-      }
-    });
-    this.svgArea.mouseup((e) => {
-      //console.log(this.elem);
-      this.onSVGAreaMouseUp[this.type](e);
-      this.saveHistory();
-      /*
-      if (_that.elem !== null) {
-        if (_that.isEmptyElem(_that.elem)) {
-          console.log('create empty elem');
-          _that.elem.remove();
-          _that.elem = _that.svgArea.last();
-          console.log(_that.elem);
-        }
-      }
-      //console.log(_that.type === 'path');
-      if (_that.type === 'path') {
-        _that.segmentPathStraight = true;
-        console.log(_that.segmentPathStraight);
-      } else {
-        _that.isDraw = false;
-        if (_that.elem !== null) {
-        _that.elem.selectize().resize();
-        _that.elem.addClass('selectedElem');
-        _that.setSelectElements.add(_that.elem);
-        _that.selectElements = [..._that.setSelectElements];
-        if (_that.type !== 'text') _that.elem = null;
-        }
-        //_that.purgeSVGArea();
-        _that.saveHistory();
-      }*/
-    });
-  }
-
-  removeLastEvent() {
-    this.svgArea.mousedown(null);
-    this.svgArea.mousemove(null);
-    this.svgArea.mouseup(null);
   }
 
   removeSelect() {
@@ -435,10 +426,6 @@ export class Model {
   saveHistory() {
     const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
     this.history = this.history.slice(0, this.historyPosition + 1);
-    //     Предлагаю такую проверку:
-    //if (!(svgInnerWithoutSelect === this.history[this.historyPosition])) {
-    //  this.history.push(svgInnerWithoutSelect);
-    //};
     this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
@@ -450,7 +437,6 @@ export class Model {
     tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
 
     [...tempDivElement.childNodes].forEach(item => {
-      // if (item.tagName.toLowerCase() === 'g' || item.tagName.toLowerCase() === 'defs') item.remove();
       if (item.tagName.toLowerCase() === 'g') item.remove();
       if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
     })
@@ -464,8 +450,6 @@ export class Model {
   unDo() {
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
@@ -473,8 +457,6 @@ export class Model {
   reDo() {
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
-    // this.rootElement.innerHTML = '';
-    // this.createNewSvgWorkArea();
     this.rootElement.childNodes[0].innerHTML = '';
     this.svgArea.svg(this.history[this.historyPosition]);
   }
@@ -507,14 +489,4 @@ export class Model {
     else
     return false;
   }
-  /*  purgeSVGArea() {
-    const _that = this;
-    this.svgArea.each(function() {
-      console.log(`${this.type}, ${this.width()}, ${this.height()}, empty: ${_that.isEmptyElem(this)}`);
-      if (!(this.type === 'text' || this.type === 'defs' || this.type === 'g') && this.width() === 0 && this.height() === 0) {
-        //_that.removeSelect();
-        //this.remove();
-      }
-    })
-  }*/
 }
