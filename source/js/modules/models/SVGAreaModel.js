@@ -15,10 +15,6 @@ export class Model {
     this.strokeColor = 'rgba(0, 0, 0, 1)';
 
     this.elem = null;
-    //this.rect = null;
-    //this.ellipse = null;
-    //this.line = null;
-    //this.text = null;
     this.path = null;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
@@ -121,6 +117,8 @@ export class Model {
       this.app.removeVisibilityPanel(this.selectElements);
     }
     this.isDraw = true;
+    // console.log(this)
+    // console.log(this.isDraw)
     this.x = e.offsetX;
     this.y = e.offsetY;
   }
@@ -448,6 +446,7 @@ export class Model {
   }
 
   unDo() {
+    this.selectElements = [];
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
     this.rootElement.childNodes[0].innerHTML = '';
@@ -455,6 +454,7 @@ export class Model {
   }
 
   reDo() {
+    this.selectElements = [];
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
     this.rootElement.childNodes[0].innerHTML = '';
