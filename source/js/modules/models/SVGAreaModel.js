@@ -28,31 +28,6 @@ export class Model {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
-
-    this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
-    this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
-    this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
-  }
-
-  onSvgAreaMouseDown(e) {
-    this.foo(e);
-    this.getTypeOfMouseDownAction(this.type, e);
-    if (this.type !== 'fill' && this.type !== 'stroke') {
-      this.svgArea.mousemove(this.onSvgAreaMouseMove);
-    }
-    this.svgArea.mouseup(this.onSvgAreaMouseUp);
-  }
-
-  onSvgAreaMouseMove(e) {
-    this.getTypeOfMouseMoveAction(this.type, e);
-    this.wasMoved = true;
-  }
-
-  onSvgAreaMouseUp() {
-    if (this.wasMoved) this.saveHistory();
-    this.wasMoved = false;
-    this.svgArea.mousemove(null);
-    this.svgArea.mouseup(null);
   }
 
   getTypeOfMouseMoveAction(type, e) {

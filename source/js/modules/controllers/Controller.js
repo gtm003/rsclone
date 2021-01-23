@@ -1,4 +1,5 @@
 import {Model} from '../models/SVGAreaModel';
+import {SvgController} from './SvgController';
 import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 const FILE_TYPE = 'svg';
@@ -10,6 +11,7 @@ export class Controller {
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
+    this.svgController = new SvgController(this.model);
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
@@ -49,7 +51,7 @@ export class Controller {
       const toolButtonId = target.closest('button').id;
       this.model.type = toolButtonId;
       this.model.svgArea.mousedown(null);
-      this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
+      this.model.svgArea.mousedown(this.svgController.onSvgAreaMouseDown);
       if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
         this.appView.palleteCanvas.openColorPicker();
       }
