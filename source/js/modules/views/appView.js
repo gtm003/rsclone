@@ -1,7 +1,7 @@
 // import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './colorPicker';
-import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN} from '../../utils/btn-names';
+import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -38,20 +38,21 @@ export class AppView {
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
     this.settingsElementsDataAttribute = 'modalSettings';
+    this.propertiesDataAttribute = 'property';
+    this.alignPanelDataAttribute = 'align';
 
     this.countFamily = 5;
     // this.countAnchor = 3;
 
     this.palleteCanvas = null;
 
-    // this.objNames = {
-    //   menuButtonsNamesEn: ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'],
-    //   contextMenuNamesEn: ['Delete', 'Bring to Front', 'Send to Back'],
-    //   toolsLeftBtnNameEn: ['select', 'rect', 'ellipse', 'line', 'text', 'polyline', 'path', 'color'],
-    //   menuButtonsNamesRus: ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'],
-    //   contextMenuNamesRus: ['Удалить', 'На передний план', 'На задний план'],
-    //   toolsLeftBtnNameRus: ['Выбрать элемент', 'Прямоугольник', 'Эллипс', 'Линия', 'Текст', 'Ломаная линия', 'Путь', 'Цвет'],
-    // };
+    this.rectContainerPanel = null;
+    this.lineContainerPanel = null;
+    this.ellipseContainerPanel = null;
+    this.textContainerPanel = null;
+    this.pencilContainerPanel = null;
+    this.alignContainerPanel = null;
+    this.selectProperty = null;
   }
 
   init() {
@@ -181,6 +182,7 @@ export class AppView {
     CONTEXTMENU_NAMES_EN.forEach((item) => {
       const button = document.createElement('button');
       button.setAttribute('type', 'button');
+      button.dataset[this.propertiesDataAttribute] = item;
       button.classList.add(`modal-contextmenu__btn-${item.toLowerCase().split(' ').join('-')}`);
       button.textContent = item;
       contextMenuModal.append(button);
@@ -224,24 +226,21 @@ export class AppView {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
       switch (selectElements[0].type) {
         case 'rect':
-          this.functionalAreaContainer.childNodes[0].classList.remove('visibility');
-          break;
-        case 'circle':
-          this.functionalAreaContainer.childNodes[1].classList.remove('visibility');
+          this.rectContainerPanel.classList.remove('visibility');
           break;
         case 'line':
-          this.functionalAreaContainer.childNodes[2].classList.remove('visibility');
+          this.lineContainerPanel.classList.remove('visibility');
           break;
         case 'text':
-          this.functionalAreaContainer.childNodes[3].classList.remove('visibility');
+          this.textContainerPanel.classList.remove('visibility');
           break;
         case 'ellipse':
-          this.functionalAreaContainer.childNodes[4].classList.remove('visibility');
+          this.ellipseContainerPanel.classList.remove('visibility');
           break;
       }
     } else {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
-      this.functionalAreaContainer.childNodes[5].classList.remove('visibility');
+      this.alignContainerPanel.classList.remove('visibility');
     }
   }
 
@@ -251,7 +250,7 @@ export class AppView {
       const attribute = selectElements[0].attr();
       switch (selectElements[0].type) {
         case 'rect':
-          const arrayLabelRect = [...[...this.functionalAreaContainer.childNodes][0].childNodes].filter((value) => value.tagName === 'LABEL');
+          const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelRect[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelRect[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0])); // angle
           arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 0); // blur
@@ -260,17 +259,8 @@ export class AppView {
           arrayLabelRect[6].childNodes[1].setAttribute('placeholder', attribute.width); // width
           arrayLabelRect[7].childNodes[1].setAttribute('placeholder', attribute.height); // height
           break;
-        case 'circle':
-          const arrayLabelCircle = [...[...this.functionalAreaContainer.childNodes][1].childNodes].filter((value) => value.tagName === 'LABEL');
-          arrayLabelCircle[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayLabelCircle[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0])); // angle
-          arrayLabelCircle[3].childNodes[1].setAttribute('placeholder', 0); // blur
-          arrayLabelCircle[4].childNodes[1].setAttribute('placeholder', attribute.cx); // cx
-          arrayLabelCircle[5].childNodes[1].setAttribute('placeholder', attribute.cy); // cy
-          arrayLabelCircle[6].childNodes[1].setAttribute('placeholder', attribute.r); // r
-          break;
         case 'line':
-          const arrayLabelLine = [...[...this.functionalAreaContainer.childNodes][2].childNodes].filter((value) => value.tagName === 'LABEL');
+          const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelLine[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelLine[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0])); // angle
           arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 0); // blur
@@ -280,7 +270,7 @@ export class AppView {
           arrayLabelLine[7].childNodes[1].setAttribute('placeholder', attribute.y1);
           break;
         case 'text':
-          const arrayLabelText = [...[...this.functionalAreaContainer.childNodes][3].childNodes].filter((value) => value.tagName === 'LABEL');
+          const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelText[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelText[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0])); // angle
           arrayLabelText[3].childNodes[1].setAttribute('placeholder', 0); // blur
@@ -290,7 +280,7 @@ export class AppView {
           // здесь долджно быть начертание
           break;
         case 'ellipse':
-          const arrayLabelEllipse = [...[...this.functionalAreaContainer.childNodes][4].childNodes].filter((value) => value.tagName === 'LABEL');
+          const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelEllipse[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0])); // angle
           arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 0); // blur
@@ -304,107 +294,113 @@ export class AppView {
 
   createArrayNameBtn(type) {
     if (type === 'rect') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x', 'y', 'width', 'height'];
-    } else if (type === 'circle') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'cx', 'cy', 'r'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'width', 'height'];
     } else if (type === 'line') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x1', 'y1', 'x2', 'y2'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x1', 'y1', 'x2', 'y2'];
     } else if (type === 'text') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'x', 'y', 'size', 'family', 'mark'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'size', 'family', 'mark'];
     } else if (type === 'ellipse') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'blur', 'cx', 'cy', 'rx', 'ry'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'cx', 'cy', 'rx', 'ry'];
     }
 
     return ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
   }
 
   createSelectElement(typeElement) {
-    const select = document.createElement('select');
-    select.classList.add(`tools-top__functional-area__select-${typeElement}`);
+    this.selectProperty = document.createElement('select');
+    this.selectProperty.classList.add(`tools-top__functional-area__container--${typeElement}`);
     if (typeElement === 'family') {
       const familyClasses = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'];
       for (let i = 0; i < this.countFamily; i += 1) {
         const option = document.createElement('option');
         option.textContent = familyClasses[i];
-        select.append(option);
+        this.selectProperty.append(option);
       }
     }
 
-    return select;
+    return this.selectProperty;
   }
 
-  createFunctionalAreaAlignmentElements(containerPanel, arrayBtn) {
-    const alignmentIcons = ['disabled_by_default', 'timeline', 'align_horizontal_left', 'align_horizontal_right', 'align_vertical_top', 'align_vertical_bottom', 'align_horizontal_center', 'align_vertical_center'];
-    for (let i = 0; i < arrayBtn.length; i += 1) {
+  createFunctionalAreaAlignmentElements(containerPanel) {
+    ALIGNMENT_ICONS.forEach((item) => {
       const btn = document.createElement('button');
       btn.setAttribute('type', 'button');
-      btn.classList.add(`tools-top__functional-area__btn-${arrayBtn[i]}`);
-      btn.innerHTML = `<i class="material-icons">${alignmentIcons[i]}</i>`;
+      btn.dataset[this.alignPanelDataAttribute] = item;
+      btn.classList.add('tools-top__functional-area__container__btn--click');
+      btn.innerHTML = `<i class="material-icons">${item}</i>`;
       containerPanel.append(btn);
-    }
+    });
   }
 
   createFunctionalAreaElements(containerPanel, arrayBtn) {
+    let j = 0;
     for (let i = 0; i < arrayBtn.length; i += 1) {
+      const containerButton = document.createElement('div');
+      containerButton.classList.add('tools-top__functional-area__container');
       if (arrayBtn[i] === 'delete' || arrayBtn[i] === 'convert') {
         const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.classList.add(`tools-top__functional-area__btn-${arrayBtn[i]}`);
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
+        button.classList.add('tools-top__functional-area__container__btn--click');
         if (arrayBtn[i] === 'delete') {
           button.innerHTML = '<i class="material-icons">disabled_by_default</i>';
         } else {
           button.innerHTML = '<i class="material-icons">timeline</i>';
         }
-        containerPanel.append(button);
+        containerButton.append(button);
+        containerPanel.append(containerButton);
+      } else if (arrayBtn[i] === 'stroke' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
+        const icon = document.createElement('img');
+        icon.setAttribute('src', `../../img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
+        icon.setAttribute('alt', arrayBtn[i]);
+        const button = document.createElement('input');
+        button.setAttribute('input', 'text');
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
+        button.classList.add('tools-top__functional-area__container__btn--keyup');
+        containerButton.append(icon, button);
+        containerPanel.append(containerButton);
+        j += 1;
       } else if (arrayBtn[i] === 'family') {
-        containerPanel.append(this.createSelectElement(arrayBtn[i]));
+        containerButton.append(this.createSelectElement(arrayBtn[i]));
+        containerPanel.append(containerButton);
       } else {
-        const input = document.createElement('input');
-        const label = document.createElement('label');
         const span = document.createElement('span');
         span.textContent = arrayBtn[i];
-        input.setAttribute('type', 'text');
-        input.classList.add(`tools-top__functional-area__btn-${arrayBtn[i]}`);
-        label.append(span, input);
-        containerPanel.append(label);
+        const button = document.createElement('input');
+        button.setAttribute('input', 'text');
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
+        button.classList.add('tools-top__functional-area__container__btn--keyup');
+        containerButton.append(span, button);
+        containerPanel.append(containerButton);
       }
     }
   }
 
   createFunctionalAreaPanels(functionalArea) {
-    const rectContainerPanel = document.createElement('div');
-    rectContainerPanel.classList.add('tools-top__functional-area__rect', 'visibility');
+    this.rectContainerPanel = document.createElement('div');
+    this.rectContainerPanel.classList.add('tools-top__functional-area__rect', 'visibility');
     const arrayRectBtn = this.createArrayNameBtn('rect');
-    this.createFunctionalAreaElements(rectContainerPanel, arrayRectBtn);
+    this.createFunctionalAreaElements(this.rectContainerPanel, arrayRectBtn);
 
-    const circleContainerPanel = document.createElement('div');
-    circleContainerPanel.classList.add('tools-top__functional-area__circle', 'visibility');
-    const arrayCircleBtn = this.createArrayNameBtn('circle');
-    this.createFunctionalAreaElements(circleContainerPanel, arrayCircleBtn);
-
-    const lineContainerPanel = document.createElement('div');
-    lineContainerPanel.classList.add('tools-top__functional-area__line', 'visibility');
+    this.lineContainerPanel = document.createElement('div');
+    this.lineContainerPanel.classList.add('tools-top__functional-area__line', 'visibility');
     const arrayLineBtn = this.createArrayNameBtn('line');
-    this.createFunctionalAreaElements(lineContainerPanel, arrayLineBtn);
+    this.createFunctionalAreaElements(this.lineContainerPanel, arrayLineBtn);
 
-
-    const textContainerPanel = document.createElement('div');
-    textContainerPanel.classList.add('tools-top__functional-area__text', 'visibility');
+    this.textContainerPanel = document.createElement('div');
+    this.textContainerPanel.classList.add('tools-top__functional-area__text', 'visibility');
     const arrayTextBtn = this.createArrayNameBtn('text');
-    this.createFunctionalAreaElements(textContainerPanel, arrayTextBtn);
+    this.createFunctionalAreaElements(this.textContainerPanel, arrayTextBtn);
 
-
-    const ellipseContainerPanel = document.createElement('div');
-    ellipseContainerPanel.classList.add('tools-top__functional-area__ellipse', 'visibility');
+    this.ellipseContainerPanel = document.createElement('div');
+    this.ellipseContainerPanel.classList.add('tools-top__functional-area__ellipse', 'visibility');
     const arrayEllipseBtn = this.createArrayNameBtn('ellipse');
-    this.createFunctionalAreaElements(ellipseContainerPanel, arrayEllipseBtn);
+    this.createFunctionalAreaElements(this.ellipseContainerPanel, arrayEllipseBtn);
 
-    const alignContainerPanel = document.createElement('div');
-    alignContainerPanel.classList.add('tools-top__functional-area__align', 'visibility');
-    const arrayAlignBtn = this.createArrayNameBtn();
-    this.createFunctionalAreaAlignmentElements(alignContainerPanel, arrayAlignBtn);
+    this.alignContainerPanel = document.createElement('div');
+    this.alignContainerPanel.classList.add('tools-top__functional-area__align', 'visibility');
+    this.createFunctionalAreaAlignmentElements(this.alignContainerPanel);
 
-    functionalArea.append(rectContainerPanel, circleContainerPanel, lineContainerPanel, textContainerPanel, ellipseContainerPanel, alignContainerPanel);
+    functionalArea.append(this.rectContainerPanel, this.lineContainerPanel, this.textContainerPanel, this.ellipseContainerPanel, this.alignContainerPanel);
   }
 
   createFunctionalArea() {
@@ -419,14 +415,14 @@ export class AppView {
     const switcherContainer = document.createElement('div');
     switcherContainer.classList.add('tools-top__switcher-area');
 
-    const checkSwitcher = document.createElement('input');
+    this.checkSwitcher = document.createElement('input');
     const labelForSwitcher = document.createElement('label');
-    checkSwitcher.classList.add('tools-top__switcher-area__switcher-lang');
-    checkSwitcher.setAttribute('type', 'checkbox');
-    checkSwitcher.setAttribute('id', 'switcher-lang');
+    this.checkSwitcher.classList.add('tools-top__switcher-area__switcher-lang');
+    this.checkSwitcher.setAttribute('type', 'checkbox');
+    this.checkSwitcher.setAttribute('id', 'switcher-lang');
     labelForSwitcher.setAttribute('for', 'switcher-lang');
     labelForSwitcher.textContent = 'RU';
-    switcherContainer.append(checkSwitcher, labelForSwitcher);
+    switcherContainer.append(this.checkSwitcher, labelForSwitcher);
 
     return switcherContainer;
   }
