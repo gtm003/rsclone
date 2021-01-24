@@ -19,6 +19,7 @@ export class Model {
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
+    this.elemCounter = 0;
     this.target = null;
     this.cxLast = null;
     this.cyLast = null;
@@ -119,8 +120,6 @@ export class Model {
       this.app.removeVisibilityPanel(this.selectElements);
     }
     this.isDraw = true;
-    // console.log(this)
-    // console.log(this.isDraw)
     this.x = e.offsetX;
     this.y = e.offsetY;
   }
@@ -183,7 +182,7 @@ export class Model {
 
   createText(e) {
     this.elem = this.svgArea.text('text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    this.elem.addClass('inputText');
+    //this.elem.addClass('inputText');
     this.elem.font({
       family: 'Helvetica',
       size: 16,
@@ -369,9 +368,11 @@ export class Model {
       this.elem.remove();
       //console.log(e.target);
       this.elem = this.svgArea.last();
-      //console.log(elem);
+      this.elemCounter -= 1;
     }
     if (this.target === 'svg') {
+      this.elemCounter += 1;
+      this.elem.attr('id', `svg_${this.elemCounter}`);
       this.isDraw = false;
       console.log(`finish mouse up ${this.elem.type}`);
       this.elem.selectize().resize();
@@ -490,5 +491,16 @@ export class Model {
     return true;
     else
     return false;
+  }
+
+  bringToFront() {
+    if (this.selectElements === 1) {
+      this.selectElements[0].front()
+    }
+  }
+  sendToBack() {
+    if (this.selectElements === 1) {
+      this.selectElements[0].back()
+    }
   }
 }
