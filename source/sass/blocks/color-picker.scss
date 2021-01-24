@@ -1,4 +1,4 @@
-.container__color-picker {
+.color-picker {
   display: none;
   grid-template-columns: repeat(4, 75px);
   grid-template-rows: 150px repeat(3, 40px);
@@ -12,8 +12,9 @@
   .pallete {
     grid-area: 1 / 1 / 2 / 5;
   }
-  .transparency-picker {
+  .transparency {
     grid-area: 2 / 1 / 3 / 4;
+    margin: 5px 7.5px;
   }
   .new-color {
     grid-area: 2 / 4 / 3 / 5;

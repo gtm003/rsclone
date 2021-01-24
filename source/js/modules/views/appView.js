@@ -44,7 +44,7 @@ export class AppView {
     this.countFamily = 5;
     // this.countAnchor = 3;
 
-    this.palleteCanvas = null;
+    this.colorPicker = null;
 
     this.rectContainerPanel = null;
     this.lineContainerPanel = null;
@@ -63,8 +63,8 @@ export class AppView {
     this.rootElement.appendChild(wrapper);
     wrapper.append(this.headerElement, this.contentElement, this.footerElement);
 
-    this.palleteCanvas = new ColorPicker(this.workAreaContainer);
-    this.palleteCanvas.init();
+    this.colorPicker = new ColorPicker(this.workAreaContainer);
+    this.colorPicker.init();
 
     const controller = new Controller(this, this.sheet);
     controller.init();
