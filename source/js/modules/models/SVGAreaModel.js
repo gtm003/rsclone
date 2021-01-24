@@ -55,6 +55,8 @@ export class Model {
     this.getTypeOfMouseUpAction(this.type);
     if (this.wasMoved) this.saveHistory();
     this.wasMoved = false;
+    this.app.removeVisibilityPanel(this.selectElements);
+    this.app.updateFunctionalArea(this.selectElements);
     this.svgArea.mousemove(null);
     this.svgArea.mouseup(null);
   }
@@ -140,7 +142,7 @@ export class Model {
   }
 
   thinkAboutIt(e) {
-    console.log(`${this.type}: mouseEvent: ${e.type}. Whats should happen?`)
+    console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
   }
 
   selectElem(e) {

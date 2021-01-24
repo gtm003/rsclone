@@ -35,7 +35,7 @@ export class Controller {
   init() {
     this.model.init();
     this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
-    this.appView.palleteCanvas.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
+    this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
 
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
@@ -70,7 +70,7 @@ export class Controller {
       this.model.svgArea.mousedown(null);
       this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
       if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
-        this.appView.palleteCanvas.openColorPicker();
+        this.appView.colorPicker.openColorPicker();
       }
     }
   }
@@ -78,16 +78,16 @@ export class Controller {
   onChangeColorClick({target}) {
     if (target.id === 'OK') {
       if (this.model.type === 'fill') {
-        this.model.fillColor = this.appView.palleteCanvas.color;
-        [...this.appView.toolsLeftContainer.childNodes][7].style.background = this.appView.palleteCanvas.color;
+        this.model.fillColor = this.appView.colorPicker.color;
+        [...this.appView.toolsLeftContainer.childNodes][7].style.background = this.appView.colorPicker.color;
       }
       else if (this.model.type === 'stroke') {
-        this.model.strokeColor = this.appView.palleteCanvas.color;
+        this.model.strokeColor = this.appView.colorPicker.color;
       }
-      this.appView.palleteCanvas.closeColorPicker();
+      this.appView.colorPicker.closeColorPicker();
     }
     if (target.id === 'CANSEL') {
-      this.appView.palleteCanvas.closeColorPicker();
+      this.appView.colorPicker.closeColorPicker();
     }
   }
 
