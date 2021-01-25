@@ -29,6 +29,7 @@ export class FunctionalAreaController {
 
   onPropertiesSVGElementKeyUp({target}) {
     if (target.dataset['delete'] !== 'delete' && target.dataset['convert'] !== 'convert') {
+      this.playSound();
       this.model.changePropertiesSVGElement(target);
     }
   }
@@ -55,5 +56,22 @@ export class FunctionalAreaController {
         this.model.alignElements(dataAttribute);
       }
     }
+  }
+
+  playSound() {
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = context.createOscillator();
+    const gainNode = context.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(context.destination);
+
+    gainNode.gain.value = 0.1;
+    osc.frequency.value = 200;
+    osc.type = 'triangle';
+    osc.start();
+
+    setTimeout(function() {
+      osc.stop();
+    }, 150);
   }
 }
