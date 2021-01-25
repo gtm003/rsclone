@@ -61,6 +61,16 @@ export class Controller {
     this.appView.switcherContainer.addEventListener('click', this.onSwitcherLanguageClick);
     document.addEventListener('keyup', this.onHotKeysKeyUp);
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
+
+    // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
+    this.model.svgArea.node.addEventListener('keydown', (e) => {
+      console.log(e);
+    })
+    this.model.svgArea.node.addEventListener('click', (e) => {
+      console.log(e);
+      this.model.svgArea.node.tabIndex = '1';
+      this.model.svgArea.node.focus();
+    })
   }
 
   onToolsLeftClick({target}) {
@@ -312,13 +322,17 @@ export class Controller {
     }
   }
 
-  onHotKeysKeyUp(e) {
-    if (e.key === 'Delete') {
+  onHotKeysKeyUp({ key, code, ctrlKey, metaKey }) {
+    if (key === 'Delete') {
       this.deleteElements();
-    } else if (e.ctrlKey && e.keyCode === 67) { // копировать
+    } else if ((ctrlKey || metaKey) && code === 'KeyC') { // копировать
       this.copyElements();
-    } else if (e.ctrlKey && e.keyCode === 86) {
+    } else if ((ctrlKey || metaKey) && code === 'KeyV') { // вставить
       this.pasteElements(this.counter);
+    } else if ((ctrlKey || metaKey) && code === 'KeyZ') { // назад
+      this.model.unDo();
+    } else if ((ctrlKey || metaKey) && code === 'KeyY') { // вперед
+      this.model.reDo();
     }
   }
 
