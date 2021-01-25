@@ -1,6 +1,7 @@
 import { } from '../../vendor/svg.js';
 import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
+import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 export class Model {
   constructor(appView, rootElement) {
@@ -9,6 +10,7 @@ export class Model {
     this.type = 'select';
     this.appView = appView;
     this.selectElements = [];
+    this.copiedElements = [];
     this.setSelectElements = new Set();
 
     this.fillColor = 'transparent';
@@ -465,17 +467,6 @@ export class Model {
     return false;
   }
 
-  bringToFront() {
-    if (this.selectElements === 1) {
-      this.selectElements[0].front()
-    }
-  }
-  sendToBack() {
-    if (this.selectElements === 1) {
-      this.selectElements[0].back()
-    }
-  }
-
   // из контроллера часть alexk08
   createNewImage() {
     this.rootElement.innerHTML = '';
@@ -569,5 +560,182 @@ export class Model {
 
       reader.readAsText(file);
     }
+  }
+
+  // часть по functionalArea 11alexey11
+  changePropertiesSVGElement(target) {
+    this.appView.deleteVisibilityContextMenu();
+    const objSVG = this.selectElements[0];
+    switch (target.dataset[this.appView.propertiesDataAttribute]) {
+      case 'angle':
+        if (target.value.length !== 0) {
+          objSVG.rotate(target.value);
+        } else {
+          objSVG.rotate(0);
+        }
+        break;
+      case 'size':
+        if (target.value.length !== 0) {
+          objSVG.attr('font-size', target.value);
+        } else {
+          objSVG.attr('font-size', target.getAttribute('placeholder'));
+        }
+        break;
+      default:
+        if (target.value.length !== 0) {
+          objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.value);
+        } else {
+          objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.getAttribute('placeholder'));
+        }
+        break;
+    }
+    this.saveHistory();
+  }
+
+  changeSelectProperty(target) {
+    this.appView.deleteVisibilityContextMenu();
+    const objSVG = this.selectElements[0];
+    objSVG.attr('font-family', target.value);
+    this.saveHistory();
+  }
+
+  alignElements(dataAttribute) {
+    this.appView.deleteVisibilityContextMenu();
+    switch (dataAttribute) {
+      case 'align_horizontal_left':
+        this.selectElements.forEach((item) => item.x(0));
+        break;
+      case 'align_horizontal_right':
+        this.selectElements.forEach((item) => {
+          if (item.type === 'text') {
+            item.x(this.svgArea.width() - item.length());
+          } else {
+            item.x(this.svgArea.width() - item.width());
+          }
+        });
+        break;
+      case 'align_vertical_top':
+        this.selectElements.forEach((item) => item.y(0));
+        break;
+      case 'align_vertical_bottom':
+        this.selectElements.forEach((item) => {
+          if (item.type === 'text') {
+            item.y(this.svgArea.height() - 1.11 * item.attr('size'));
+          } else {
+            item.y(this.svgArea.height() - item.height());
+          }
+        });
+        break;
+      case 'align_horizontal_center':
+        this.selectElements.forEach((item) => item.cx(this.svgArea.width() / 2));
+        break;
+      case 'align_vertical_center':
+        this.selectElements.forEach((item) => item.cy(this.svgArea.height() / 2));
+        break;
+    }
+    this.saveHistory();
+  }
+
+  deleteElements() {
+    for (let i = 0; i < this.selectElements.length; i += 1) {
+      this.selectElements[i].resize('stop').selectize(false);
+      this.selectElements[i].remove();
+    }
+    this.selectElements = [];
+    this.appView.removeVisibilityPanel(this.selectElements);
+    this.appView.deleteVisibilityContextMenu();
+    this.saveHistory();
+  }
+
+  bringToFront() {
+    if (this.selectElements.length === 1) {
+      this.selectElements[0].front();
+    }
+    this.appView.deleteVisibilityContextMenu();
+    this.saveHistory();
+  }
+
+  sendToBack() {
+    if (this.selectElements.length === 1) {
+      this.selectElements[0].back();
+    }
+    this.appView.deleteVisibilityContextMenu();
+    this.saveHistory();
+  }
+
+  copyElements() {
+    this.copiedElements = this.selectElements;
+    this.appView.deleteVisibilityContextMenu();
+  }
+
+  pasteElements() {
+    if (this.copiedElements.length > 0) {
+      this.copiedElements.forEach((item) => {
+        const elementCopy = item.clone();
+        elementCopy.attr('x', this.x);
+        elementCopy.attr('y', this.y);
+        this.svgArea.add(elementCopy);
+      });
+    }
+    this.appView.deleteVisibilityContextMenu();
+    this.saveHistory();
+  }
+
+  appearContextMenu(e) {
+    e.preventDefault();
+    this.appView.contextMenuWindow.classList.remove('visibility-modal');
+    this.appView.contextMenuWindow.style.left = `${e.pageX}px`;
+    this.appView.contextMenuWindow.style.top = `${e.pageY}px`;
+    if (this.selectElements.length === 0 && this.copiedElements.length > 0) { // выделено, скопировали (вызывается на svgArea)
+      this.appView.contextMenuWindow.childNodes[0].disabled = true;
+      this.appView.contextMenuWindow.childNodes[1].disabled = true;
+      this.appView.contextMenuWindow.childNodes[2].disabled = false;
+      this.appView.contextMenuWindow.childNodes[3].disabled = true;
+      this.appView.contextMenuWindow.childNodes[4].disabled = true;
+    } else if (this.selectElements.length > 0 && this.copiedElements.length === 0) { // выделено, и не скопировали (вызывается на Element)
+      this.appView.contextMenuWindow.childNodes[0].disabled = false;
+      this.appView.contextMenuWindow.childNodes[1].disabled = false;
+      this.appView.contextMenuWindow.childNodes[2].disabled = true;
+      this.appView.contextMenuWindow.childNodes[3].disabled = false;
+      this.appView.contextMenuWindow.childNodes[4].disabled = false;
+    } else if (this.selectElements.length === 0 && this.copiedElements.length === 0) {
+      this.appView.contextMenuWindow.childNodes[0].disabled = true;
+      this.appView.contextMenuWindow.childNodes[1].disabled = true;
+      this.appView.contextMenuWindow.childNodes[2].disabled = true;
+      this.appView.contextMenuWindow.childNodes[3].disabled = true;
+      this.appView.contextMenuWindow.childNodes[4].disabled = true;
+    } else if (this.selectElements.length > 0 && this.copiedElements.length > 0) {
+      this.appView.contextMenuWindow.childNodes[0].disabled = false;
+      this.appView.contextMenuWindow.childNodes[1].disabled = false;
+      this.appView.contextMenuWindow.childNodes[2].disabled = false;
+      this.appView.contextMenuWindow.childNodes[3].disabled = false;
+      this.appView.contextMenuWindow.childNodes[4].disabled = false;
+    }
+  }
+
+  changeLanguage(menuButtons, toolTips, contextMenuButtons, strLang) {
+    menuButtons.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = MENU_BUTTONS_NAMES_RUS[index];
+      } else {
+        item.textContent = MENU_BUTTONS_NAMES_EN[index];
+      }
+    });
+
+    toolTips.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = TOOLS_LEFT_NAMES_RUS[index];
+      } else {
+        item.textContent = TOOLS_LEFT_NAMES_EN[index];
+      }
+    });
+
+    contextMenuButtons.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = CONTEXTMENU_NAMES_RUS[index];
+      } else {
+        item.textContent = CONTEXTMENU_NAMES_EN[index];
+      }
+    });
   }
 }
