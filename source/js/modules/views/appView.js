@@ -147,7 +147,7 @@ export class AppView {
           const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelRect[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelRect[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelRect[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelRect[5].childNodes[1].setAttribute('placeholder', attribute.y);
           arrayLabelRect[6].childNodes[1].setAttribute('placeholder', attribute.width);
@@ -157,7 +157,7 @@ export class AppView {
           const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelLine[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelLine[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelLine[4].childNodes[1].setAttribute('placeholder', attribute.x1);
           arrayLabelLine[5].childNodes[1].setAttribute('placeholder', attribute.y1);
           arrayLabelLine[6].childNodes[1].setAttribute('placeholder', attribute.x2);
@@ -167,7 +167,7 @@ export class AppView {
           const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelText[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelText[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelText[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelText[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelText[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelText[5].childNodes[1].setAttribute('placeholder', attribute.y);
           arrayLabelText[6].childNodes[1].setAttribute('placeholder', attribute['font-size']);
@@ -177,7 +177,7 @@ export class AppView {
           const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelEllipse[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelEllipse[4].childNodes[1].setAttribute('placeholder', attribute.cx);
           arrayLabelEllipse[5].childNodes[1].setAttribute('placeholder', attribute.cy);
           arrayLabelEllipse[6].childNodes[1].setAttribute('placeholder', attribute.rx);
@@ -187,7 +187,7 @@ export class AppView {
           const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelPencil[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelPencil[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', 1);
           break;
       }
     }
