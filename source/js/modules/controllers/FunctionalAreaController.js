@@ -1,8 +1,7 @@
 export class FunctionalAreaController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onPropertiesSVGElementKeyUp = this.onPropertiesSVGElementKeyUp.bind(this);
     this.onDeleteElementsClick = this.onDeleteElementsClick.bind(this);

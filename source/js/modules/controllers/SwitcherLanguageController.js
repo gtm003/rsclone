@@ -1,8 +1,7 @@
 export class SwitcherLanguageController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onSwitcherLanguageClick = this.onSwitcherLanguageClick.bind(this);
   }

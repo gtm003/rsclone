@@ -1,8 +1,7 @@
 export class ToolsLeftController {
-  constructor(appView, model, controller, svgAreaController) {
+  constructor(appView, model, svgAreaController) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
     this.svgAreaController = svgAreaController;
 
     this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
