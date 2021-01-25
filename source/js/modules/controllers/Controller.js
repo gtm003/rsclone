@@ -1,6 +1,6 @@
 import {Model} from '../models/SVGAreaModel';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
-
+import {MainMenuController} from './MainMenuController';
 const FILE_TYPE = 'svg';
 
 export class Controller {
@@ -10,10 +10,6 @@ export class Controller {
     this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
-    this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
-    this.onSaveModalClick = this.onSaveModalClick.bind(this);
-    this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
-    this.onImportSvgChange = this.onImportSvgChange.bind(this);
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
     this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
@@ -38,11 +34,6 @@ export class Controller {
     this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
 
-    this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
-    this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
-    this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
-    this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
-
     this.appView.rectContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
     this.appView.lineContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
     this.appView.ellipseContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
@@ -61,6 +52,19 @@ export class Controller {
     this.appView.switcherContainer.addEventListener('click', this.onSwitcherLanguageClick);
     document.addEventListener('keyup', this.onHotKeysKeyUp);
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
+
+    // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
+    this.model.svgArea.node.addEventListener('keydown', (e) => {
+      console.log(e);
+    })
+    this.model.svgArea.node.addEventListener('click', (e) => {
+      console.log(e);
+      this.model.svgArea.node.tabIndex = '1';
+      this.model.svgArea.node.focus();
+    })
+
+    // отдельный модуль контроллер Главного Меню и модалок связанных с ним
+    new MainMenuController(this.appView, this.model, this).init();
   }
 
   onToolsLeftClick({target}) {
@@ -88,146 +92,6 @@ export class Controller {
     }
     if (target.id === 'CANSEL') {
       this.appView.colorPicker.closeColorPicker();
-    }
-  }
-
-  onImportSvgChange({target}) {
-    if (target.dataset['menu'] === 'Import SVG') {
-      this.uploadSVG(target);
-    }
-  }
-
-  onMenuButtonsClick({target}) {
-    this.deleteVisibilityContextMenu();
-    if (target.dataset['menu'] === 'New Image') {
-      this.createNewImage();
-      this.model.selectElements = [];
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
-      // this.onContextMenuClick();
-    }
-
-    if (target.dataset['menu'] === 'Save SVG') {
-      this.openModalSave();
-    }
-
-    if (target.dataset['menu'] === 'Document Properties') {
-      this.openModalSettings();
-    }
-
-    if (target.dataset['menu'] === 'Get SVG-code') {
-      this.openModalSvgCode();
-    }
-
-    if (target.dataset['menu'] === 'Undo') {
-      this.model.unDo();
-      // this.appearContextMenu();
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
-    }
-
-    if (target.dataset['menu'] === 'Redo') {
-      this.model.reDo();
-      // this.appearContextMenu();
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
-    }
-  }
-
-  openModalSvgCode() {
-    this.appView.svgCodeModalWindow.innerHTML = '';
-    this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
-    this.model.removeSelect();
-    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
-  }
-
-  openModalSettings() {
-    this.appView.settingsModalWindow.classList.add('modal-settings--show');
-  }
-
-  closeModalSettings() {
-    this.appView.settingsModalWindow.classList.remove('modal-settings--show');
-  }
-
-  onSettingsModalClick({target}) {
-    if (target.dataset['modalSettings'] === 'save') {
-      this.changeProperties();
-      this.closeModalSettings();
-    }
-
-    if (target.dataset['modalSettings'] === 'close') {
-      this.closeModalSettings();
-    }
-  }
-
-  changeProperties() {
-    const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
-    const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
-    this.model.resizeSvgArea(svgWidth, svgHeight);
-  }
-
-  onSaveModalClick({target}) {
-    if (target.dataset['modalSave'] === 'save') {
-      this.saveFile(this.appView.inputFileName.value);
-    }
-
-    if (target.dataset['modalSave'] === 'close') {
-      this.closeModalSave();
-    }
-  }
-
-  openModalSave() {
-    this.appView.saveModalWindow.classList.add('modal-save--show');
-  }
-
-  closeModalSave() {
-    this.appView.inputFileName.value = '';
-    this.appView.errorMessage.style.visibility = 'hidden';
-    this.appView.saveModalWindow.classList.remove('modal-save--show');
-  }
-
-  createNewImage() {
-    this.placeForSVGCanvas.innerHTML = '';
-    this.model.createNewSvgWorkArea();
-  }
-
-  saveFile(fileName) {
-    if (fileName === '') {
-      this.appView.errorMessage.style.visibility = 'visible';
-      return;
-    }
-    this.closeModalSave();
-    this.model.removeSelect();
-    this.download(this.model.svgArea.svg(), fileName, 'image/svg+xml');
-  }
-
-  download(data, filename, type) {
-    let file = new Blob([data], {type});
-    if (window.navigator.msSaveOrOpenBlob) { // IE10+
-      window.navigator.msSaveOrOpenBlob(file, filename);
-    } else { // Others
-      let a = document.createElement('a');
-      let url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function () {
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      }, 0);
-    }
-  }
-
-  uploadSVG(input) {
-    const file = input.files[0];
-    const fileName = file.name.toLowerCase();
-
-    if (fileName.endsWith(FILE_TYPE)) {
-      const reader = new FileReader();
-
-      reader.addEventListener('load', () => {
-        this.model.svgArea.svg(reader.result);
-      });
-
-      reader.readAsText(file);
     }
   }
 
@@ -312,13 +176,17 @@ export class Controller {
     }
   }
 
-  onHotKeysKeyUp(e) {
-    if (e.key === 'Delete') {
+  onHotKeysKeyUp({ key, code, ctrlKey, metaKey }) {
+    if (key === 'Delete') {
       this.deleteElements();
-    } else if (e.ctrlKey && e.keyCode === 67) { // копировать
+    } else if ((ctrlKey || metaKey) && code === 'KeyC') { // копировать
       this.copyElements();
-    } else if (e.ctrlKey && e.keyCode === 86) {
+    } else if ((ctrlKey || metaKey) && code === 'KeyV') { // вставить
       this.pasteElements(this.counter);
+    } else if ((ctrlKey || metaKey) && code === 'KeyZ') { // назад
+      this.model.unDo();
+    } else if ((ctrlKey || metaKey) && code === 'KeyY') { // вперед
+      this.model.reDo();
     }
   }
 

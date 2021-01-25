@@ -34,12 +34,14 @@ export class AppView {
     this.settingsModalWindow = null;
     this.svgCodeModalWindow = null;
     this.contextMenuWindow = null;
+    this.newImageModal = null;
 
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
     this.settingsElementsDataAttribute = 'modalSettings';
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
+    this.newImageDataAttribute = 'newImage';
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -68,6 +70,49 @@ export class AppView {
 
     const controller = new Controller(this, this.sheet);
     controller.init();
+  }
+
+  createElement(tagName, classList, attributes, textContent) {
+    // tagName - string
+    // classList - array of string
+    // attributes - object
+    // dataAttributes - object - пока без дата-атрибутов
+    // textContent - string
+
+    classList = Array.isArray(classList) ?  classList : false;
+    attributes = typeof attributes !== undefined ? attributes : false;
+    attributes = typeof textContent === 'string' ? attributes : false;
+
+    const element = document.createElement(tagName);
+    if (classList) classList.forEach(item => element.classList.add(item));
+    if (attributes) {
+      for (let prop in attributes) {
+        element.setAttribute(prop, attributes[prop])
+      }
+    }
+    if (textContent) element.textContent = textContent;
+
+    return element;
+  }
+
+  createNewImageModal() {
+    const newImageModal = this.createElement('div', ['modal-new-image']);
+
+    const modalText = this.createElement('div', ['modal-new-image__text']);
+    const p1 = this.createElement('div', false, false, 'Do you want to clear the drawing?');
+    const p2 = this.createElement('div', false, false, 'This will also erase your undo history!');
+    modalText.append(p1, p2);
+
+    const buttonsContainer = this.createElement('div', ['modal-new-image__btns']);
+    const okButton = this.createElement('button', false, {type: 'button'}, 'Ok');
+    okButton.dataset[`${this.newImageDataAttribute}`] = 'ok';
+    const cancelButton = this.createElement('button', false, {type: 'button'}, 'Cancel');
+    cancelButton.dataset[`${this.newImageDataAttribute}`] = 'cancel';
+    buttonsContainer.append(okButton, cancelButton);
+
+    newImageModal.append(modalText, buttonsContainer);
+
+    return newImageModal;
   }
 
   getCurrentRotation(item) {
@@ -506,6 +551,7 @@ export class AppView {
   }
 
   renderContent() {
+    this.newImageModal = this.createNewImageModal();
     this.svgCodeModalWindow = this.createSvgCodeModal();
     this.settingsModalWindow = this.createSettingsModal();
     this.saveModalWindow = this.createSaveModal();
@@ -524,8 +570,7 @@ export class AppView {
     this.toolsRightContainer = document.createElement('div');
 
     this.toolsRightContainer.className = 'tools-right';
-
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow, this.contextMenuWindow);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow, this.contextMenuWindow, this.newImageModal);
   }
 
   renderFooter() {

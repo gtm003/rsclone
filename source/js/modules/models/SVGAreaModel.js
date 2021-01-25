@@ -505,4 +505,99 @@ export class Model {
       this.selectElements[0].back()
     }
   }
+
+  // из контроллера часть alexk08
+  createNewImage() {
+    this.rootElement.innerHTML = '';
+    this.selectElements = [];
+    this.createNewSvgWorkArea();
+    this.closeNewImageModal();
+
+    this.history = [];
+    this.historyPosition = 0;
+    this.isFirstSaveHistory = true;
+    this.saveHistory();
+  }
+
+  openNewImageModal() {
+    this.app.newImageModal.classList.add('modal-new-image--show');
+  }
+
+  closeNewImageModal() {
+    this.app.newImageModal.classList.remove('modal-new-image--show');
+  }
+
+  openModalSvgCode() {
+    this.app.svgCodeModalWindow.innerHTML = '';
+    this.app.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.removeSelect();
+    this.app.svgCodeModalWindow.textContent = this.app.sheet.innerHTML;
+  }
+
+  openModalSettings() {
+    this.app.settingsModalWindow.classList.add('modal-settings--show');
+  }
+
+  closeModalSettings() {
+    this.app.settingsModalWindow.classList.remove('modal-settings--show');
+  }
+
+  changeProperties() {
+    const svgWidth = this.app.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
+    const svgHeight = this.app.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
+    this.resizeSvgArea(svgWidth, svgHeight);
+  }
+
+  openModalSave() {
+    this.app.saveModalWindow.classList.add('modal-save--show');
+  }
+
+  closeModalSave() {
+    this.app.inputFileName.value = '';
+    this.app.errorMessage.style.visibility = 'hidden';
+    this.app.saveModalWindow.classList.remove('modal-save--show');
+  }
+
+  saveFile(fileName) {
+    if (fileName === '') {
+      this.app.errorMessage.style.visibility = 'visible';
+      return;
+    }
+    this.closeModalSave();
+    this.removeSelect();
+    this.download(this.svgArea.svg(), fileName, 'image/svg+xml');
+  }
+
+  download(data, filename, type) {
+    let file = new Blob([data], {type});
+    if (window.navigator.msSaveOrOpenBlob) { // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    } else { // Others
+      let a = document.createElement('a');
+      let url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
+    }
+  }
+
+  uploadSVG(input) {
+    const file = input.files[0];
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith(FILE_TYPE)) {
+      const reader = new FileReader();
+
+      reader.addEventListener('load', () => {
+        this.svgArea.svg(reader.result);
+      });
+
+      reader.readAsText(file);
+    }
+  }
 }
