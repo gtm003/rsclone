@@ -1,4 +1,4 @@
-import {Model} from '../models/SvgAreaModel';
+import {SvgAreaModel} from '../models/SvgAreaModel';
 import {MainMenuController} from './MainMenuController';
 import {FunctionalAreaController} from './FunctionalAreaController';
 import {SvgAreaController} from './SvgAreaController';
@@ -11,11 +11,9 @@ const FILE_TYPE = 'svg';
 
 export class Controller {
   constructor(appView, placeForSVGCanvas) {
-    this.fill = 'none';
-    this.stroke = 'black';
-    this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
-    this.model = new Model(this.appView, this.placeForSVGCanvas);
+    this.placeForSVGCanvas = placeForSVGCanvas;
+    this.model = new SvgAreaModel(this.appView, this.placeForSVGCanvas);
 
     this.menuController = null;
     this.svgAreaController = null;

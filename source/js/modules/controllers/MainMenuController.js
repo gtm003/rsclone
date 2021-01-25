@@ -44,6 +44,8 @@ export class MainMenuController {
       // this.appearContextMenu();
       this.appView.removeVisibilityPanel(this.model.selectElements);
     }
+
+    console.log(target)
   }
 
   onImportSvgChange({target}) {
