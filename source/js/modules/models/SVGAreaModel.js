@@ -3,6 +3,8 @@ import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
+const FILE_TYPE = 'svg';
+
 export class SvgAreaModel {
   constructor(appView, rootElement) {
     this.rootElement = rootElement;
@@ -489,34 +491,34 @@ export class SvgAreaModel {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModalWindow.innerHTML = '';
-    this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.appView.svgCodeModal.innerHTML = '';
+    this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
+    this.appView.svgCodeModal.textContent = this.appView.sheet.innerHTML;
   }
 
   openModalSettings() {
-    this.appView.settingsModalWindow.classList.add('modal-settings--show');
+    this.appView.settingsModal.classList.add('modal-settings--show');
   }
 
   closeModalSettings() {
-    this.appView.settingsModalWindow.classList.remove('modal-settings--show');
+    this.appView.settingsModal.classList.remove('modal-settings--show');
   }
 
   changeProperties() {
-    const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
-    const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
+    const svgWidth = this.appView.settingsModal.querySelector('[data-modal-settings="width"]').value;
+    const svgHeight = this.appView.settingsModal.querySelector('[data-modal-settings="height"]').value;
     this.resizeSvgArea(svgWidth, svgHeight);
   }
 
   openModalSave() {
-    this.appView.saveModalWindow.classList.add('modal-save--show');
+    this.appView.saveModal.classList.add('modal-save--show');
   }
 
   closeModalSave() {
     this.appView.inputFileName.value = '';
     this.appView.errorMessage.style.visibility = 'hidden';
-    this.appView.saveModalWindow.classList.remove('modal-save--show');
+    this.appView.saveModal.classList.remove('modal-save--show');
   }
 
   saveFile(fileName) {
