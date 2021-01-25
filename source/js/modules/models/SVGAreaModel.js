@@ -3,7 +3,7 @@ import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
-export class Model {
+export class SvgAreaModel {
   constructor(appView, rootElement) {
     this.rootElement = rootElement;
     this.svgArea = null;

@@ -1,7 +1,8 @@
 // import { Color } from '@svgdotjs/svg.js';
 import {Controller} from '../controllers/Controller';
-import {ColorPicker} from './colorPicker';
-import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {ColorPicker} from './ColorPicker';
+import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {MainMenu} from './MainMenu';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -25,7 +26,6 @@ export class AppView {
     this.toolsBottomContainer = null;
     this.toolsLeftContainer = null;
     this.workAreaContainer = null;
-    this.menuContainer = null;
     this.functionalAreaContainer = null;
     this.switcherContainer = null;
     this.saveModalWindow = null;
@@ -42,6 +42,11 @@ export class AppView {
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
+
+    
+    
+    
+    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -238,34 +243,6 @@ export class AppView {
 
   deleteVisibilityContextMenu() {
     this.contextMenuWindow.classList.add('visibility-modal');
-  }
-
-  createMenuContainer() {
-    const menuContainer = document.createElement('div');
-    menuContainer.classList.add('tools-top__menu-area');
-
-    MENU_BUTTONS_NAMES_EN.forEach((item) => {
-      if (item !== 'Import SVG') {
-        const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
-        button.textContent = item;
-        menuContainer.appendChild(button);
-      } else {
-        const inputFileUpload = document.createElement('input');
-        inputFileUpload.setAttribute('type', 'file');
-        inputFileUpload.setAttribute('id', 'upload-file');
-        inputFileUpload.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
-        inputFileUpload.style.display = 'none';
-
-        const labelFileUpload = document.createElement('label');
-        labelFileUpload.setAttribute('for', 'upload-file');
-        labelFileUpload.textContent = item;
-        menuContainer.append(labelFileUpload, inputFileUpload);
-      }
-    });
-
-    return menuContainer;
   }
 
   removeVisibilityPanel(selectElements) {
@@ -496,7 +473,6 @@ export class AppView {
   createToolsTop() {
     const toolsTop = document.createElement('div');
     toolsTop.classList.add('tools-top');
-    this.menuContainer = this.createMenuContainer();
     this.functionalAreaContainer = this.createFunctionalArea();
     this.switcherContainer = this.createSwitcherContainer();
     toolsTop.append(this.menuContainer, this.functionalAreaContainer, this.switcherContainer);
