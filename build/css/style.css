@@ -1149,6 +1149,11 @@ button,
 .visibility-modal {
   display: none; }
 
+.modal-new-image {
+  display: none; }
+  .modal-new-image--show {
+    display: block; }
+
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,
   &:focus {
