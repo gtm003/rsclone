@@ -3,11 +3,11 @@ import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
 
 export class Model {
-  constructor(app, rootElement) {
+  constructor(appView, rootElement) {
     this.rootElement = rootElement;
     this.svgArea = null;
     this.type = 'select';
-    this.app = app;
+    this.appView = appView;
     this.selectElements = [];
     this.setSelectElements = new Set();
 
@@ -30,36 +30,6 @@ export class Model {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
-
-    this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
-    this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
-    this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
-  }
-
-  onSvgAreaMouseDown(e) {
-    this.target = e.target.nodeName;
-    console.log(this.target);
-    this.checkSelectedElem(e);
-    this.getTypeOfMouseDownAction(this.type, e);
-    if (this.type !== 'fill' && this.type !== 'stroke') { // This is a temporary option
-      this.svgArea.mousemove(this.onSvgAreaMouseMove);
-    }
-    this.svgArea.mouseup(this.onSvgAreaMouseUp);
-  }
-
-  onSvgAreaMouseMove(e) {
-    this.getTypeOfMouseMoveAction(this.type, e);
-    this.wasMoved = true;
-  }
-
-  onSvgAreaMouseUp() {
-    this.getTypeOfMouseUpAction(this.type);
-    if (this.wasMoved) this.saveHistory();
-    this.wasMoved = false;
-    this.app.removeVisibilityPanel(this.selectElements);
-    this.app.updateFunctionalArea(this.selectElements);
-    this.svgArea.mousemove(null);
-    this.svgArea.mouseup(null);
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -117,7 +87,7 @@ export class Model {
     })
     if (!e.ctrlKey && !isOnSelect) {
       this.removeSelect();
-      this.app.removeVisibilityPanel(this.selectElements);
+      this.appView.removeVisibilityPanel(this.selectElements);
     }
     //this.isDraw = true;
     this.x = e.offsetX;
@@ -164,8 +134,8 @@ export class Model {
         this.cyLast = this.cy();
       }
     });
-    _that.app.removeVisibilityPanel(_that.selectElements);
-    _that.app.updateFunctionalArea(_that.selectElements);
+    _that.appView.removeVisibilityPanel(_that.selectElements);
+    _that.appView.updateFunctionalArea(_that.selectElements);
   }
 
   createRect(e) {
@@ -244,7 +214,7 @@ export class Model {
           this.cx(e.offsetX - _that.x + _that.cxLast);
           //console.log(this.cx());
           this.cy(e.offsetY - _that.y + _that.cyLast);
-          _that.app.updateFunctionalArea(_that.selectElements);
+          _that.appView.updateFunctionalArea(_that.selectElements);
           // _that.saveHistory();
         }
       });
@@ -254,7 +224,7 @@ export class Model {
           this.cx(e.offsetX - _that.x + this.cxLast);
           this.cy(e.offsetY - _that.y + this.cyLast);
           //console.log(this.cx());
-          _that.app.updateFunctionalArea(_that.selectElements);
+          _that.appView.updateFunctionalArea(_that.selectElements);
           // _that.saveHistory();
         }
       });
@@ -414,13 +384,13 @@ export class Model {
   }
 
   onMouseMoveG() {
-    const arrayG = [...[...this.app.sheet.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
+    const arrayG = [...[...this.appView.sheet.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
     const arrayElementG = [...arrayG[0].childNodes];
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
         if (this.selectElements.length === 1) {
-          this.app.updateFunctionalArea(this.selectElements);
+          this.appView.updateFunctionalArea(this.selectElements);
         }
       });
     }
@@ -520,47 +490,47 @@ export class Model {
   }
 
   openNewImageModal() {
-    this.app.newImageModal.classList.add('modal-new-image--show');
+    this.appView.newImageModal.classList.add('modal-new-image--show');
   }
 
   closeNewImageModal() {
-    this.app.newImageModal.classList.remove('modal-new-image--show');
+    this.appView.newImageModal.classList.remove('modal-new-image--show');
   }
 
   openModalSvgCode() {
-    this.app.svgCodeModalWindow.innerHTML = '';
-    this.app.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
+    this.appView.svgCodeModalWindow.innerHTML = '';
+    this.appView.svgCodeModalWindow.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.app.svgCodeModalWindow.textContent = this.app.sheet.innerHTML;
+    this.appView.svgCodeModalWindow.textContent = this.appView.sheet.innerHTML;
   }
 
   openModalSettings() {
-    this.app.settingsModalWindow.classList.add('modal-settings--show');
+    this.appView.settingsModalWindow.classList.add('modal-settings--show');
   }
 
   closeModalSettings() {
-    this.app.settingsModalWindow.classList.remove('modal-settings--show');
+    this.appView.settingsModalWindow.classList.remove('modal-settings--show');
   }
 
   changeProperties() {
-    const svgWidth = this.app.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
-    const svgHeight = this.app.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
+    const svgWidth = this.appView.settingsModalWindow.querySelector('[data-modal-settings="width"]').value;
+    const svgHeight = this.appView.settingsModalWindow.querySelector('[data-modal-settings="height"]').value;
     this.resizeSvgArea(svgWidth, svgHeight);
   }
 
   openModalSave() {
-    this.app.saveModalWindow.classList.add('modal-save--show');
+    this.appView.saveModalWindow.classList.add('modal-save--show');
   }
 
   closeModalSave() {
-    this.app.inputFileName.value = '';
-    this.app.errorMessage.style.visibility = 'hidden';
-    this.app.saveModalWindow.classList.remove('modal-save--show');
+    this.appView.inputFileName.value = '';
+    this.appView.errorMessage.style.visibility = 'hidden';
+    this.appView.saveModalWindow.classList.remove('modal-save--show');
   }
 
   saveFile(fileName) {
     if (fileName === '') {
-      this.app.errorMessage.style.visibility = 'visible';
+      this.appView.errorMessage.style.visibility = 'visible';
       return;
     }
     this.closeModalSave();

@@ -1,6 +1,9 @@
-import {Model} from '../models/SVGAreaModel';
+import {Model} from '../models/SvgAreaModel';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 import {MainMenuController} from './MainMenuController';
+import {SvgAreaController} from './SvgAreaController';
+import {ToolsLeftController} from './ToolsLeftController';
+
 const FILE_TYPE = 'svg';
 
 export class Controller {
@@ -11,8 +14,11 @@ export class Controller {
     this.appView = appView;
     this.model = new Model(this.appView, this.placeForSVGCanvas);
 
+    this.menuController = null;
+    this.svgAreaController = null;
+    this.toolsLeftController = null;
+
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
-    this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
 
     this.onPropertiesSVGElementKeyUp = this.onPropertiesSVGElementKeyUp.bind(this);
@@ -30,9 +36,7 @@ export class Controller {
 
   init() {
     this.model.init();
-    this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
     this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
-    this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
 
     this.appView.rectContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
     this.appView.lineContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
@@ -63,20 +67,15 @@ export class Controller {
       this.model.svgArea.node.focus();
     })
 
-    // отдельный модуль контроллер Главного Меню и модалок связанных с ним
-    new MainMenuController(this.appView, this.model, this).init();
-  }
-
-  onToolsLeftClick({target}) {
-    if (target.closest('button')) {
-      const toolButtonId = target.closest('button').id;
-      this.model.type = toolButtonId;
-      this.model.svgArea.mousedown(null);
-      this.model.svgArea.mousedown(this.model.onSvgAreaMouseDown);
-      if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
-        this.appView.colorPicker.openColorPicker();
-      }
-    }
+    // модуль контроллер Главного Меню и модалок связанных с ним
+    this.menuController = new MainMenuController(this.appView, this.model, this)
+    this.menuController.init();
+    // модуль контроллер SvgArea
+    this.svgAreaController = new SvgAreaController(this.appView, this.model, this)
+    this.svgAreaController.init();
+    // модуль контроллер ToolsLeft
+    this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this, this.svgAreaController);
+    this.toolsLeftController.init();
   }
 
   onChangeColorClick({target}) {
