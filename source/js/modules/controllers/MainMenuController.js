@@ -20,13 +20,14 @@ export class MainMenuController {
   }
 
   onMenuButtonsClick({target}) {
-    this.controller.deleteVisibilityContextMenu();
+    this.appView.deleteVisibilityContextMenu();
 
     const buttonDataAttribute = target.dataset[`${this.appView.menuButtonsDataAttribute}`];
 
     if (buttonDataAttribute === 'New Image') {
       this.model.openNewImageModal();
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.model.selectElements = [];
+      this.appView.removeVisibilityPanel(this.model.selectElements);
       // this.onContextMenuClick();
     } else if (buttonDataAttribute === 'Save SVG') {
       this.model.openModalSave();
@@ -37,11 +38,11 @@ export class MainMenuController {
     } else if (buttonDataAttribute === 'Undo') {
       this.model.unDo();
       // this.appearContextMenu();
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.appView.removeVisibilityPanel(this.model.selectElements);
     } else if (buttonDataAttribute === 'Redo') {
       this.model.reDo();
       // this.appearContextMenu();
-      // this.appView.removeVisibilityPanel(this.model.selectElements);
+      this.appView.removeVisibilityPanel(this.model.selectElements);
     }
 
     console.log(target)
