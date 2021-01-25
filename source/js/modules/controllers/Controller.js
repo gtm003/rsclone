@@ -1,4 +1,4 @@
-import {Model} from '../models/SvgAreaModel';
+import {SvgAreaModel} from '../models/SvgAreaModel';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 import {MainMenuController} from './MainMenuController';
 import {SvgAreaController} from './SvgAreaController';
@@ -8,11 +8,9 @@ const FILE_TYPE = 'svg';
 
 export class Controller {
   constructor(appView, placeForSVGCanvas) {
-    this.fill = 'none';
-    this.stroke = 'black';
-    this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
-    this.model = new Model(this.appView, this.placeForSVGCanvas);
+    this.placeForSVGCanvas = placeForSVGCanvas;
+    this.model = new SvgAreaModel(this.appView, this.placeForSVGCanvas);
 
     this.menuController = null;
     this.svgAreaController = null;

@@ -2,7 +2,7 @@ import { } from '../../vendor/svg.js';
 import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
 
-export class Model {
+export class SvgAreaModel {
   constructor(appView, rootElement) {
     this.rootElement = rootElement;
     this.svgArea = null;
