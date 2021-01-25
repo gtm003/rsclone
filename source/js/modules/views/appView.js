@@ -41,6 +41,7 @@ export class AppView {
     this.settingsElementsDataAttribute = 'modalSettings';
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
+    this.newImageDataAttribute = 'newImage';
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -79,7 +80,7 @@ export class AppView {
     // textContent - string
 
     classList = Array.isArray(classList) ?  classList : false;
-    attributes = typeof attributes === 'object' ? attributes : false;
+    attributes = typeof attributes !== undefined ? attributes : false;
     attributes = typeof textContent === 'string' ? attributes : false;
 
     const element = document.createElement(tagName);
@@ -96,14 +97,20 @@ export class AppView {
 
   createNewImageModal() {
     const newImageModal = this.createElement('div', ['modal-new-image']);
-    const modalText = this.createElement('div', ['modal-new-image__text']);
-    const p1 = this.createElement('p', false, false, 'Do you want to clear the drawing?');
-    const p2 = this.createElement('p', false, false, 'This will also erase your undo history!');
-    const okButton = this.createElement('button', ['modal-newimage__btn'], {type: 'button'}, 'Ok');
-    const cancelButton = this.createElement('button', ['modal-newimage__btn'], {type: 'button'}, 'Cancel');
 
+    const modalText = this.createElement('div', ['modal-new-image__text']);
+    const p1 = this.createElement('div', false, false, 'Do you want to clear the drawing?');
+    const p2 = this.createElement('div', false, false, 'This will also erase your undo history!');
     modalText.append(p1, p2);
-    newImageModal.append(modalText, okButton, cancelButton);
+
+    const buttonsContainer = this.createElement('div', ['modal-new-image__btns']);
+    const okButton = this.createElement('button', false, {type: 'button'}, 'Ok');
+    okButton.dataset[`${this.newImageDataAttribute}`] = 'ok';
+    const cancelButton = this.createElement('button', false, {type: 'button'}, 'Cancel');
+    cancelButton.dataset[`${this.newImageDataAttribute}`] = 'cancel';
+    buttonsContainer.append(okButton, cancelButton);
+
+    newImageModal.append(modalText, buttonsContainer);
 
     return newImageModal;
   }
