@@ -119,7 +119,7 @@ export class Model {
       this.removeSelect();
       this.app.removeVisibilityPanel(this.selectElements);
     }
-    this.isDraw = true;
+    //this.isDraw = true;
     this.x = e.offsetX;
     this.y = e.offsetY;
   }
@@ -220,18 +220,20 @@ export class Model {
     const _that = this;
     this.svgArea.each(function () {
       if (this.inside(e.offsetX, e.offsetY)) {
-        this.fill(_that.fillColor);
+        _that.elem = this;
       }
     });
+    this.elem.fill(this.fillColor);
   }
 
   changeStrokeColor(e) {
     const _that = this;
     this.svgArea.each(function () {
       if (this.inside(e.offsetX, e.offsetY)) {
-        this.stroke(_that.strokeColor);
+        _that.elem = this;
       }
     });
+    this.elem.stroke(this.fillColor);
   }
 
   moveElem(e) {
@@ -369,19 +371,19 @@ export class Model {
       //console.log(e.target);
       this.elem = this.svgArea.last();
       this.elemCounter -= 1;
+      if (this.target !== 'svg') {
+        this.type = 'select';
+        console.log('сделать на кнопку имитацию select.click()?')
+      }
     }
-    if (this.target === 'svg') {
-      this.elemCounter += 1;
-      this.elem.attr('id', `svg_${this.elemCounter}`);
-      this.isDraw = false;
-      console.log(`finish mouse up ${this.elem.type}`);
-      this.elem.selectize().resize();
-      this.elem.addClass('selectedElem');
-      this.setSelectElements.add(this.elem);
-      this.selectElements = [...this.setSelectElements];
-    } else {
-      this.type = 'select';
-    }
+    this.elemCounter += 1;
+    this.elem.attr('id', `svg_${this.elemCounter}`);
+    //this.isDraw = false;
+    console.log(`finish mouse up ${this.elem.type}`);
+    this.elem.selectize().resize();
+    this.elem.addClass('selectedElem');
+    this.setSelectElements.add(this.elem);
+    this.selectElements = [...this.setSelectElements];
   }
 
   finishResizeText() {
@@ -389,7 +391,7 @@ export class Model {
       this.elem.remove();
       this.elem = this.svgArea.last();
     }
-    this.isDraw = false;
+    //this.isDraw = false;
     this.elem.selectize().resize();
     this.elem.addClass('selectedElem');
     this.setSelectElements.add(this.elem);
@@ -397,7 +399,7 @@ export class Model {
   }
 
   stopMoveElem() {
-    this.isDraw = false;
+    //this.isDraw = false;
   }
 
   removeSelect() {
