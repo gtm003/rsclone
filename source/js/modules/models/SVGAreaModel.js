@@ -518,9 +518,12 @@ export class SvgAreaModel {
   // }
 
   createNewImage() {
-    this.rootElement.innerHTML = '';
+    // this.rootElement.innerHTML = '';
     this.selectElements = [];
-    this.createNewSvgWorkArea();
+    // this.createNewSvgWorkArea();
+    this.svgArea.each(function() {
+      if (this.type !== 'defs') this.remove();
+    });
     this.closeNewImageModal();
 
     this.history = [];
