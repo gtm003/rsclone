@@ -13,9 +13,9 @@ export class SvgAreaController {
   }
 
   onSvgAreaMouseDown(e) {
-    this.model.target = e.target.nodeName;
-    console.log(this.model.target);
-    this.model.checkSelectedElem(e);
+    this.model.target = e.target;
+    this.model.x = e.offsetX;
+    this.model.y = e.offsetY;
     this.model.getTypeOfMouseDownAction(this.model.type, e);
     if (this.model.type !== 'fill' && this.model.type !== 'stroke') { // This is a temporary option
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);

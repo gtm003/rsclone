@@ -1032,6 +1032,8 @@ button,
   -ms-flex-negative: 0;
       flex-shrink: 0;
   border: none; }
+  .svg-work-area #select-frame {
+    pointer-events: none; }
 
 .modal-svg-code {
   width: 600px;
