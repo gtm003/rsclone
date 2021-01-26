@@ -1,8 +1,7 @@
 export class ContextMenuController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onContextMenuClick = this.onContextMenuClick.bind(this);
     this.onContextMenuMouseDown = this.onContextMenuMouseDown.bind(this);

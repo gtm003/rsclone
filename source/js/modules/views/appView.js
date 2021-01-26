@@ -1,7 +1,12 @@
-// import { Color } from '@svgdotjs/svg.js';
+import {createElement} from '../../utils/createELement';
 import {Controller} from '../controllers/Controller';
-import {ColorPicker} from './colorPicker';
-import {toolsBottomBtnName, MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {ColorPicker} from './ColorPicker';
+import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {MainMenu} from './MainMenu';
+import {NewImageModal} from './NewImageModal';
+import { SettingsModal } from './SettingsModal';
+import { SvgCodeModal } from './SvgCodeModal';
+import { SaveModal } from './SaveModal';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -25,16 +30,10 @@ export class AppView {
     this.toolsBottomContainer = null;
     this.toolsLeftContainer = null;
     this.workAreaContainer = null;
-    this.menuContainer = null;
     this.functionalAreaContainer = null;
     this.switcherContainer = null;
-    this.saveModalWindow = null;
-    this.inputFileName = null;
     this.sheet = null;
-    this.settingsModalWindow = null;
-    this.svgCodeModalWindow = null;
     this.contextMenuWindow = null;
-    this.newImageModal = null;
 
     this.menuButtonsDataAttribute = 'menu';
     this.saveElementsDataAttribute = 'modalSave';
@@ -42,6 +41,15 @@ export class AppView {
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
+
+    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
+    this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
+    this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
+    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
+    this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
+    this.saveModal = this.saveModalInstance.createSaveModal();
+    this.inputFileName = this.saveModalInstance.createInputFileName();
+    this.errorMessage = this.saveModalInstance.createErrorMessage();
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -72,49 +80,6 @@ export class AppView {
     controller.init();
   }
 
-  createElement(tagName, classList, attributes, textContent) {
-    // tagName - string
-    // classList - array of string
-    // attributes - object
-    // dataAttributes - object - пока без дата-атрибутов
-    // textContent - string
-
-    classList = Array.isArray(classList) ?  classList : false;
-    attributes = typeof attributes !== undefined ? attributes : false;
-    attributes = typeof textContent === 'string' ? attributes : false;
-
-    const element = document.createElement(tagName);
-    if (classList) classList.forEach(item => element.classList.add(item));
-    if (attributes) {
-      for (let prop in attributes) {
-        element.setAttribute(prop, attributes[prop])
-      }
-    }
-    if (textContent) element.textContent = textContent;
-
-    return element;
-  }
-
-  createNewImageModal() {
-    const newImageModal = this.createElement('div', ['modal-new-image']);
-
-    const modalText = this.createElement('div', ['modal-new-image__text']);
-    const p1 = this.createElement('div', false, false, 'Do you want to clear the drawing?');
-    const p2 = this.createElement('div', false, false, 'This will also erase your undo history!');
-    modalText.append(p1, p2);
-
-    const buttonsContainer = this.createElement('div', ['modal-new-image__btns']);
-    const okButton = this.createElement('button', false, {type: 'button'}, 'Ok');
-    okButton.dataset[`${this.newImageDataAttribute}`] = 'ok';
-    const cancelButton = this.createElement('button', false, {type: 'button'}, 'Cancel');
-    cancelButton.dataset[`${this.newImageDataAttribute}`] = 'cancel';
-    buttonsContainer.append(okButton, cancelButton);
-
-    newImageModal.append(modalText, buttonsContainer);
-
-    return newImageModal;
-  }
-
   getCurrentRotation(item) {
     const transform = item.attr().transform;
     if (typeof transform !== 'undefined') {
@@ -123,101 +88,6 @@ export class AppView {
       return (angle < 0 ? angle + 360 : angle);
     }
     return 0;
-  }
-
-  createSvgCodeModal() {
-    const svgCodeModal = document.createElement('div');
-    svgCodeModal.classList.add('modal-svg-code');
-    // const preElement = document.createElement('pre');
-    // const codeElement = document.createElement('code');
-    // preElement.appendChild(codeElement);
-    // svgCodeModal.appendChild(preElement);
-    // console.log(svgCodeModal)
-
-    return svgCodeModal;
-  }
-
-  createSettingsModal() {
-    const settingsModal = document.createElement('div');
-    settingsModal.classList.add('modal-settings');
-
-    const modalTitle = document.createElement('div');
-    modalTitle.textContent = 'SVG-Document Settings';
-    modalTitle.classList.add('modal-settings__title');
-
-    const widthSvg = document.createElement('div');
-    widthSvg.classList.add('modal-settings__svg-width');
-
-    const widthSvgInput = document.createElement('input');
-    widthSvgInput.setAttribute('type', 'text');
-    widthSvgInput.setAttribute('id', 'svg-width-input');
-    widthSvgInput.dataset[`${this.settingsElementsDataAttribute}`] = 'width';
-
-    const widthSvgLabel = document.createElement('label');
-    widthSvgLabel.setAttribute('for', 'svg-width-input');
-    widthSvgLabel.textContent = 'SVG-area Width';
-
-    widthSvg.append(widthSvgLabel, widthSvgInput);
-
-    const heightSvg = document.createElement('div');
-    heightSvg.classList.add('modal-settings__svg-height');
-
-    const heightSvgInput = document.createElement('input');
-    heightSvgInput.setAttribute('type', 'text');
-    heightSvgInput.setAttribute('id', 'svg-height-input');
-    heightSvgInput.dataset[`${this.settingsElementsDataAttribute}`] = 'height';
-
-    const heightSvgLabel = document.createElement('label');
-    heightSvgLabel.setAttribute('for', 'svg-height-input');
-    heightSvgLabel.textContent = 'SVG-area Height';
-
-    heightSvg.append(heightSvgLabel, heightSvgInput);
-
-    const saveButton = document.createElement('button');
-    saveButton.setAttribute('type', 'button');
-    saveButton.textContent = 'Save';
-    saveButton.classList.add('modal-settings__save-btn');
-    saveButton.dataset[`${this.settingsElementsDataAttribute}`] = 'save';
-
-    const closeButton = document.createElement('button');
-    closeButton.setAttribute('type', 'button');
-    closeButton.textContent = 'Close';
-    closeButton.classList.add('modal-settings__close-btn');
-    closeButton.dataset[`${this.settingsElementsDataAttribute}`] = 'close';
-
-    settingsModal.append(modalTitle, widthSvg, heightSvg, saveButton, closeButton);
-
-    return settingsModal;
-  }
-
-  createSaveModal() {
-    const saveModal = document.createElement('div');
-    saveModal.classList.add('modal-save');
-
-    this.inputFileName = document.createElement('input');
-    this.inputFileName.setAttribute('type', 'text');
-    this.inputFileName.classList.add('modal-save__file-name');
-    this.inputFileName.dataset[`${this.saveElementsDataAttribute}`] = 'name';
-
-    const saveButton = document.createElement('button');
-    saveButton.setAttribute('type', 'button');
-    saveButton.textContent = 'Save';
-    saveButton.classList.add('modal-save__save-btn');
-    saveButton.dataset[`${this.saveElementsDataAttribute}`] = 'save';
-
-    const closeButton = document.createElement('button');
-    closeButton.setAttribute('type', 'button');
-    closeButton.textContent = 'Close';
-    closeButton.classList.add('modal-save__close-btn');
-    closeButton.dataset[`${this.saveElementsDataAttribute}`] = 'close';
-
-    this.errorMessage = document.createElement('div');
-    this.errorMessage.textContent = 'Please enter the file name';
-    this.errorMessage.style.visibility = 'hidden';
-
-    saveModal.append(this.errorMessage, this.inputFileName, saveButton, closeButton);
-
-    return saveModal;
   }
 
   createContextMenuModal() {
@@ -238,34 +108,6 @@ export class AppView {
 
   deleteVisibilityContextMenu() {
     this.contextMenuWindow.classList.add('visibility-modal');
-  }
-
-  createMenuContainer() {
-    const menuContainer = document.createElement('div');
-    menuContainer.classList.add('tools-top__menu-area');
-
-    MENU_BUTTONS_NAMES_EN.forEach((item) => {
-      if (item !== 'Import SVG') {
-        const button = document.createElement('button');
-        button.setAttribute('type', 'button');
-        button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
-        button.textContent = item;
-        menuContainer.appendChild(button);
-      } else {
-        const inputFileUpload = document.createElement('input');
-        inputFileUpload.setAttribute('type', 'file');
-        inputFileUpload.setAttribute('id', 'upload-file');
-        inputFileUpload.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
-        inputFileUpload.style.display = 'none';
-
-        const labelFileUpload = document.createElement('label');
-        labelFileUpload.setAttribute('for', 'upload-file');
-        labelFileUpload.textContent = item;
-        menuContainer.append(labelFileUpload, inputFileUpload);
-      }
-    });
-
-    return menuContainer;
   }
 
   removeVisibilityPanel(selectElements) {
@@ -305,7 +147,7 @@ export class AppView {
           const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelRect[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelRect[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelRect[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelRect[5].childNodes[1].setAttribute('placeholder', attribute.y);
           arrayLabelRect[6].childNodes[1].setAttribute('placeholder', attribute.width);
@@ -315,7 +157,7 @@ export class AppView {
           const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelLine[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelLine[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelLine[4].childNodes[1].setAttribute('placeholder', attribute.x1);
           arrayLabelLine[5].childNodes[1].setAttribute('placeholder', attribute.y1);
           arrayLabelLine[6].childNodes[1].setAttribute('placeholder', attribute.x2);
@@ -325,7 +167,7 @@ export class AppView {
           const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelText[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelText[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelText[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelText[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelText[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelText[5].childNodes[1].setAttribute('placeholder', attribute.y);
           arrayLabelText[6].childNodes[1].setAttribute('placeholder', attribute['font-size']);
@@ -335,7 +177,7 @@ export class AppView {
           const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelEllipse[0].childNodes[1].setAttribute('placeholder', attribute.id);
           arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 1);
           arrayLabelEllipse[4].childNodes[1].setAttribute('placeholder', attribute.cx);
           arrayLabelEllipse[5].childNodes[1].setAttribute('placeholder', attribute.cy);
           arrayLabelEllipse[6].childNodes[1].setAttribute('placeholder', attribute.rx);
@@ -345,7 +187,7 @@ export class AppView {
           const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelPencil[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
           arrayLabelPencil[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', 0);
+          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', 1);
           break;
       }
     }
@@ -470,8 +312,7 @@ export class AppView {
   }
 
   createFunctionalArea() {
-    const functionalArea = document.createElement('div');
-    functionalArea.classList.add('tools-top__functional-area');
+    const functionalArea = createElement('div', ['tools-top__functional-area']);
     this.createFunctionalAreaPanels(functionalArea);
 
     return functionalArea;
@@ -494,9 +335,7 @@ export class AppView {
   }
 
   createToolsTop() {
-    const toolsTop = document.createElement('div');
-    toolsTop.classList.add('tools-top');
-    this.menuContainer = this.createMenuContainer();
+    const toolsTop = createElement('div', ['tools-top']);
     this.functionalAreaContainer = this.createFunctionalArea();
     this.switcherContainer = this.createSwitcherContainer();
     toolsTop.append(this.menuContainer, this.functionalAreaContainer, this.switcherContainer);
@@ -505,16 +344,11 @@ export class AppView {
   }
 
   createWorkArea() {
-    const workAreaContainer = document.createElement('div');
-    workAreaContainer.className = 'work-area';
-
-    const field = document.createElement('div');
-    field.id = 'field';
+    const workAreaContainer = createElement('div', ['work-area']);
+    const field = createElement('div', false, {id: 'field'});
     workAreaContainer.append(field);
 
-    this.sheet = document.createElement('div');
-    this.sheet.className = 'sheet';
-    this.sheet.id = 'sheet';
+    this.sheet = createElement('div', ['sheet'], {id: 'sheet'});
     field.append(this.sheet);
 
     return workAreaContainer;
@@ -536,18 +370,13 @@ export class AppView {
   }
 
   createToolsLeft() {
-    const toolsLeftContainer = document.createElement('div');
-    toolsLeftContainer.className = 'tools-left';
+    const toolsLeftContainer = createElement('div', ['tools-left']);
 
     TOOLS_LEFT_NAMES_EN.forEach((item) => {
-      const tooltip = document.createElement('span');
-      tooltip.classList.add('tooltip', 'tooltip-right');
-      tooltip.textContent = item;
+      const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
       toolsLeftContainer.append(tooltip);
 
-      let btn = document.createElement('button');
-      btn.id = `${item}`;
-      btn.innerHTML = item;
+      let btn = createElement('button', false, {id: `${item}`}, `${item}`);
       btn.append(tooltip);
 
       toolsLeftContainer.append(btn);
@@ -557,8 +386,7 @@ export class AppView {
   }
 
   createWrapper() {
-    const wrapper = document.createElement('div');
-    wrapper.classList.add('wrapper');
+    const wrapper = createElement('div', ['wrapper']);
     return wrapper;
   }
 
@@ -572,74 +400,42 @@ export class AppView {
   }
 
   renderContent() {
-    this.newImageModal = this.createNewImageModal();
-    this.svgCodeModalWindow = this.createSvgCodeModal();
-    this.settingsModalWindow = this.createSettingsModal();
-    this.saveModalWindow = this.createSaveModal();
     this.contextMenuWindow = this.createContextMenuModal();
     this.toolsTopContainer = this.createToolsTop();
     this.toolsBottomContainer = this.createToolsBottom();
     this.toolsLeftContainer = this.createToolsLeft();
     this.workAreaContainer = this.createWorkArea();
 
-    this.contentElement = document.createElement('main');
-    this.contentElement.classList.add('main');
-    this.contentContainer = document.createElement('div');
-    this.contentContainer.classList.add('container');
+    this.contentElement = createElement('main', ['main']);
+    this.contentContainer = createElement('div', ['container']);
     this.contentElement.appendChild(this.contentContainer);
 
-    this.toolsRightContainer = document.createElement('div');
-
-    this.toolsRightContainer.className = 'tools-right';
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModalWindow, this.settingsModalWindow, this.svgCodeModalWindow, this.contextMenuWindow, this.newImageModal);
+    this.toolsRightContainer = createElement('div', ['tools-right']);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
   }
 
   renderFooter() {
-    const yearSpan = document.createElement('span');
-    yearSpan.classList.add('copyright__year');
-    yearSpan.textContent = '2020 ©';
+    const yearSpan = createElement('span', ['copyright__year'], false, '2020 ©');
+    const by = createElement('span', false, false, 'by');
 
-    const by = document.createElement('span');
-    by.textContent = 'by';
+    const student1Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/alexk08', target: '__blank'}, 'Aleksandr Krasinikov');
+    const student2Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/11alexey11', target: '__blank'}, 'Alexey Yanvarev');
+    const student3Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/gtm003', target: '__blank'}, 'Tatyana Grigorovich');
 
-    const student1Link = document.createElement('a');
-    student1Link.classList.add('copyright__student-link');
-    student1Link.setAttribute('href', 'https://github.com/alexk08');
-    student1Link.setAttribute('target', '__blank');
-    student1Link.textContent = 'Aleksandr Krasinikov';
+    const logo = createElement('img', ['copyright__logo-rs'], {
+      src: 'img/svg/rs_school_js.svg',
+      alt: 'Logo RS School',
+      width: '100px'
+    });
 
-    const student2Link = document.createElement('a');
-    student2Link.classList.add('copyright__student-link');
-    student2Link.setAttribute('href', 'https://github.com/11alexey11');
-    student2Link.setAttribute('target', '__blank');
-    student2Link.textContent = 'Alexey Yanvarev';
-
-    const student3Link = document.createElement('a');
-    student3Link.classList.add('copyright__student-link');
-    student3Link.setAttribute('href', 'https://github.com/gtm003');
-    student3Link.setAttribute('target', '__blank');
-    student3Link.textContent = 'Tatyana Grigorovich';
-
-    const logo = document.createElement('img');
-    logo.classList.add('copyright__logo-rs');
-    logo.setAttribute('src', 'img/svg/rs_school_js.svg');
-    logo.setAttribute('alt', 'Logo RS School');
-    logo.setAttribute('width', '100px');
-
-    const courseLink = document.createElement('a');
-    courseLink.classList.add('copyright__course-link');
-    courseLink.setAttribute('href', 'https://rs.school/js/');
-    courseLink.setAttribute('target', '__blank');
+    const courseLink = createElement('a', ['copyright__course-link'], {href: 'https://rs.school/js/', target: '__blank'});
     courseLink.appendChild(logo);
 
-    const copyrightElement = document.createElement('div');
-    copyrightElement.classList.add('copyright');
+    const copyrightElement = createElement('div', ['copyright']);
     copyrightElement.append(yearSpan, by, student1Link, student2Link, student3Link, courseLink);
 
-    this.footerElement = document.createElement('footer');
-    this.footerElement.classList.add('footer');
-    this.footerContainer = document.createElement('div');
-    this.footerContainer.classList.add('container');
+    this.footerElement = createElement('footer', ['footer']);
+    this.footerContainer = createElement('div', ['container']);
     this.footerContainer.append(copyrightElement);
     this.footerElement.appendChild(this.footerContainer);
   }

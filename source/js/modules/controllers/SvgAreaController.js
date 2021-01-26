@@ -1,8 +1,7 @@
 export class SvgAreaController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
     this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);

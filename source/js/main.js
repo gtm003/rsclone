@@ -7,10 +7,6 @@ ieFix();
 
 // Modules
 // ---------------------------------
-import {AppView} from './modules/views/appView';
+import {AppView} from './modules/views/AppView';
 
 new AppView(document.body).init();
-
-// import appView from './views/app';
-
-

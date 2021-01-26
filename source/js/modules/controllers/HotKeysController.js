@@ -1,8 +1,7 @@
 export class HotKeysController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onHotKeysKeyUp = this.onHotKeysKeyUp.bind(this);
   }

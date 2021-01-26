@@ -1,8 +1,7 @@
 export class MainMenuController {
-  constructor(appView, model, controller) {
+  constructor(appView, model) {
     this.appView = appView;
     this.model = model;
-    this.controller = controller;
 
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onNewImageModalClick = this.onNewImageModalClick.bind(this);
@@ -15,8 +14,8 @@ export class MainMenuController {
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
     this.appView.newImageModal.addEventListener('click', this.onNewImageModalClick);
-    this.appView.saveModalWindow.addEventListener('click', this.onSaveModalClick);
-    this.appView.settingsModalWindow.addEventListener('click', this.onSettingsModalClick);
+    this.appView.saveModal.addEventListener('click', this.onSaveModalClick);
+    this.appView.settingsModal.addEventListener('click', this.onSettingsModalClick);
   }
 
   onMenuButtonsClick({target}) {

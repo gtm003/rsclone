@@ -1,4 +1,4 @@
-import {Model} from '../models/SvgAreaModel';
+import {SvgAreaModel} from '../models/SvgAreaModel';
 import {MainMenuController} from './MainMenuController';
 import {FunctionalAreaController} from './FunctionalAreaController';
 import {SvgAreaController} from './SvgAreaController';
@@ -7,15 +7,11 @@ import {ContextMenuController} from './ContextMenuController';
 import {SwitcherLanguageController} from './SwitcherLanguageController';
 import {HotKeysController} from './HotKeysController';
 
-const FILE_TYPE = 'svg';
-
 export class Controller {
   constructor(appView, placeForSVGCanvas) {
-    this.fill = 'none';
-    this.stroke = 'black';
-    this.placeForSVGCanvas = placeForSVGCanvas;
     this.appView = appView;
-    this.model = new Model(this.appView, this.placeForSVGCanvas);
+    this.placeForSVGCanvas = placeForSVGCanvas;
+    this.model = new SvgAreaModel(this.appView, this.placeForSVGCanvas);
 
     this.menuController = null;
     this.svgAreaController = null;
@@ -42,25 +38,25 @@ export class Controller {
     });
 
     // модуль контроллер Главного Меню и модалок связанных с ним
-    this.menuController = new MainMenuController(this.appView, this.model, this);
+    this.menuController = new MainMenuController(this.appView, this.model);
     this.menuController.init();
     // модуль контроллер FunctionalArea
-    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model, this);
+    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model);
     this.functionalAreaController.init();
     // модуль контроллер SvgArea
-    this.svgAreaController = new SvgAreaController(this.appView, this.model, this);
+    this.svgAreaController = new SvgAreaController(this.appView, this.model);
     this.svgAreaController.init();
     // модуль контроллер ToolsLeft
-    this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this, this.svgAreaController);
+    this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this.svgAreaController);
     this.toolsLeftController.init();
     // модуль контроллер ContextMenu
-    this.contextMenuController = new ContextMenuController(this.appView, this.model, this);
+    this.contextMenuController = new ContextMenuController(this.appView, this.model);
     this.contextMenuController.init();
     // модуль контроллер SwitcherLanguage
-    this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model, this);
+    this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model);
     this.switcherLanguageController.init();
     // модуль контроллер HotKeys
-    this.hotKeysController = new HotKeysController(this.appView, this.model, this);
+    this.hotKeysController = new HotKeysController(this.appView, this.model);
     this.hotKeysController.init();
   }
 
