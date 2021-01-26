@@ -4,4 +4,7 @@
   margin: auto;
   flex-shrink: 0;
   border: none;
+  #select-frame {
+    pointer-events: none;
+  }
 }
