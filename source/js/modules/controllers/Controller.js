@@ -6,16 +6,13 @@ import {ToolsLeftController} from './ToolsLeftController';
 import {ContextMenuController} from './ContextMenuController';
 import {SwitcherLanguageController} from './SwitcherLanguageController';
 import {HotKeysController} from './HotKeysController';
+import {TabsController} from './TabsController';
 
 export class Controller {
-  constructor(appView, placeForSVGCanvas) {
+  constructor(appView, tab) {
     this.appView = appView;
-    this.placeForSVGCanvas = placeForSVGCanvas;
-    this.model = new SvgAreaModel(this.appView, this.placeForSVGCanvas);
-
-    this.menuController = null;
-    this.svgAreaController = null;
-    this.toolsLeftController = null;
+    this.tab = tab;
+    this.model = new SvgAreaModel(this.appView, this.tab);
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
@@ -29,35 +26,25 @@ export class Controller {
 
     // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
     this.model.svgArea.node.addEventListener('keydown', (e) => {
-      console.log(e);
+      // console.log(e);
     });
     this.model.svgArea.node.addEventListener('click', (e) => {
-      console.log(e);
+      // console.log(e);
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
 
-    // модуль контроллер Главного Меню и модалок связанных с ним
-    this.menuController = new MainMenuController(this.appView, this.model);
-    this.menuController.init();
-    // модуль контроллер FunctionalArea
-    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model);
-    this.functionalAreaController.init();
-    // модуль контроллер SvgArea
-    this.svgAreaController = new SvgAreaController(this.appView, this.model);
-    this.svgAreaController.init();
-    // модуль контроллер ToolsLeft
-    this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this.svgAreaController);
-    this.toolsLeftController.init();
-    // модуль контроллер ContextMenu
-    this.contextMenuController = new ContextMenuController(this.appView, this.model);
-    this.contextMenuController.init();
-    // модуль контроллер SwitcherLanguage
-    this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model);
-    this.switcherLanguageController.init();
-    // модуль контроллер HotKeys
-    this.hotKeysController = new HotKeysController(this.appView, this.model);
-    this.hotKeysController.init();
+
+    new MainMenuController(this.appView, this.model).init(); // модуль контроллер Главного Меню и модалок связанных с ним
+    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model).init(); // модуль контроллер FunctionalArea
+    const svgAreaController = new SvgAreaController(this.appView, this.model); // модуль контроллер SvgArea
+    svgAreaController.init();
+
+    new ToolsLeftController(this.appView, this.model, svgAreaController).init(); // модуль контроллер ToolsLeft
+    new ContextMenuController(this.appView, this.model).init(); // модуль контроллер ContextMenu
+    new SwitcherLanguageController(this.appView, this.model).init(); // модуль контроллер SwitcherLanguage
+    new HotKeysController(this.appView, this.model).init(); // модуль контроллер HotKeys
+    new TabsController(this.appView, this.model).init(); // модуль контроллер вкладок
   }
 
   onChangeColorClick({target}) {

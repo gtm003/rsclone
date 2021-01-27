@@ -32,7 +32,8 @@ export class AppView {
     this.workAreaContainer = null;
     this.functionalAreaContainer = null;
     this.switcherContainer = null;
-    this.sheet = null;
+    this.sheet1 = null;
+    this.sheet2 = null;
     this.contextMenuWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
@@ -41,15 +42,16 @@ export class AppView {
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
+    this.tabsDataAttribute = 'tab';
 
-    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
-    this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
-    this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
-    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
-    this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
-    this.saveModal = this.saveModalInstance.createSaveModal();
-    this.inputFileName = this.saveModalInstance.createInputFileName();
-    this.errorMessage = this.saveModalInstance.createErrorMessage();
+    this.menuContainer = null;
+    this.newImageModal = null;
+    this.settingsModal = null;
+    this.svgCodeModal = null;
+    this.saveModalInstance = null;
+    this.saveModal = null;
+    this.inputFileName = null;
+    this.errorMessage = null;
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -66,6 +68,15 @@ export class AppView {
   }
 
   init() {
+    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
+    this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
+    this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
+    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
+    this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
+    this.saveModal = this.saveModalInstance.createSaveModal();
+    this.inputFileName = this.saveModalInstance.createInputFileName();
+    this.errorMessage = this.saveModalInstance.createErrorMessage();
+
     const wrapper = this.createWrapper();
     this.renderHeader();
     this.renderContent();
@@ -76,8 +87,12 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    const controller = new Controller(this, this.sheet);
-    controller.init();
+    new Controller(this, this.sheet1).init();
+  }
+
+  callNewController() {
+    console.log(this.sheet2)
+    new Controller(this, this.sheet2).init();
   }
 
   getCurrentRotation(item) {
@@ -345,19 +360,23 @@ export class AppView {
 
   createWorkArea() {
     const workAreaContainer = createElement('div', ['work-area']);
-    const field = createElement('div', false, {id: 'field'});
-    workAreaContainer.append(field);
+    // const field = createElement('div', false, {id: 'field'});
 
-    this.sheet = createElement('div', ['sheet'], {id: 'sheet'});
-    field.append(this.sheet);
+    this.sheet1 = createElement('div', ['sheet'], {id: 'sheet1'});
+    workAreaContainer.append(this.sheet1);
+    // field.append(this.sheet);
 
     return workAreaContainer;
+  }
+
+  createSheet(sheetId) {
+    const sheet = createElement('div', ['sheet'], {id: `sheet${sheetId}`});
+    return sheet;
   }
 
   createToolsBottom() {
     const toolsBottomContainer = document.createElement('div');
     toolsBottomContainer.className = 'tools-bottom';
-    toolsBottomContainer.innerHTML = "УБРАТЬ?"
     /*
     toolsBottomBtnName.forEach((item) => {
       let btn = document.createElement('button');
@@ -366,7 +385,30 @@ export class AppView {
       toolsBottomContainer.append(btn);
     });*/
 
+    const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
+    buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
+
+    const tabControl1 = this.createTabControl('1');
+
+    toolsBottomContainer.append(buttonNewTab, tabControl1);
+
     return toolsBottomContainer;
+  }
+
+  createTabControl(tabNumber) {
+    const tabControl = createElement('div', ['tools-bottom__tab-control'], false, `SVG ${tabNumber}`);
+    tabControl.style.backgroundColor = 'lightgray';
+    tabControl.style.border = '2px solid gray';
+    tabControl.style.borderRadius = '5px';
+    tabControl.style.cursor = 'pointer';
+    tabControl.style.width = '170px';
+    tabControl.dataset[`${this.tabsDataAttribute}`] = tabNumber;
+
+    const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
+    closeButton.style.marginLeft = '77px';
+    tabControl.append(closeButton);
+
+    return tabControl;
   }
 
   createToolsLeft() {

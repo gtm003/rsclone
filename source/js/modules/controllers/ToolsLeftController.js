@@ -12,6 +12,7 @@ export class ToolsLeftController {
   }
 
   onToolsLeftClick({target}) {
+    console.log(target)
     if (target.closest('button')) {
       const toolButtonId = target.closest('button').id;
       this.model.type = toolButtonId;

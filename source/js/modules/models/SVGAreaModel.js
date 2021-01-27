@@ -87,7 +87,7 @@ export class SvgAreaModel {
   }
 
   selectDown(e) {
-    console.log('select down');
+    // console.log('select down');
     this.mouseDownElemSVG = e.target.instance;
     if (this.mouseDownElemSVG.type === 'tspan') this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
     if (this.mouseDownElemSVG.type === 'svg') {
@@ -109,7 +109,7 @@ export class SvgAreaModel {
   }
 
   selectMove(e) {
-    console.log('select move');
+    // console.log('select move');
     if (this.mouseDownElemSVG.type === 'svg') {
       this.drawRect(e, this.selectFrame);
     } else {
@@ -122,7 +122,7 @@ export class SvgAreaModel {
   }
 
   selectUp() {
-    console.log('select up');
+    // console.log('select up');
     if ( this.selectFrame !== null) {
       this.svgArea.children().forEach((elem) => {
         if (this.rectanglesOverlap(this.selectFrame, elem) && this.selectFrame !== elem) {
@@ -137,7 +137,7 @@ export class SvgAreaModel {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
     }
-    console.log(this.selectElements);
+    // console.log(this.selectElements);
   }
 
   selectSingleElem(elem) {
@@ -435,7 +435,7 @@ export class SvgAreaModel {
 
   finishDrawElem() {
     if (this.isEmptyElem(this.elem)) {
-      console.log('create empty elem');
+      // console.log('create empty elem');
       this.elem.remove();
       //console.log(e.target);
       this.elem = this.svgArea.last();
@@ -447,12 +447,12 @@ export class SvgAreaModel {
       this.elemCounter += 1;
       this.elem.attr('id', `svg_${this.elemCounter}`);
       let previousElem = this.elem.previous();
-      console.log(previousElem.node.nodeName);
+      // console.log(previousElem.node.nodeName);
       if (previousElem.node.nodeName !== 'defs') {
         this.removeSelectSingleElem(previousElem.previous());
       }
       this.selectSingleElem(this.elem);
-      console.log(this.selectElements);
+      // console.log(this.selectElements);
     }
   }
   /*
@@ -483,7 +483,7 @@ export class SvgAreaModel {
   }
 
   onMouseMoveG() {
-    const arrayG = [...[...this.appView.sheet.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
+    const arrayG = [...[...this.rootElement.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
     const arrayElementG = [...arrayG[0].childNodes];
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
@@ -505,6 +505,22 @@ export class SvgAreaModel {
   }
 
   // из контроллера часть alexk08
+  createNewTab() {
+    // this.appView.init();
+    this.appView.sheet2 = this.appView.createSheet('2');
+    this.appView.workAreaContainer.append(this.appView.sheet2);
+    // this.createNewSvgWorkArea();
+    this.appView.callNewController();
+  }
+
+  openTab(tabId) {
+
+  }
+
+  closeTab(tabId) {
+
+  }
+
   saveHistory() {
     const svgElements = this.svgArea.children();
     const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
@@ -639,7 +655,7 @@ export class SvgAreaModel {
     this.appView.svgCodeModal.innerHTML = '';
     this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModal.textContent = this.appView.sheet.innerHTML;
+    this.appView.svgCodeModal.textContent = this.rootElement.innerHTML;
   }
 
   openModalSettings() {

@@ -910,9 +910,6 @@ button,
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -937,22 +934,17 @@ button,
   height: calc(100vh - 240px);
   border: black solid 1px;
   position: relative; }
-  .work-area #field {
+  .work-area .sheet {
     width: 100%;
     height: 100%;
-    background: rebeccapurple;
-    padding: 25px; }
-    .work-area #field .sheet {
-      width: 100%;
-      height: 100%;
-      background: #33993b;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      overflow: auto;
-      padding: 10px; }
-      .work-area #field .sheet .selectedElem {
-        cursor: move; }
+    background: #33993b;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    overflow: auto;
+    padding: 10px; }
+    .work-area .sheet .selectedElem {
+      cursor: move; }
 
 .modal-save {
   width: 300px;

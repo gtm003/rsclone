@@ -5,11 +5,11 @@
     border: black solid 1px;
     position: relative;
 
-    #field {
-        width:100%;
-        height: 100%;
-        background: rebeccapurple;
-        padding: 25px;
+    // #field {
+    //     width:100%;
+    //     height: 100%;
+    //     background: rebeccapurple;
+    //     padding: 25px;
 
         .sheet {
             width: 100%;
@@ -23,5 +23,5 @@
                 cursor: move;
             }
         }
-    }
+    // }
 }
