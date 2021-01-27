@@ -8,10 +8,16 @@ export class ContextMenuController {
     this.onContextMenuElementsClick = this.onContextMenuElementsClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.model.svgArea.node.addEventListener('contextmenu', this.onContextMenuClick);
     this.model.svgArea.node.addEventListener('mousedown', this.onContextMenuMouseDown);
     this.appView.contextMenuWindow.addEventListener('click', this.onContextMenuElementsClick);
+  }
+
+  removeAllListeners() {
+    this.model.svgArea.node.removeEventListener('contextmenu', this.onContextMenuClick);
+    this.model.svgArea.node.removeEventListener('mousedown', this.onContextMenuMouseDown);
+    this.appView.contextMenuWindow.removeEventListener('click', this.onContextMenuElementsClick);
   }
 
   onContextMenuClick(evt) {

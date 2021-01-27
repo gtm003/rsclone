@@ -933,7 +933,10 @@ button,
   width: calc(100vw - 170px);
   height: calc(100vh - 240px);
   border: black solid 1px;
-  position: relative; }
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
   .work-area .sheet {
     width: 100%;
     height: 100%;

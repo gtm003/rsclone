@@ -6,8 +6,12 @@ export class SwitcherLanguageController {
     this.onSwitcherLanguageClick = this.onSwitcherLanguageClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.appView.switcherContainer.addEventListener('click', this.onSwitcherLanguageClick);
+  }
+
+  removeAllListeners() {
+    this.appView.switcherContainer.removeEventListener('click', this.onSwitcherLanguageClick);
   }
 
   onSwitcherLanguageClick({target}) {

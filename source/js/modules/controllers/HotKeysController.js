@@ -6,8 +6,12 @@ export class HotKeysController {
     this.onHotKeysKeyUp = this.onHotKeysKeyUp.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.model.svgArea.node.addEventListener('keyup', this.onHotKeysKeyUp);
+  }
+
+  removeAllListeners(){
+    this.model.svgArea.node.removeEventListener('keyup', this.onHotKeysKeyUp);
   }
 
   onHotKeysKeyUp({key, code, ctrlKey, metaKey}) {

@@ -6,10 +6,13 @@ export class TabsController {
     this.onToolsBottomClick = this.onToolsBottomClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.appView.toolsBottomContainer.addEventListener('click', this.onToolsBottomClick);
   }
 
+  removeAllListeners() {
+    this.appView.toolsBottomContainer.removeEventListener('click', this.onToolsBottomClick);
+  }
 
   onToolsBottomClick({ target }) {
     const tabDataId = target.dataset[`${this.appView.tabsDataAttribute}`];

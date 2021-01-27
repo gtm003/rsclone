@@ -7,8 +7,12 @@ export class ToolsLeftController {
     this.onToolsLeftClick = this.onToolsLeftClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.appView.toolsLeftContainer.addEventListener('click', this.onToolsLeftClick);
+  }
+
+  removeAllListeners() {
+    this.appView.toolsLeftContainer.removeEventListener('click', this.onToolsLeftClick);
   }
 
   onToolsLeftClick({target}) {

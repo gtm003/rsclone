@@ -8,8 +8,12 @@ export class SvgAreaController {
     this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.model.svgArea.mousedown(this.onSvgAreaMouseDown);
+  }
+
+  removeAllListeners() {
+    this.model.svgArea.mousedown(null);
   }
 
   onSvgAreaMouseDown(e) {

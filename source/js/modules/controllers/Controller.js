@@ -9,10 +9,20 @@ import {HotKeysController} from './HotKeysController';
 import {TabsController} from './TabsController';
 
 export class Controller {
-  constructor(appView, tab) {
+  constructor(appView, svgRootElement) {
     this.appView = appView;
-    this.tab = tab;
-    this.model = new SvgAreaModel(this.appView, this.tab);
+    this.svgRootElement = svgRootElement;
+    this.model = new SvgAreaModel(this.appView, this.svgRootElement);
+
+
+    this.mainMenuController = null;
+    this.functionalAreaController = null;
+    this.svgAreaController = null;
+    this.toolsLeftController = null;
+    this.contextMenuController = null;
+    this.switcherLanguageController = null;
+    this.hotKeysController = null;
+    this.tabsController = null;
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
@@ -20,31 +30,54 @@ export class Controller {
 
   init() {
     this.model.init();
-    this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
 
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
 
     // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
-    this.model.svgArea.node.addEventListener('keydown', (e) => {
+    // this.model.svgArea.node.addEventListener('keydown', (e) => {
       // console.log(e);
-    });
+      // });
+
+    this.mainMenuController = new MainMenuController(this.appView, this.model); // модуль контроллер Главного Меню и модалок связанных с ним
+    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model); // модуль контроллер FunctionalArea
+    this.svgAreaController = new SvgAreaController(this.appView, this.model); // модуль контроллер SvgArea
+    this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this.svgAreaController); // модуль контроллер ToolsLeft
+    this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
+    this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model); // модуль контроллер SwitcherLanguage
+    this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
+    this.tabsController = new TabsController(this.appView, this.model); // модуль контроллер вкладок
+  }
+
+  addAllListeners() {
     this.model.svgArea.node.addEventListener('click', (e) => {
-      // console.log(e);
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
+    this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
+    this.mainMenuController.addAllListeners();
+    this.functionalAreaController.addAllListeners();
+    this.svgAreaController.addAllListeners();
+    this.toolsLeftController.addAllListeners();
+    this.contextMenuController.addAllListeners();
+    this.switcherLanguageController.addAllListeners();
+    this.hotKeysController.addAllListeners();
+    this.tabsController.addAllListeners();
+  }
 
-
-    new MainMenuController(this.appView, this.model).init(); // модуль контроллер Главного Меню и модалок связанных с ним
-    this.functionalAreaController = new FunctionalAreaController(this.appView, this.model).init(); // модуль контроллер FunctionalArea
-    const svgAreaController = new SvgAreaController(this.appView, this.model); // модуль контроллер SvgArea
-    svgAreaController.init();
-
-    new ToolsLeftController(this.appView, this.model, svgAreaController).init(); // модуль контроллер ToolsLeft
-    new ContextMenuController(this.appView, this.model).init(); // модуль контроллер ContextMenu
-    new SwitcherLanguageController(this.appView, this.model).init(); // модуль контроллер SwitcherLanguage
-    new HotKeysController(this.appView, this.model).init(); // модуль контроллер HotKeys
-    new TabsController(this.appView, this.model).init(); // модуль контроллер вкладок
+  removeAllListeners() {
+    this.model.svgArea.node.removeEventListener('click', (e) => {
+      this.model.svgArea.node.tabIndex = '1';
+      this.model.svgArea.node.focus();
+    });
+    this.appView.colorPicker.btnUserAnswerContainer.removeEventListener('click', this.onChangeColorClick);
+    this.mainMenuController.removeAllListeners();
+    this.functionalAreaController.removeAllListeners();
+    this.svgAreaController.removeAllListeners();
+    this.toolsLeftController.removeAllListeners();
+    this.contextMenuController.removeAllListeners();
+    this.switcherLanguageController.removeAllListeners();
+    this.hotKeysController.removeAllListeners();
+    this.tabsController.removeAllListeners();
   }
 
   onChangeColorClick({target}) {

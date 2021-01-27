@@ -211,6 +211,7 @@ export class SvgAreaModel {
   thinkAboutIt() {
     console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
   }
+
   /*
   selectElem(e) {
     const _that = this;
@@ -236,6 +237,7 @@ export class SvgAreaModel {
     _that.appView.updateFunctionalArea(_that.selectElements);                         // Лешин метод
   }
   */
+
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
@@ -303,6 +305,7 @@ export class SvgAreaModel {
     });
     this.elem.stroke(this.strokeColor);
   }
+
   /*
   moveElem(e) {
     const _that = this;
@@ -455,6 +458,7 @@ export class SvgAreaModel {
       // console.log(this.selectElements);
     }
   }
+
   /*
   finishResizeText() {
     if (this.isEmptyElem(this.elem)) {
@@ -511,10 +515,12 @@ export class SvgAreaModel {
     this.appView.workAreaContainer.append(this.appView.sheet2);
     // this.createNewSvgWorkArea();
     this.appView.callNewController();
+    const tab2 = this.appView.createTabControl('2');
+    this.appView.toolsBottomContainer.append(tab2);
   }
 
   openTab(tabId) {
-
+    this.appView.changeController(tabId);
   }
 
   closeTab(tabId) {

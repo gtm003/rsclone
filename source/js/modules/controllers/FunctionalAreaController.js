@@ -9,7 +9,7 @@ export class FunctionalAreaController {
     this.onAlignPanelClick = this.onAlignPanelClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.appView.rectContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
     this.appView.lineContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
     this.appView.ellipseContainerPanel.addEventListener('keyup', this.onPropertiesSVGElementKeyUp);
@@ -24,6 +24,23 @@ export class FunctionalAreaController {
     this.appView.pencilContainerPanel.addEventListener('click', this.onDeleteElementsClick);
 
     this.appView.alignContainerPanel.addEventListener('click', this.onAlignPanelClick);
+  }
+
+  removeAllListeners() {
+    this.appView.rectContainerPanel.removeEventListener('keyup', this.onPropertiesSVGElementKeyUp);
+    this.appView.lineContainerPanel.removeEventListener('keyup', this.onPropertiesSVGElementKeyUp);
+    this.appView.ellipseContainerPanel.removeEventListener('keyup', this.onPropertiesSVGElementKeyUp);
+    this.appView.textContainerPanel.removeEventListener('keyup', this.onPropertiesSVGElementKeyUp);
+    this.appView.pencilContainerPanel.removeEventListener('keyup', this.onPropertiesSVGElementKeyUp);
+
+    this.appView.rectContainerPanel.removeEventListener('click', this.onDeleteElementsClick);
+    this.appView.lineContainerPanel.removeEventListener('click', this.onDeleteElementsClick);
+    this.appView.ellipseContainerPanel.removeEventListener('click', this.onDeleteElementsClick);
+    this.appView.textContainerPanel.removeEventListener('click', this.onDeleteElementsClick);
+    this.appView.selectProperty.removeEventListener('change', this.onSelectPropertyChange);
+    this.appView.pencilContainerPanel.removeEventListener('click', this.onDeleteElementsClick);
+
+    this.appView.alignContainerPanel.removeEventListener('click', this.onAlignPanelClick);
   }
 
   onPropertiesSVGElementKeyUp({target}) {

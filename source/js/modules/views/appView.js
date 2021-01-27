@@ -65,6 +65,9 @@ export class AppView {
     this.pencilContainerPanel = null;
     this.alignContainerPanel = null;
     this.selectProperty = null;
+
+    this.controller1 = null;
+    this.controller2 = null;
   }
 
   init() {
@@ -87,12 +90,27 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    new Controller(this, this.sheet1).init();
+    this.controller1 = new Controller(this, this.sheet1)
+    this.controller1.init();
+    this.controller1.addAllListeners();
   }
 
   callNewController() {
     console.log(this.sheet2)
-    new Controller(this, this.sheet2).init();
+    this.controller2 = new Controller(this, this.sheet2)
+    this.controller2.init();
+    this.controller2.addAllListeners();
+    this.controller1.removeAllListeners();
+  }
+
+  changeController(tabId) {
+    if (tabId === '1') {
+      this.controller2.removeAllListeners();
+      this.controller1.addAllListeners();
+    } else if (tabId === '2') {
+      this.controller1.removeAllListeners();
+      this.controller2.addAllListeners();
+    }
   }
 
   getCurrentRotation(item) {
@@ -375,8 +393,7 @@ export class AppView {
   }
 
   createToolsBottom() {
-    const toolsBottomContainer = document.createElement('div');
-    toolsBottomContainer.className = 'tools-bottom';
+    const toolsBottomContainer = createElement('div', ['tools-bottom']);
     /*
     toolsBottomBtnName.forEach((item) => {
       let btn = document.createElement('button');
