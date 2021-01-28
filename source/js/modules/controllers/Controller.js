@@ -51,6 +51,13 @@ export class Controller {
     this.addAllListeners();
   }
 
+  remove() {
+    this.removeAllListeners();
+    this.model.svgArea = null;
+    this.svgRootElement.remove();
+    this.model = null;
+  }
+
   addAllListeners() {
     this.model.svgArea.node.addEventListener('click', () => {
       this.model.svgArea.node.tabIndex = '1';

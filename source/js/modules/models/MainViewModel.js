@@ -54,15 +54,46 @@ export class MainViewModel {
     // this.appView.workAreaContainer.append(this.appView.sheet2);
     // this.createNewSvgWorkArea();
     this.callNewController(this.appView.sheetsNumber - 1);
+    this.removeActiveCondition();
     const tab = this.appView.createTabControl(this.appView.sheetsNumber - 1);
     this.appView.toolsBottomContainer.append(tab);
   }
 
   openTab(tabId) {
     this.changeController(tabId);
+    this.changeActiveTab(tabId);
   }
 
   closeTab(tabId) {
+    console.log(this.controllers);
+    console.log(tabId);
+    this.controllers[tabId].remove();
+    // this.controllers[tabId] = null;
+    this.controllers.splice(tabId, 1);
+    this.removeTabControl(tabId);
+  }
 
+  changeActiveTab(tabId) {
+    const activeTab = this.appView.toolsBottomContainer.querySelector('.tools-bottom__tab-control--active');
+    const targetTab = this.appView.toolsBottomContainer.querySelector(`[data-tab = "${tabId}"]`);
+
+    activeTab.classList.remove('tools-bottom__tab-control--active');
+    targetTab.classList.add('tools-bottom__tab-control--active');
+  }
+
+  removeActiveCondition() {
+    const activeTab = this.appView.toolsBottomContainer.querySelector('.tools-bottom__tab-control--active');
+    activeTab.classList.remove('tools-bottom__tab-control--active');
+  }
+
+  removeTabControl(tabId) {
+    const removedTab = this.appView.toolsBottomContainer.querySelector(`[data-tab = "${tabId}"]`);
+    removedTab.remove();
+
+    const tabs = this.appView.toolsBottomContainer.querySelectorAll('.tools-bottom__tab-control');
+    tabs.forEach((tab, i) => {
+      tab.dataset[`${this.appView.tabsDataAttribute}`] = i;
+      tab.innerHTML = `SVG ${i}<button class="tools-bottom__tab-close" type="button">x</button>`;
+    });
   }
 }

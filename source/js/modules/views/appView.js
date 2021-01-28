@@ -399,16 +399,16 @@ export class AppView {
   }
 
   createTabControl(tabNumber) {
-    const tabControl = createElement('div', ['tools-bottom__tab-control'], false, `SVG ${tabNumber}`);
-    tabControl.style.backgroundColor = 'lightgray';
-    tabControl.style.border = '2px solid gray';
-    tabControl.style.borderRadius = '5px';
-    tabControl.style.cursor = 'pointer';
-    tabControl.style.width = '170px';
+    const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabNumber}`);
+    // tabControl.style.backgroundColor = 'lightgray';
+    // tabControl.style.border = '2px solid gray';
+    // tabControl.style.borderRadius = '5px';
+    // tabControl.style.cursor = 'pointer';
+    // tabControl.style.width = '170px';
     tabControl.dataset[`${this.tabsDataAttribute}`] = tabNumber;
 
     const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
-    closeButton.style.marginLeft = '77px';
+    // closeButton.style.marginLeft = '77px';
     tabControl.append(closeButton);
 
     return tabControl;

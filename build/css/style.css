@@ -915,14 +915,32 @@ button,
           align-items: center;
   padding: 2px;
   border: black solid 1px; }
-  .tools-bottom button {
+  .tools-bottom button:not(.tools-bottom__tab-close) {
     width: 40px;
     height: 40px;
     border-radius: 5px;
-    margin: 1px; }
+    margin: 1px;
+    cursor: pointer; }
   .tools-bottom button:hover {
-    cursor: pointer;
     background: #dcc8b4; }
+  .tools-bottom__tab-control {
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 170px; }
+    .tools-bottom__tab-control:active {
+      -webkit-transform: scale(0.97);
+              transform: scale(0.97); }
+    .tools-bottom__tab-control--active {
+      background-color: lightseagreen; }
+  .tools-bottom__tab-close {
+    margin: 1px;
+    margin-left: 77px;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer; }
 
 .work-area {
   -ms-grid-row: 2;

@@ -1,21 +1,50 @@
 .tools-bottom {
-    grid-area: 3 / 1 / 4 / 4;
-    display: flex;
-    flex-direction: row;
-    // justify-content: center;
-    align-items: center;
-    padding: 2px;
-    border: black solid 1px;
+  grid-area: 3 / 1 / 4 / 4;
+  display: flex;
+  flex-direction: row;
+  // justify-content: center;
+  align-items: center;
+  padding: 2px;
+  border: black solid 1px;
 
-    button {
-        width: 40px;
-        height: 40px;
-        border-radius: 5px;
-        margin: 1px;
+  button:not(.tools-bottom__tab-close) {
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    margin: 1px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: rgb(220, 200, 180);
+  }
+
+  &__tab-control {
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 170px;
+
+    // &:hover {
+    //   background: lightslategray;
+    // }
+
+    &:active {
+      transform: scale(0.97);
     }
 
-    button:hover {
-        cursor: pointer;
-        background: rgb(220, 200, 180);
+    &--active {
+      background-color: lightseagreen;
     }
+  }
+
+  &__tab-close {
+    margin: 1px;
+    margin-left: 77px;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
 }
