@@ -9,9 +9,10 @@ import {HotKeysController} from './HotKeysController';
 import {TabsController} from './TabsController';
 
 export class Controller {
-  constructor(appView, svgRootElement) {
+  constructor(appView, svgRootElement, viewModel) {
     this.appView = appView;
     this.svgRootElement = svgRootElement;
+    this.viewModel = viewModel;
     this.model = new SvgAreaModel(this.appView, this.svgRootElement);
 
 
@@ -45,14 +46,17 @@ export class Controller {
     this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
     this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model); // модуль контроллер SwitcherLanguage
     this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
-    this.tabsController = new TabsController(this.appView, this.model); // модуль контроллер вкладок
+    this.tabsController = new TabsController(this.appView, this.viewModel); // модуль контроллер вкладок
+
+    this.addAllListeners();
   }
 
   addAllListeners() {
-    this.model.svgArea.node.addEventListener('click', (e) => {
+    this.model.svgArea.node.addEventListener('click', () => {
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
+    // console.log(this.appView)
     this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.mainMenuController.addAllListeners();
     this.functionalAreaController.addAllListeners();

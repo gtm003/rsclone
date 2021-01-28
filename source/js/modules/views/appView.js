@@ -1,5 +1,4 @@
 import {createElement} from '../../utils/createELement';
-import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './ColorPicker';
 import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 import {MainMenu} from './MainMenu';
@@ -7,6 +6,7 @@ import {NewImageModal} from './NewImageModal';
 import { SettingsModal } from './SettingsModal';
 import { SvgCodeModal } from './SvgCodeModal';
 import { SaveModal } from './SaveModal';
+import { MainViewModel } from '../models/MainViewModel';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -34,6 +34,8 @@ export class AppView {
     this.switcherContainer = null;
     this.sheet1 = null;
     this.sheet2 = null;
+    this.sheets = [];
+    this.sheetsNumber = 0;
     this.contextMenuWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
@@ -65,9 +67,6 @@ export class AppView {
     this.pencilContainerPanel = null;
     this.alignContainerPanel = null;
     this.selectProperty = null;
-
-    this.controller1 = null;
-    this.controller2 = null;
   }
 
   init() {
@@ -90,27 +89,7 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    this.controller1 = new Controller(this, this.sheet1)
-    this.controller1.init();
-    this.controller1.addAllListeners();
-  }
-
-  callNewController() {
-    console.log(this.sheet2)
-    this.controller2 = new Controller(this, this.sheet2)
-    this.controller2.init();
-    this.controller2.addAllListeners();
-    this.controller1.removeAllListeners();
-  }
-
-  changeController(tabId) {
-    if (tabId === '1') {
-      this.controller2.removeAllListeners();
-      this.controller1.addAllListeners();
-    } else if (tabId === '2') {
-      this.controller1.removeAllListeners();
-      this.controller2.addAllListeners();
-    }
+    new MainViewModel(this).init(this.sheetsNumber);
   }
 
   getCurrentRotation(item) {
@@ -380,16 +359,23 @@ export class AppView {
     const workAreaContainer = createElement('div', ['work-area']);
     // const field = createElement('div', false, {id: 'field'});
 
-    this.sheet1 = createElement('div', ['sheet'], {id: 'sheet1'});
-    workAreaContainer.append(this.sheet1);
+    // this.sheet1 = createElement('div', ['sheet'], {id: 'sheet1'});
+    // workAreaContainer.append(this.sheet1);
     // field.append(this.sheet);
 
     return workAreaContainer;
   }
 
   createSheet(sheetId) {
-    const sheet = createElement('div', ['sheet'], {id: `sheet${sheetId}`});
-    return sheet;
+    this.sheets = [...this.sheets, createElement('div', ['sheet'], {id: `sheet${sheetId}`})];
+    // const sheet = createElement('div', ['sheet'], {id: `sheet${sheetId}`});
+    // return sheet;
+  }
+
+  renderSheet() {
+    this.createSheet(this.sheetsNumber);
+    this.workAreaContainer.append(this.sheets[this.sheetsNumber]);
+    this.sheetsNumber++;
   }
 
   createToolsBottom() {
@@ -405,7 +391,7 @@ export class AppView {
     const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
 
-    const tabControl1 = this.createTabControl('1');
+    const tabControl1 = this.createTabControl(this.sheetsNumber);
 
     toolsBottomContainer.append(buttonNewTab, tabControl1);
 
@@ -464,6 +450,7 @@ export class AppView {
     this.toolsBottomContainer = this.createToolsBottom();
     this.toolsLeftContainer = this.createToolsLeft();
     this.workAreaContainer = this.createWorkArea();
+    this.renderSheet();
 
     this.contentElement = createElement('main', ['main']);
     this.contentContainer = createElement('div', ['container']);

@@ -1,7 +1,7 @@
 export class TabsController {
-  constructor(appView, model) {
+  constructor(appView, viewModel) {
     this.appView = appView;
-    this.model = model;
+    this.viewModel = viewModel;
 
     this.onToolsBottomClick = this.onToolsBottomClick.bind(this);
   }
@@ -19,7 +19,12 @@ export class TabsController {
 
     if (tabDataId) {
       // tabDataId === 'new' ? console.log('create' + tabDataId + 'tab') : console.log('open tab' + tabDataId);
-      tabDataId === 'new' ? this.model.createNewTab() : this.model.openTab(tabDataId);
+      if (tabDataId === 'new') {
+        this.appView.renderSheet();
+        this.viewModel.createNewTab();
+      } else {
+        this.viewModel.openTab(tabDataId);
+      }
     }
 
     if (target.classList.contains('tools-bottom__tab-close')) {

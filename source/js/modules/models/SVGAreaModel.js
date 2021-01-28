@@ -509,23 +509,6 @@ export class SvgAreaModel {
   }
 
   // из контроллера часть alexk08
-  createNewTab() {
-    // this.appView.init();
-    this.appView.sheet2 = this.appView.createSheet('2');
-    this.appView.workAreaContainer.append(this.appView.sheet2);
-    // this.createNewSvgWorkArea();
-    this.appView.callNewController();
-    const tab2 = this.appView.createTabControl('2');
-    this.appView.toolsBottomContainer.append(tab2);
-  }
-
-  openTab(tabId) {
-    this.appView.changeController(tabId);
-  }
-
-  closeTab(tabId) {
-
-  }
 
   saveHistory() {
     const svgElements = this.svgArea.children();
