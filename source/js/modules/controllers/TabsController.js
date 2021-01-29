@@ -18,7 +18,6 @@ export class TabsController {
     const tabDataId = target.dataset[`${this.appView.tabsDataAttribute}`];
 
     if (tabDataId) {
-      // tabDataId === 'new' ? console.log('create' + tabDataId + 'tab') : console.log('open tab' + tabDataId);
       if (tabDataId === 'new') {
         this.appView.renderSheet();
         this.viewModel.createNewTab();
@@ -29,9 +28,12 @@ export class TabsController {
 
     if (target.classList.contains('tools-bottom__tab-close')) {
       const numberClosedTab = target.parentElement.dataset[`${this.appView.tabsDataAttribute}`];
-      console.log('tab for close' + numberClosedTab)
-      // this.model.closeTab(numberClosedTab);
       this.viewModel.closeTab(numberClosedTab);
     }
+
+    console.log(this.appView.sheetsNumber);
+    console.log(this.viewModel.controllers.length);
+    console.log(this.appView.sheets.length);
+    console.log(this.viewModel.activeController);
   }
 }

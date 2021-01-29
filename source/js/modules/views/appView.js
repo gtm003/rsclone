@@ -32,10 +32,6 @@ export class AppView {
     this.workAreaContainer = null;
     this.functionalAreaContainer = null;
     this.switcherContainer = null;
-    this.sheet1 = null;
-    this.sheet2 = null;
-    this.sheets = [];
-    this.sheetsNumber = 0;
     this.contextMenuWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
@@ -54,6 +50,8 @@ export class AppView {
     this.saveModal = null;
     this.inputFileName = null;
     this.errorMessage = null;
+    this.sheets = []; //массив вкладок
+    this.sheetsNumber = 0; //количество вкладок
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -89,7 +87,7 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    new MainViewModel(this).init(this.sheetsNumber);
+    new MainViewModel(this).init(this.sheetsNumber - 1);
   }
 
   getCurrentRotation(item) {
@@ -357,19 +355,12 @@ export class AppView {
 
   createWorkArea() {
     const workAreaContainer = createElement('div', ['work-area']);
-    // const field = createElement('div', false, {id: 'field'});
-
-    // this.sheet1 = createElement('div', ['sheet'], {id: 'sheet1'});
-    // workAreaContainer.append(this.sheet1);
-    // field.append(this.sheet);
 
     return workAreaContainer;
   }
 
   createSheet(sheetId) {
     this.sheets = [...this.sheets, createElement('div', ['sheet'], {id: `sheet${sheetId}`})];
-    // const sheet = createElement('div', ['sheet'], {id: `sheet${sheetId}`});
-    // return sheet;
   }
 
   renderSheet() {
@@ -380,13 +371,6 @@ export class AppView {
 
   createToolsBottom() {
     const toolsBottomContainer = createElement('div', ['tools-bottom']);
-    /*
-    toolsBottomBtnName.forEach((item) => {
-      let btn = document.createElement('button');
-      btn.id = `${item}`;
-      btn.style.background = item;
-      toolsBottomContainer.append(btn);
-    });*/
 
     const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
@@ -400,15 +384,9 @@ export class AppView {
 
   createTabControl(tabNumber) {
     const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabNumber}`);
-    // tabControl.style.backgroundColor = 'lightgray';
-    // tabControl.style.border = '2px solid gray';
-    // tabControl.style.borderRadius = '5px';
-    // tabControl.style.cursor = 'pointer';
-    // tabControl.style.width = '170px';
     tabControl.dataset[`${this.tabsDataAttribute}`] = tabNumber;
 
     const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
-    // closeButton.style.marginLeft = '77px';
     tabControl.append(closeButton);
 
     return tabControl;

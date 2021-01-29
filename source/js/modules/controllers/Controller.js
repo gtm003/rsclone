@@ -54,7 +54,7 @@ export class Controller {
   remove() {
     this.removeAllListeners();
     this.model.svgArea = null;
-    this.svgRootElement.remove();
+    // this.svgRootElement.remove();
     this.model = null;
   }
 

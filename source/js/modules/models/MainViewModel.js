@@ -4,18 +4,15 @@ export class MainViewModel {
   constructor(appView) {
     this.appView = appView;
 
-    this.controller1 = null;
-    this.controller2 = null;
-
     this.controllers = [];
   }
 
+  //сделать неактивное состояние кнопки закрытия вкладки
+
   init(sheetsNumber) {
-    this.controllers = [...this.controllers, new Controller(this.appView, this.appView.sheets[sheetsNumber - 1], this)];
-    this.controllers[sheetsNumber - 1].init();
-    this.activeController = sheetsNumber - 1;
-    // this.controller1 = new Controller(this.appView, this.appView.sheet1, this);
-    // this.controller1.init();
+    this.controllers = [...this.controllers, new Controller(this.appView, this.appView.sheets[sheetsNumber], this)];
+    this.controllers[sheetsNumber].init();
+    this.setActiveController(sheetsNumber);
   }
 
   setActiveController(tabId) {
@@ -23,36 +20,20 @@ export class MainViewModel {
   }
 
   callNewController(sheetsNumber) {
-    // console.log(this.appView.sheet2)
     this.controllers[this.activeController].removeAllListeners();
     this.controllers = [...this.controllers, new Controller(this.appView, this.appView.sheets[sheetsNumber], this)];
     this.controllers[this.controllers.length - 1].init();
     this.setActiveController(sheetsNumber);
-    // this.controller2 = new Controller(this.appView, this.appView.sheet2, this)
-    // this.controller2.init();
-    // this.controller1.removeAllListeners();
   }
 
   changeController(tabId) {
-    // if (tabId === '1') {
-    //   this.controller2.removeAllListeners();
-    //   this.controller1.addAllListeners();
-    // } else if (tabId === '2') {
-    //   this.controller1.removeAllListeners();
-    //   this.controller2.addAllListeners();
-    // }
-    console.log(this.activeController)
-    console.log(tabId)
+    if (this.activeController === +tabId) return;
     this.controllers[this.activeController].removeAllListeners();
     this.controllers[tabId].addAllListeners();
     this.setActiveController(tabId);
   }
 
   createNewTab() {
-    // this.appView.init();
-    // this.appView.sheet2 = this.appView.createSheet('2');
-    // this.appView.workAreaContainer.append(this.appView.sheet2);
-    // this.createNewSvgWorkArea();
     this.callNewController(this.appView.sheetsNumber - 1);
     this.removeActiveCondition();
     const tab = this.appView.createTabControl(this.appView.sheetsNumber - 1);
@@ -65,12 +46,11 @@ export class MainViewModel {
   }
 
   closeTab(tabId) {
-    console.log(this.controllers);
-    console.log(tabId);
     this.controllers[tabId].remove();
-    // this.controllers[tabId] = null;
     this.controllers.splice(tabId, 1);
     this.removeTabControl(tabId);
+    this.removeSheet(tabId);
+    this.setActiveTab();
   }
 
   changeActiveTab(tabId) {
@@ -90,10 +70,38 @@ export class MainViewModel {
     const removedTab = this.appView.toolsBottomContainer.querySelector(`[data-tab = "${tabId}"]`);
     removedTab.remove();
 
-    const tabs = this.appView.toolsBottomContainer.querySelectorAll('.tools-bottom__tab-control');
-    tabs.forEach((tab, i) => {
+    const tabControls = this.appView.toolsBottomContainer.querySelectorAll('.tools-bottom__tab-control');
+    tabControls.forEach((tab, i) => {
       tab.dataset[`${this.appView.tabsDataAttribute}`] = i;
       tab.innerHTML = `SVG ${i}<button class="tools-bottom__tab-close" type="button">x</button>`;
     });
+  }
+
+  removeSheet(tabId) {
+    this.appView.sheets[tabId].remove();
+    this.appView.sheets.splice(tabId, 1);
+    this.appView.sheets.forEach((sheet, i) => {
+      sheet.id = `sheet${i}`;
+    });
+    this.appView.sheetsNumber--;
+  }
+
+  setActiveTab() {
+    const tabControls = [...this.appView.toolsBottomContainer.querySelectorAll('.tools-bottom__tab-control')];
+    let activeTabId;
+
+    tabControls.forEach(tabControl => {
+      if (tabControl.classList.contains('tools-bottom__tab-control--active')) {
+        activeTabId = +tabControl.dataset[`${this.appView.tabsDataAttribute}`];
+      }
+    });
+
+    if (activeTabId === undefined) {
+      activeTabId = tabControls.length - 1;
+      tabControls[activeTabId].classList.add('tools-bottom__tab-control--active');
+      this.controllers[activeTabId].addAllListeners();
+    }
+
+    this.setActiveController(activeTabId);
   }
 }
