@@ -29,10 +29,10 @@ export class Controller {
 
     // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
     this.model.svgArea.node.addEventListener('keydown', (e) => {
-      console.log(e);
+      //console.log(e);
     });
     this.model.svgArea.node.addEventListener('click', (e) => {
-      console.log(e);
+      //console.log(e);
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });

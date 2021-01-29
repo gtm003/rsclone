@@ -21,14 +21,15 @@ export class SvgAreaModel {
     this.elem = null;
     this.selectFrame = null;
     this.mouseDownElemSVG = null;
+
+    this.text = '';
+    this.isActiveText = false;
     this.path = null;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
     this.elemCounter = 0;
     this.target = null;
-    this.cxLast = null;
-    this.cyLast = null;
     this.x = null;
     this.y = null;
 
@@ -36,6 +37,8 @@ export class SvgAreaModel {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
+
+    this.inputText = this.inputText.bind(this);
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -44,7 +47,7 @@ export class SvgAreaModel {
       rect: (e) => this.createRect(e),
       ellipse: (e) => this.createEllipse(e),
       line: (e) => this.createLine(e),
-      text: (e) => this.createText(e),
+      text: (e) => this.textDown(e),
       pencil : (e) => this.createPencilTrace(e),
       path: (e) => this.createPath(e),
       fill: (e) => this.changeFillColor(e),
@@ -60,7 +63,7 @@ export class SvgAreaModel {
       rect: (e) => this.drawRect(e, this.elem),
       ellipse: (e) => this.drawEllipse(e),
       line: (e) => this.drawLine(e),
-      text: (e) => this.sizeText(e),
+      text: (e) => this.resizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.addPathNewNode(e),
       fill : (e) => this.thinkAboutIt(e),
@@ -76,7 +79,7 @@ export class SvgAreaModel {
       rect: () => this.finishDrawElem(),
       ellipse: () => this.finishDrawElem(),
       line: () => this.finishDrawElem(),
-      text: () => this.finishDrawElem(),
+      text: () => this.finishResizeText(),
       pencil: () => this.finishDrawElem(),
       path: () => this.thinkAboutIt(),
       fill : () => this.thinkAboutIt(),
@@ -87,9 +90,10 @@ export class SvgAreaModel {
   }
 
   selectDown(e) {
-    console.log('select down');
     this.mouseDownElemSVG = e.target.instance;
-    if (this.mouseDownElemSVG.type === 'tspan') this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
+    if (this.mouseDownElemSVG.type === 'tspan') {
+      this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
+    }
     if (this.mouseDownElemSVG.type === 'svg') {
       this.selectElements.forEach((elem) => this.removeSelectSingleElem(elem));
       this.selectFrame = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
@@ -102,14 +106,12 @@ export class SvgAreaModel {
           });
         }
       }
-      //console.log(this.mouseDownElemSVG);
       this.rememberCoordCenter(this.mouseDownElemSVG);
       this.selectElements.forEach((elem) => this.rememberCoordCenter(elem));
     }
   }
 
   selectMove(e) {
-    console.log('select move');
     if (this.mouseDownElemSVG.type === 'svg') {
       this.drawRect(e, this.selectFrame);
     } else {
@@ -122,7 +124,6 @@ export class SvgAreaModel {
   }
 
   selectUp() {
-    console.log('select up');
     if ( this.selectFrame !== null) {
       this.svgArea.children().forEach((elem) => {
         if (this.rectanglesOverlap(this.selectFrame, elem) && this.selectFrame !== elem) {
@@ -137,11 +138,9 @@ export class SvgAreaModel {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
     }
-    console.log(this.selectElements);
   }
 
   selectSingleElem(elem) {
-    if (elem.type === 'tspan') elem = elem.parent();
     elem.selectize().resize();
     elem.addClass('selectedElem');
     this.setSelectElements.add(elem);
@@ -159,7 +158,6 @@ export class SvgAreaModel {
   }
 
   removeSelectSingleElem(elem) {
-    if (elem.type === 'tspan') elem = elem.parent();
     elem.resize('stop').selectize(false);
     elem.removeClass('selectedElem');
     this.setSelectElements.delete(elem);
@@ -167,16 +165,14 @@ export class SvgAreaModel {
   }
 
   moveSingleElem(e, elem) {
-    //console.log(elem.cx());
-    //console.log(elem.cy());
-    elem.cx(e.offsetX - this.x + elem.cxLast);
-    elem.cy(e.offsetY - this.y + elem.cyLast);
+    elem.x(e.offsetX - this.x + elem.xLast);
+    elem.y(e.offsetY - this.y + elem.yLast);
     this.appView.updateFunctionalArea(this.selectElements);
   }
 
   rememberCoordCenter(elem) {
-    elem.cxLast = elem.cx();
-    elem.cyLast = elem.cy();
+    elem.xLast = elem.x();
+    elem.yLast = elem.y();
   }
   /*
   checkSelectedElem(e) {
@@ -248,23 +244,113 @@ export class SvgAreaModel {
     this.elem = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
 
+  createCursor() {
+    const cursor = this.elem.tspan('׀').fill('#000').stroke('none');
+    let cursorColor = '#000';
+    function cursorFlicker() {
+      if (cursorColor === '#000') {
+        cursorColor = 'transparent';
+        cursor.fill(cursorColor);
+      } else {
+        cursorColor = '#000';
+        cursor.fill(cursorColor);
+      }
+      setTimeout(cursorFlicker, 500);
+    }
+    cursorFlicker();
+  }
+
+  textDown(e) {
+    if (!this.isActiveText) {
+      if (e.target.instance.type === 'tspan') {
+        this.editText(e);
+      } else {
+        this.createText(e)
+      }
+    }
+  }
+
   createText(e) {
-    this.elem = this.svgArea.text('text').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-    //this.elem.addClass('inputText');
+    this.isActiveText = true;
+    //this.text = '';
+    this.elem = this.svgArea.text('').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    let tspan = this.elem.tspan('');
+    this.elem.build(true);
+    this.createCursor();
+    this.elem.build(false);
+
     this.elem.font({
       family: 'Helvetica',
-      size: 16,
+      size: 20,
       anchor: 'left',
       leading: '0em',
     });
-    let textInput = '';
-    document.addEventListener('keydown', (event) => {
-      if (this.type === 'text' && event.key.length < 2) {
-        textInput += event.key;
-        this.elem.plain(`${textInput}`);
+  }
+
+  finishResizeText() {
+    if (this.text === '') {
+      let tspan = this.elem.tspan('new text');
+      tspan.dy(`${1.3 * this.elem.font('size')}`);
+      this.elem.dy(`${-1.3 * this.elem.font('size')}`);
+      this.elem.build(true);
+      this.createCursor();
+      this.elem.build(false);
+      document.addEventListener('keydown', this.inputText);
+    }
+  }
+
+  onTextBlur() {
+    if (this.elem !== null) {
+      if (this.text === '') {
+        this.elem.resize('stop').selectize(false);
+        this.elem.remove();
+        this.elem = null;
+        //this.type = 'select';
+      } else {
+        let tspan = this.elem.tspan(this.text);
+        tspan.dy(`${1.3 * this.elem.font('size')}`);
+        this.elem.resize('stop').selectize(false);
+        this.text = '';
       }
-    });
-    this.saveHistory();
+    }
+    this.isActiveText = false;
+    document.removeEventListener('keydown', this.inputText);
+    this.saveHistory();                                                            // почему-то не сохраняется
+  }
+
+  editText(e) {
+    this.isActiveText = true;
+    this.elem = e.target.instance.parent();
+    this.text = this.elem.text();
+    this.elem.build(true);
+    this.createCursor();
+    this.elem.build(false);
+    document.addEventListener('keydown', this.inputText);
+  }
+
+  inputText(event) {
+    if (this.type === 'text' && event.key.length < 2) {
+      this.text += event.key;
+      let tspan = this.elem.tspan(this.text);
+      tspan.dy(`${1.3 * this.elem.font('size')}`);
+      //this.elem.text(`${this.text}`).dy(`${1.3 * this.elem.font('size')}`);
+      this.elem.build(true);
+      this.createCursor();
+      this.elem.build(false);
+
+      this.elem.resize('stop').selectize(false);
+      this.elem.selectize().resize();
+    }
+    if (this.type === 'text' && event.key === 'Backspace') {
+      this.text = this.text.slice(0, -1);
+      let tspan = this.elem.tspan(this.text);
+      tspan.dy(`${1.3 * this.elem.font('size')}`);
+      this.elem.build(true);
+      this.createCursor();
+      this.elem.build(false);
+      this.elem.resize('stop').selectize(false);
+      this.elem.selectize().resize();
+    }
   }
 
   createPencilTrace(e) {
@@ -296,6 +382,7 @@ export class SvgAreaModel {
 
   changeStrokeColor(e) {
     const _that = this;
+    this.selectElements.forEach((elem) => elem.stroke(this.strokeColor));
     this.svgArea.each(function () {
       if (this.inside(e.offsetX, e.offsetY)) {
         _that.elem = this;
@@ -407,12 +494,15 @@ export class SvgAreaModel {
     }
   }
 
-  sizeText(e) {
-    this.elem.font({
-      family: 'Helvetica',
-      size: Math.abs(e.offsetY - this.y),
-      y: e.offsetY
-    });
+  resizeText(e) {
+    if (this.elem !== null && this.text === '') {
+      this.elem.selectize().resize();
+      this.elem.font({
+        family: 'Helvetica',
+        size: Math.abs(e.offsetY - this.y),
+        y: e.offsetY
+      });
+    }
   }
 
   drawPencilTrace(e) {
@@ -435,41 +525,35 @@ export class SvgAreaModel {
 
   finishDrawElem() {
     if (this.isEmptyElem(this.elem)) {
-      console.log('create empty elem');
       this.elem.remove();
-      //console.log(e.target);
       this.elem = this.svgArea.last();
       if (this.target.nodeName !== 'svg') {
         this.type = 'select';
-        console.log('сделать на кнопку имитацию select.click()?')
       }
     } else {
-      this.elemCounter += 1;
-      this.elem.attr('id', `svg_${this.elemCounter}`);
-      let previousElem = this.elem.previous();
-      console.log(previousElem.node.nodeName);
-      if (previousElem.node.nodeName !== 'defs') {
-        this.removeSelectSingleElem(previousElem.previous());
+      if (this.elem !== null) {
+        this.elemCounter += 1;
+        this.elem.attr('id', `svg_${this.elemCounter}`);
+        let previousElem = this.elem.previous();
+        if (previousElem.node.nodeName !== 'defs') {
+          this.removeSelectSingleElem(previousElem.previous());
+        }
+        if (this.elem.type === 'text') {
+          this.elem = this.elem.node.instance;
+        }
+        this.selectSingleElem(this.elem);
       }
-      this.selectSingleElem(this.elem);
-      console.log(this.selectElements);
     }
   }
-  /*
-  finishResizeText() {
-    if (this.isEmptyElem(this.elem)) {
-      this.elem.remove();
-      this.elem = this.svgArea.last();
+
+  isEmptyElem(elem) {
+    if (elem !== null) {
+      if (elem.width() === 0 && elem.height() === 0)
+      return true;
+      else
+      return false;
     }
-    this.elem.selectize().resize();
-    this.elem.addClass('selectedElem');
-    this.setSelectElements.add(this.elem);
-    this.selectElements = [...this.setSelectElements];
   }
-
-  stopMoveElem() {
-
-  }*/
 
   removeSelect() {
     this.svgArea.each(function () {
@@ -493,15 +577,6 @@ export class SvgAreaModel {
         }
       });
     }
-  }
-
-  isEmptyElem(elem) {
-    if ((elem.type === 'rect' || elem.type === 'ellipse' || elem.type === 'line' || elem.type === 'path') && elem.width() === 0 && elem.height() === 0)
-    return true;
-    if (elem.type === 'text' && elem.length() === 0)
-    return true;
-    else
-    return false;
   }
 
   // из контроллера часть alexk08
