@@ -89,6 +89,7 @@ export class Controller {
     this.switcherLanguageController.removeAllListeners();
     this.hotKeysController.removeAllListeners();
     this.tabsController.removeAllListeners();
+    this.model.removeSelect()
   }
 
   onChangeColorClick({target}) {
