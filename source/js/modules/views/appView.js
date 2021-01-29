@@ -50,8 +50,8 @@ export class AppView {
     this.saveModal = null;
     this.inputFileName = null;
     this.errorMessage = null;
-    this.sheets = []; //массив вкладок
-    this.sheetsNumber = 0; //количество вкладок
+    this.tabs = []; //массив вкладок
+    this.tabControls = [];
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -87,7 +87,7 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    new MainViewModel(this).init(this.sheetsNumber - 1);
+    new MainViewModel(this).init(this.tabs.length - 1);
   }
 
   getCurrentRotation(item) {
@@ -359,37 +359,34 @@ export class AppView {
     return workAreaContainer;
   }
 
-  createSheet(sheetId) {
-    this.sheets = [...this.sheets, createElement('div', ['sheet'], {id: `sheet${sheetId}`})];
-  }
+  renderTab() {
+    const tabsCount = this.tabs.length;
+    const tab = createElement('div', ['sheet'], {id: `sheet${tabsCount}`});
 
-  renderSheet() {
-    this.createSheet(this.sheetsNumber);
-    this.workAreaContainer.append(this.sheets[this.sheetsNumber]);
-    this.sheetsNumber++;
+    this.tabs = [...this.tabs, tab];
+    this.workAreaContainer.append(tab);
   }
 
   createToolsBottom() {
     const toolsBottomContainer = createElement('div', ['tools-bottom']);
-
     const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
+
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
-
-    const tabControl1 = this.createTabControl(this.sheetsNumber);
-
-    toolsBottomContainer.append(buttonNewTab, tabControl1);
+    toolsBottomContainer.append(buttonNewTab);
 
     return toolsBottomContainer;
   }
 
-  createTabControl(tabNumber) {
-    const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabNumber}`);
-    tabControl.dataset[`${this.tabsDataAttribute}`] = tabNumber;
-
+  renderTabControl() {
+    const tabControlsCount = this.tabControls.length;
+    const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabControlsCount}`);
     const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
+
+    tabControl.dataset[`${this.tabsDataAttribute}`] = tabControlsCount;
     tabControl.append(closeButton);
 
-    return tabControl;
+    this.tabControls = [...this.tabControls, tabControl];
+    this.toolsBottomContainer.append(tabControl);
   }
 
   createToolsLeft() {
@@ -425,10 +422,13 @@ export class AppView {
   renderContent() {
     this.contextMenuWindow = this.createContextMenuModal();
     this.toolsTopContainer = this.createToolsTop();
-    this.toolsBottomContainer = this.createToolsBottom();
     this.toolsLeftContainer = this.createToolsLeft();
+
     this.workAreaContainer = this.createWorkArea();
-    this.renderSheet();
+    this.renderTab();
+
+    this.toolsBottomContainer = this.createToolsBottom();
+    this.renderTabControl();
 
     this.contentElement = createElement('main', ['main']);
     this.contentContainer = createElement('div', ['container']);

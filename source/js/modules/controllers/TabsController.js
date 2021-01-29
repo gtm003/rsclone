@@ -19,7 +19,6 @@ export class TabsController {
 
     if (tabDataId) {
       if (tabDataId === 'new') {
-        this.appView.renderSheet();
         this.viewModel.createNewTab();
       } else {
         this.viewModel.openTab(tabDataId);
@@ -31,9 +30,9 @@ export class TabsController {
       this.viewModel.closeTab(numberClosedTab);
     }
 
-    console.log(this.appView.sheetsNumber);
-    console.log(this.viewModel.controllers.length);
-    console.log(this.appView.sheets.length);
+    console.log(this.viewModel.controllers);
+    console.log(this.appView.tabs);
+    console.log(this.appView.tabControls);
     console.log(this.viewModel.activeController);
   }
 }
