@@ -719,7 +719,7 @@ button,
     font-size: 14px;
     display: none;
     opacity: 0;
-    z-index: 1; }
+    z-index: 3; }
     .tools-left .tooltip::before {
       content: "";
       position: absolute;
@@ -955,17 +955,6 @@ button,
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex; }
-  .work-area .sheet {
-    width: 100%;
-    height: 100%;
-    background: #33993b;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    overflow: auto;
-    padding: 10px; }
-    .work-area .sheet .selectedElem {
-      cursor: move; }
 
 .modal-save {
   width: 300px;
@@ -985,6 +974,7 @@ button,
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 3;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%); }
   .modal-save__save-btn {
@@ -1012,6 +1002,7 @@ button,
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 3;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%); }
   .modal-settings__title {
@@ -1056,6 +1047,7 @@ button,
   position: fixed;
   top: 50%;
   left: 50%;
+  z-index: 3;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%); }
   .modal-svg-code--show {
@@ -1072,7 +1064,8 @@ button,
   margin: 5px;
   background: #404040;
   position: absolute;
-  top: 40%; }
+  top: 40%;
+  z-index: 2; }
   .color-picker .pallete {
     -ms-grid-row: 1;
     -ms-grid-row-span: 1;
@@ -1151,6 +1144,7 @@ button,
       -ms-flex-direction: column;
           flex-direction: column;
   position: absolute;
+  z-index: 3;
   margin: 5px; }
   .modal-contextmenu__btn-delete, .modal-contextmenu__btn-copy, .modal-contextmenu__btn-paste, .modal-contextmenu__btn-bring-to-front, .modal-contextmenu__btn-send-to-back {
     border: none;
@@ -1168,6 +1162,24 @@ button,
   display: none; }
   .modal-new-image--show {
     display: block; }
+
+.tab {
+  width: 100%;
+  height: 100%;
+  background: #33993b;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  overflow: auto;
+  padding: 10px;
+  position: absolute;
+  left: 0;
+  top: 0; }
+  .tab--active {
+    z-index: 1; }
+
+.selectedElem {
+  cursor: move; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,

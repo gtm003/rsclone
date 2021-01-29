@@ -361,7 +361,7 @@ export class AppView {
 
   renderTab() {
     const tabsCount = this.tabs.length;
-    const tab = createElement('div', ['sheet'], {id: `sheet${tabsCount}`});
+    const tab = createElement('div', ['tab', 'tab--active'], {id: `tab${tabsCount}`});
 
     this.tabs = [...this.tabs, tab];
     this.workAreaContainer.append(tab);

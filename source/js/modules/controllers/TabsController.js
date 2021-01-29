@@ -29,10 +29,5 @@ export class TabsController {
       const numberClosedTab = target.parentElement.dataset[`${this.appView.tabsDataAttribute}`];
       this.viewModel.closeTab(numberClosedTab);
     }
-
-    console.log(this.viewModel.controllers);
-    console.log(this.appView.tabs);
-    console.log(this.appView.tabControls);
-    console.log(this.viewModel.activeController);
   }
 }

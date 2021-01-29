@@ -42,7 +42,6 @@ export class MainMenuController {
       this.model.openModalSettings();
     } else if (buttonDataAttribute === 'Get SVG-code') {
       this.model.openModalSvgCode();
-      console.log(this.model)
     } else if (buttonDataAttribute === 'Undo') {
       this.model.unDo();
       // this.appearContextMenu();
