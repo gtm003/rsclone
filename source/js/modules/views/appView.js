@@ -1,5 +1,4 @@
 import {createElement} from '../../utils/createELement';
-import {Controller} from '../controllers/Controller';
 import {ColorPicker} from './ColorPicker';
 import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 import {MainMenu} from './MainMenu';
@@ -7,6 +6,7 @@ import {NewImageModal} from './NewImageModal';
 import { SettingsModal } from './SettingsModal';
 import { SvgCodeModal } from './SvgCodeModal';
 import { SaveModal } from './SaveModal';
+import { MainViewModel } from '../models/MainViewModel';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -32,7 +32,6 @@ export class AppView {
     this.workAreaContainer = null;
     this.functionalAreaContainer = null;
     this.switcherContainer = null;
-    this.sheet = null;
     this.contextMenuWindow = null;
 
     this.menuButtonsDataAttribute = 'menu';
@@ -41,15 +40,18 @@ export class AppView {
     this.propertiesDataAttribute = 'property';
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
+    this.tabsDataAttribute = 'tab';
 
-    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
-    this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
-    this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
-    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
-    this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
-    this.saveModal = this.saveModalInstance.createSaveModal();
-    this.inputFileName = this.saveModalInstance.createInputFileName();
-    this.errorMessage = this.saveModalInstance.createErrorMessage();
+    this.menuContainer = null;
+    this.newImageModal = null;
+    this.settingsModal = null;
+    this.svgCodeModal = null;
+    this.saveModalInstance = null;
+    this.saveModal = null;
+    this.inputFileName = null;
+    this.errorMessage = null;
+    this.tabs = []; //массив вкладок
+    this.tabControls = [];
 
     this.countFamily = 5;
     // this.countAnchor = 3;
@@ -66,6 +68,15 @@ export class AppView {
   }
 
   init() {
+    this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
+    this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
+    this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
+    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
+    this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
+    this.saveModal = this.saveModalInstance.createSaveModal();
+    this.inputFileName = this.saveModalInstance.createInputFileName();
+    this.errorMessage = this.saveModalInstance.createErrorMessage();
+
     const wrapper = this.createWrapper();
     this.renderHeader();
     this.renderContent();
@@ -76,8 +87,7 @@ export class AppView {
     this.colorPicker = new ColorPicker(this.workAreaContainer);
     this.colorPicker.init();
 
-    const controller = new Controller(this, this.sheet);
-    controller.init();
+    new MainViewModel(this).init(this.tabs.length - 1);
   }
 
   getCurrentRotation(item) {
@@ -345,28 +355,38 @@ export class AppView {
 
   createWorkArea() {
     const workAreaContainer = createElement('div', ['work-area']);
-    const field = createElement('div', false, {id: 'field'});
-    workAreaContainer.append(field);
-
-    this.sheet = createElement('div', ['sheet'], {id: 'sheet'});
-    field.append(this.sheet);
 
     return workAreaContainer;
   }
 
+  renderTab() {
+    const tabsCount = this.tabs.length;
+    const tab = createElement('div', ['tab', 'tab--active'], {id: `tab${tabsCount}`});
+
+    this.tabs = [...this.tabs, tab];
+    this.workAreaContainer.append(tab);
+  }
+
   createToolsBottom() {
-    const toolsBottomContainer = document.createElement('div');
-    toolsBottomContainer.className = 'tools-bottom';
-    toolsBottomContainer.innerHTML = "УБРАТЬ?"
-    /*
-    toolsBottomBtnName.forEach((item) => {
-      let btn = document.createElement('button');
-      btn.id = `${item}`;
-      btn.style.background = item;
-      toolsBottomContainer.append(btn);
-    });*/
+    const toolsBottomContainer = createElement('div', ['tools-bottom']);
+    const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
+
+    buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
+    toolsBottomContainer.append(buttonNewTab);
 
     return toolsBottomContainer;
+  }
+
+  renderTabControl() {
+    const tabControlsCount = this.tabControls.length;
+    const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabControlsCount}`);
+    const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
+
+    tabControl.dataset[`${this.tabsDataAttribute}`] = tabControlsCount;
+    tabControl.append(closeButton);
+
+    this.tabControls = [...this.tabControls, tabControl];
+    this.toolsBottomContainer.append(tabControl);
   }
 
   createToolsLeft() {
@@ -402,9 +422,13 @@ export class AppView {
   renderContent() {
     this.contextMenuWindow = this.createContextMenuModal();
     this.toolsTopContainer = this.createToolsTop();
-    this.toolsBottomContainer = this.createToolsBottom();
     this.toolsLeftContainer = this.createToolsLeft();
+
     this.workAreaContainer = this.createWorkArea();
+    this.renderTab();
+
+    this.toolsBottomContainer = this.createToolsBottom();
+    this.renderTabControl();
 
     this.contentElement = createElement('main', ['main']);
     this.contentContainer = createElement('div', ['container']);
