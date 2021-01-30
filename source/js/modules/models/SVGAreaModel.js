@@ -7,11 +7,13 @@ import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_B
 const FILE_TYPE = 'svg';
 
 export class SvgAreaModel {
-  constructor(appView, rootElement) {
+  constructor(appView, rootElement, lastCondition) {
+    this.appView = appView;
     this.rootElement = rootElement;
+    // if (lastCondition !== undefined) this.lastCondition = lastCondition;
+    // this.lastCondition = lastCondition;
     this.svgArea = null;
     this.type = 'select';
-    this.appView = appView;
     this.selectElements = [];
     this.copiedElements = [];
     this.setSelectElements = new Set();
@@ -656,7 +658,7 @@ export class SvgAreaModel {
     // this.svgArea.svg(this.history[this.historyPosition]);
   }
 
-  saveLastCondition() {
+  getLastCondition() {
     this.removeSelect();
     // this.removeDefs();
 
@@ -678,6 +680,8 @@ export class SvgAreaModel {
       }
     )];
     // const svgAreaInner = this.rootElement.childNodes[0].innerHTML;
+
+    return svgData;
     localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(svgData));
   }
 

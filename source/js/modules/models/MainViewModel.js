@@ -1,13 +1,24 @@
 import {Controller} from '../controllers/Controller';
+import {SwitcherLanguageController} from '../controllers/SwitcherLanguageController';
+import {TabsController} from '../controllers/TabsController';
+import {LoadingController} from '../controllers/LoadingController';
 
 export class MainViewModel {
   constructor(appView) {
     this.appView = appView;
 
     this.controllers = [];
+    this.appLastCondition = [];
   }
 
   init(tabsCount) {
+    const lastCondition = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
+    console.log(lastCondition)
+
+    new SwitcherLanguageController(this.appView, this).addAllListeners();
+    new TabsController(this.appView, this).addAllListeners();
+    new LoadingController(this).addAllListeners();
+
     this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
     this.controllers[tabsCount].init();
     this.setActiveController(tabsCount);
@@ -115,5 +126,14 @@ export class MainViewModel {
     }
 
     this.setActiveController(activeTabId);
+  }
+
+  saveLastCondition() {
+    this.controllers.forEach(controller => {
+      const tabLastCondition = controller.model.getLastCondition();
+      this.appLastCondition = [...this.appLastCondition, tabLastCondition];
+    });
+
+    localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(this.appLastCondition));
   }
 }

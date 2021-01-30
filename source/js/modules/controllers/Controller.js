@@ -4,26 +4,27 @@ import {FunctionalAreaController} from './FunctionalAreaController';
 import {SvgAreaController} from './SvgAreaController';
 import {ToolsLeftController} from './ToolsLeftController';
 import {ContextMenuController} from './ContextMenuController';
-import {SwitcherLanguageController} from './SwitcherLanguageController';
+// import {SwitcherLanguageController} from './SwitcherLanguageController';
 import {HotKeysController} from './HotKeysController';
-import {TabsController} from './TabsController';
+// import {TabsController} from './TabsController';
 
 export class Controller {
-  constructor(appView, svgRootElement, viewModel) {
+  constructor(appView, svgRootElement, viewModel, lastCondition) {
     this.appView = appView;
     this.svgRootElement = svgRootElement;
     this.viewModel = viewModel;
-    this.model = new SvgAreaModel(this.appView, this.svgRootElement);
-
+    // if (lastCondition !== undefined) this.lastCondition = lastCondition;
+    this.lastCondition = lastCondition;
+    this.model = new SvgAreaModel(this.appView, this.svgRootElement, this.lastCondition);
 
     this.mainMenuController = null;
     this.functionalAreaController = null;
     this.svgAreaController = null;
     this.toolsLeftController = null;
     this.contextMenuController = null;
-    this.switcherLanguageController = null;
+    // this.switcherLanguageController = null;
     this.hotKeysController = null;
-    this.tabsController = null;
+    // this.tabsController = null;
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
@@ -32,16 +33,21 @@ export class Controller {
   init() {
     this.model.init();
 
-    window.addEventListener('beforeunload', this.onWindowBeforeUnload);
+    // window.addEventListener('beforeunload', this.onWindowBeforeUnload);
 
     this.mainMenuController = new MainMenuController(this.appView, this.model); // модуль контроллер Главного Меню и модалок связанных с ним
     this.functionalAreaController = new FunctionalAreaController(this.appView, this.model); // модуль контроллер FunctionalArea
     this.svgAreaController = new SvgAreaController(this.appView, this.model); // модуль контроллер SvgArea
     this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this.svgAreaController); // модуль контроллер ToolsLeft
     this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
-    this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model); // модуль контроллер SwitcherLanguage
+
+    /*можно вынести в отдельный контроллер, который будет создавать один раз, не зависимо от вкладок*/
+    // this.switcherLanguageController = new SwitcherLanguageController(this.appView, this.model); // модуль контроллер SwitcherLanguage
+
     this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
-    this.tabsController = new TabsController(this.appView, this.viewModel); // модуль контроллер вкладок
+
+    /*можно вынести в отдельный контроллер, который будет создавать один раз, не зависимо от вкладок*/
+    // this.tabsController = new TabsController(this.appView, this.viewModel); // модуль контроллер вкладок
 
     this.addAllListeners();
   }
@@ -63,9 +69,9 @@ export class Controller {
     this.svgAreaController.addAllListeners();
     this.toolsLeftController.addAllListeners();
     this.contextMenuController.addAllListeners();
-    this.switcherLanguageController.addAllListeners();
+    // this.switcherLanguageController.addAllListeners();
     this.hotKeysController.addAllListeners();
-    this.tabsController.addAllListeners();
+    // this.tabsController.addAllListeners();
   }
 
   removeAllListeners() {
@@ -79,9 +85,9 @@ export class Controller {
     this.svgAreaController.removeAllListeners();
     this.toolsLeftController.removeAllListeners();
     this.contextMenuController.removeAllListeners();
-    this.switcherLanguageController.removeAllListeners();
+    // this.switcherLanguageController.removeAllListeners();
     this.hotKeysController.removeAllListeners();
-    this.tabsController.removeAllListeners();
+    // this.tabsController.removeAllListeners();
     this.model.removeSelect()
   }
 
@@ -101,7 +107,7 @@ export class Controller {
     }
   }
 
-  onWindowBeforeUnload() {
-    this.model.saveLastCondition();
-  }
+  // onWindowBeforeUnload() {
+  //   this.model.saveLastCondition();
+  // }
 }
