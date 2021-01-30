@@ -366,14 +366,22 @@ export class SvgAreaModel {
 
   pathDown(e) {
     if (this.pathNodeCount) {
+      console.log(e.shiftKey);
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
       //console.log([e.offsetX, e.offsetY]);
       if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
         this.isEndPath = true;
         console.log('end path');
+      } else {
+        if (e.shiftKey) {
+          console.log('direct');
+          this.drawDirectAnglePath(e);
+        } else {
+          console.log('undirect');
+          this.elem.L({x: e.offsetX, y: e.offsetY});
+        }
       }
-      this.elem.L({x: e.offsetX, y: e.offsetY});
     } else {
       console.log('start path');
       this.elem = this.svgArea.path().M({x: e.offsetX, y: e.offsetY}).stroke(this.strokeColor).fill(this.fillColor);
@@ -383,10 +391,36 @@ export class SvgAreaModel {
     this.pathNodeCount += 1;
   }
 
+  drawDirectAnglePath(e) {
+    let xLast = this.elem.getSegment(this.pathNodeCount - 1).coords[0];
+    let yLast = this.elem.getSegment(this.pathNodeCount - 1).coords[1];
+    let xDelta = Math.abs(e.offsetX - xLast);
+    let yDelta = Math.abs(e.offsetY - yLast);
+    let xSign = (e.offsetX - xLast) / Math.abs(e.offsetX - xLast);
+    let ySign = (e.offsetY - yLast) / Math.abs(e.offsetY - yLast);
+    let xEnd, yEnd;
+    if (Math.min(xDelta, yDelta) / Math.max(xDelta, yDelta) > 0.5) {
+      xEnd = xLast + xSign * Math.max(xDelta, yDelta);
+      yEnd = yLast + ySign * Math.max(xDelta, yDelta);
+      this.elem.L({x: xEnd, y: yEnd})
+    } else {
+      if (xDelta < yDelta) {
+        this.elem.V(e.offsetY)
+      } else {
+        this.elem.H(e.offsetX)
+      }
+    }
+  }
+
   pathMove(e) {
     this.isEndPath = false;
-    this.elem.removeSegment(this.pathNodeCount);
-    this.elem.L({x: e.offsetX, y: e.offsetY});
+    if (e.shiftKey) {
+      this.elem.removeSegment(this.pathNodeCount);
+      this.drawDirectAnglePath(e);
+    } else {
+      this.elem.removeSegment(this.pathNodeCount);
+      this.elem.L({x: e.offsetX, y: e.offsetY});
+    }
   }
 
   pathUp(e) {
