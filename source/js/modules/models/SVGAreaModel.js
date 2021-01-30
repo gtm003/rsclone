@@ -1,6 +1,7 @@
 import { } from '../../vendor/svg.js';
 import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
+import { } from '../../vendor/svg.path.js';
 import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 const FILE_TYPE = 'svg';
@@ -25,6 +26,8 @@ export class SvgAreaModel {
     this.text = '';
     this.isActiveText = false;
     this.path = null;
+    this.isStartPath = false;
+    this.isEndPath = false;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
@@ -49,7 +52,7 @@ export class SvgAreaModel {
       line: (e) => this.createLine(e),
       text: (e) => this.textDown(e),
       pencil : (e) => this.createPencilTrace(e),
-      path: (e) => this.createPath(e),
+      path: (e) => this.pathDown(e),
       fill: (e) => this.changeFillColor(e),
       stroke: (e) => this.changeStrokeColor(e),
     }
@@ -65,7 +68,7 @@ export class SvgAreaModel {
       line: (e) => this.drawLine(e),
       text: (e) => this.resizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
-      path: (e) => this.addPathNewNode(e),
+      path: (e) => this.pathMove(e),
       fill : (e) => this.thinkAboutIt(e),
       stroke : (e) => this.thinkAboutIt(e),
     }
@@ -81,7 +84,7 @@ export class SvgAreaModel {
       line: () => this.finishDrawElem(),
       text: () => this.finishResizeText(),
       pencil: () => this.finishDrawElem(),
-      path: () => this.thinkAboutIt(),
+      path: () => this.pathUp(),
       fill : () => this.thinkAboutIt(),
       stroke : () => this.thinkAboutIt(),
     }
@@ -91,6 +94,8 @@ export class SvgAreaModel {
 
   selectDown(e) {
     this.mouseDownElemSVG = e.target.instance;
+    //console.log('select down');
+    //console.log(this.mouseDownElemSVG);
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
     }
@@ -167,7 +172,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.x(e.offsetX - this.x + elem.xLast);
     elem.y(e.offsetY - this.y + elem.yLast);
-    this.appView.updateFunctionalArea(this.selectElements);
+    //this.appView.updateFunctionalArea(this.selectElements);
   }
 
   rememberCoordCenter(elem) {
@@ -357,17 +362,35 @@ export class SvgAreaModel {
     this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
   }
 
-  drawPath(e) {
-    //console.log (this.pathNodeCount);
+  pathDown(e) {
     if (this.pathNodeCount) {
-      let arr = this.path.array().value;
-      arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-      this.path.plot(arr);
-      //console.log(arr);
+      this.isStartPath = false;
+      let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
+      //console.log([e.offsetX, e.offsetY]);
+      if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
+        this.isEndPath = true;
+        console.log('end path');
+      }
+      this.elem.L({x: e.offsetX, y: e.offsetY});
     } else {
-      this.path = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+      console.log('start path');
+      this.elem = this.svgArea.path().M({x: e.offsetX, y: e.offsetY}).stroke(this.strokeColor).fill(this.fillColor);
+      this.isStartPath = true;
+      this.isEndPath = false;
     }
     this.pathNodeCount += 1;
+  }
+
+  pathMove(e) {
+    this.isEndPath = false;
+    this.elem.removeSegment(this.pathNodeCount);
+    this.elem.L({x: e.offsetX, y: e.offsetY});
+  }
+
+  pathUp(e) {
+    if (this.isEndPath) {
+      this.pathNodeCount = 0;
+    }
   }
 
   changeFillColor(e) {
@@ -865,8 +888,8 @@ export class SvgAreaModel {
     }
     this.setSelectElements.clear();
     this.selectElements = [];
-    this.appView.removeVisibilityPanel(this.selectElements);
-    this.appView.deleteVisibilityContextMenu();
+    //this.appView.removeVisibilityPanel(this.selectElements);
+    //this.appView.deleteVisibilityContextMenu();
     this.saveHistory();
   }
 
