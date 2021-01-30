@@ -10,12 +10,20 @@ export class MainMenuController {
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
   }
 
-  init() {
+  addAllListeners() {
     this.appView.menuContainer.addEventListener('click', this.onMenuButtonsClick);
     this.appView.menuContainer.addEventListener('change', this.onImportSvgChange);
     this.appView.newImageModal.addEventListener('click', this.onNewImageModalClick);
     this.appView.saveModal.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModal.addEventListener('click', this.onSettingsModalClick);
+  }
+
+  removeAllListeners() {
+    this.appView.menuContainer.removeEventListener('click', this.onMenuButtonsClick);
+    this.appView.menuContainer.removeEventListener('change', this.onImportSvgChange);
+    this.appView.newImageModal.removeEventListener('click', this.onNewImageModalClick);
+    this.appView.saveModal.removeEventListener('click', this.onSaveModalClick);
+    this.appView.settingsModal.removeEventListener('click', this.onSettingsModalClick);
   }
 
   onMenuButtonsClick({target}) {

@@ -9,4 +9,5 @@ ieFix();
 // ---------------------------------
 import {AppView} from './modules/views/AppView';
 
-new AppView(document.body).init();
+const appView = new AppView(document.body);
+appView.init();

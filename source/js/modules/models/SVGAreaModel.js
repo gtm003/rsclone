@@ -207,6 +207,7 @@ export class SvgAreaModel {
   thinkAboutIt() {
     console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
   }
+
   /*
   selectElem(e) {
     const _that = this;
@@ -232,6 +233,7 @@ export class SvgAreaModel {
     _that.appView.updateFunctionalArea(_that.selectElements);                         // Лешин метод
   }
   */
+
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
   }
@@ -390,6 +392,7 @@ export class SvgAreaModel {
     });
     this.elem.stroke(this.strokeColor);
   }
+
   /*
   moveElem(e) {
     const _that = this;
@@ -567,7 +570,7 @@ export class SvgAreaModel {
   }
 
   onMouseMoveG() {
-    const arrayG = [...[...this.appView.sheet.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
+    const arrayG = [...[...this.rootElement.childNodes][0].childNodes].filter((value) => value.tagName === 'g');
     const arrayElementG = [...arrayG[0].childNodes];
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
@@ -580,6 +583,7 @@ export class SvgAreaModel {
   }
 
   // из контроллера часть alexk08
+
   saveHistory() {
     const svgElements = this.svgArea.children();
     const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
@@ -714,7 +718,7 @@ export class SvgAreaModel {
     this.appView.svgCodeModal.innerHTML = '';
     this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModal.textContent = this.appView.sheet.innerHTML;
+    this.appView.svgCodeModal.textContent = this.rootElement.innerHTML;
   }
 
   openModalSettings() {
