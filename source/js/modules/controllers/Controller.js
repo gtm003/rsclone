@@ -34,11 +34,6 @@ export class Controller {
 
     window.addEventListener('beforeunload', this.onWindowBeforeUnload);
 
-    // тестовая часть, вариант решения с обработчиком горячих клавиш на svg
-    // this.model.svgArea.node.addEventListener('keydown', (e) => {
-      // console.log(e);
-      // });
-
     this.mainMenuController = new MainMenuController(this.appView, this.model); // модуль контроллер Главного Меню и модалок связанных с ним
     this.functionalAreaController = new FunctionalAreaController(this.appView, this.model); // модуль контроллер FunctionalArea
     this.svgAreaController = new SvgAreaController(this.appView, this.model); // модуль контроллер SvgArea
@@ -54,16 +49,14 @@ export class Controller {
   remove() {
     this.removeAllListeners();
     this.model.svgArea = null;
-    // this.svgRootElement.remove();
     this.model = null;
   }
 
   addAllListeners() {
-    this.model.svgArea.node.addEventListener('click', () => {
+    this.model.svgArea.node.addEventListener('click', (e) => {
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
-    // console.log(this.appView)
     this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.mainMenuController.addAllListeners();
     this.functionalAreaController.addAllListeners();

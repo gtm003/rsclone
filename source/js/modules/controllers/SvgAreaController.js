@@ -20,6 +20,7 @@ export class SvgAreaController {
     this.model.target = e.target;
     this.model.x = e.offsetX;
     this.model.y = e.offsetY;
+    if (this.model.isActiveText && e.target.instance.parent() !== this.model.elem) this.model.onTextBlur();
     this.model.getTypeOfMouseDownAction(this.model.type, e);
     if (this.model.type !== 'fill' && this.model.type !== 'stroke') { // This is a temporary option
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
