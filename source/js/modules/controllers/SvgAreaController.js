@@ -22,7 +22,9 @@ export class SvgAreaController {
     this.model.y = e.offsetY;
     if (this.model.isActiveText && e.target.instance.parent() !== this.model.elem) this.model.onTextBlur();
     this.model.getTypeOfMouseDownAction(this.model.type, e);
-    if (this.model.type !== 'fill' && this.model.type !== 'stroke') { // This is a temporary option
+    if (this.model.type !== 'path') { // This is a temporary option
+      this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
+    } else if (this.model.isStartPath) {
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
     }
     this.model.svgArea.mouseup(this.onSvgAreaMouseUp);
@@ -39,9 +41,11 @@ export class SvgAreaController {
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved) this.model.saveHistory();
     this.model.wasMoved = false;
-    this.appView.removeVisibilityPanel(this.model.selectElements);
-    this.appView.updateFunctionalArea(this.model.selectElements);
-    this.model.svgArea.mousemove(null);
+    //this.appView.removeVisibilityPanel(this.model.selectElements);
+    //this.appView.updateFunctionalArea(this.model.selectElements);
+    if (this.model.type !== 'path') {
+      this.model.svgArea.mousemove(null);
+    } else if (this.model.isEndPath) this.model.svgArea.mousemove(null);
     this.model.svgArea.mouseup(null);
     console.log(e.type)
   }
