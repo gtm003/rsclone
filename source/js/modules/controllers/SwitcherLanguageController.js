@@ -1,7 +1,7 @@
 export class SwitcherLanguageController {
-  constructor(appView, model) {
+  constructor(appView, viewModel) {
     this.appView = appView;
-    this.model = model;
+    this.viewModel = viewModel;
 
     this.onSwitcherLanguageClick = this.onSwitcherLanguageClick.bind(this);
   }
@@ -21,9 +21,9 @@ export class SwitcherLanguageController {
       const contextMenuButtons = [...this.appView.contextMenuWindow.childNodes];
       this.appView.deleteVisibilityContextMenu();
       if (target.checked) {
-        this.model.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'rus');
+        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'rus');
       } else {
-        this.model.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'en');
+        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'en');
       }
     }
   }
