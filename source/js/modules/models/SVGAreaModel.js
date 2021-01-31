@@ -11,7 +11,7 @@ export class SvgAreaModel {
     this.appView = appView;
     this.rootElement = rootElement;
     // if (lastCondition !== undefined) this.lastCondition = lastCondition;
-    // this.lastCondition = lastCondition;
+    this.lastCondition = lastCondition;
     this.svgArea = null;
     this.type = 'select';
     this.selectElements = [];
@@ -686,11 +686,11 @@ export class SvgAreaModel {
   }
 
   loadLastCondition() {
-    const lastCondition = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
-    if (!lastCondition || lastCondition.length === 0) return;
+    // const lastCondition = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
+    if (!this.lastCondition || this.lastCondition.length === 0) return;
     // this.svgArea.svg(lastCondition);
     // lastCondition.forEach(initializer => this.svgArea.add(initializer));
-    lastCondition.forEach(data => this.drawAfterFirstLoading(data));
+    this.lastCondition.forEach(data => this.drawAfterFirstLoading(data));
   }
 
   drawAfterFirstLoading(data) {

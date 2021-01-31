@@ -1,6 +1,6 @@
 export class LoadingController {
-  constructor(model) {
-    this.model = model;
+  constructor(viewModel) {
+    this.viewModel = viewModel;
 
     this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
   }
@@ -10,6 +10,6 @@ export class LoadingController {
   }
 
   onWindowBeforeUnload() {
-    this.model.saveLastCondition();
+    this.viewModel.saveLastCondition();
   }
 }

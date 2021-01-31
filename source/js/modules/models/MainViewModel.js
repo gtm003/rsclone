@@ -8,29 +8,56 @@ export class MainViewModel {
     this.appView = appView;
 
     this.controllers = [];
-    this.appLastCondition = [];
+    // this.appLastCondition = [];
   }
 
   init(tabsCount) {
-    const lastCondition = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
-    console.log(lastCondition)
+    const lastConditions = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
+    console.log(lastConditions)
 
+    // if (lastConditions && lastConditions.length !== 0) {
+    //   this.appView.renderTab();
+    //   this.appView.renderTabControl();
+
+    //   new SwitcherLanguageController(this.appView, this).addAllListeners();
+    //   new TabsController(this.appView, this).addAllListeners();
+    //   new LoadingController(this).addAllListeners();
+
+    //   lastConditions.forEach((lastCondition, i) => {
+    //     this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[i], this, lastCondition)];
+    //     this.controllers[tabsCount].init();
+    //     this.setActiveController(i);
+    //   });
+    // }
+    // if (lastConditions === null || (lastConditions.length === 1 && lastConditions[0].length === 0)) {
     new SwitcherLanguageController(this.appView, this).addAllListeners();
     new TabsController(this.appView, this).addAllListeners();
     new LoadingController(this).addAllListeners();
 
-    this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
-    this.controllers[tabsCount].init();
-    this.setActiveController(tabsCount);
+    if (lastConditions === null) {
+      this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
+      this.controllers[tabsCount].init();
+      this.setActiveController(tabsCount);
+    } else {
+      lastConditions.forEach((lastCondition, i) => {
+        if (i === 0) {
+          this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[i], this, lastCondition)];
+          this.controllers[i].init();
+          this.setActiveController(i);
+        } else {
+          this.createNewTab(lastCondition);
+        }
+      });
+    }
   }
 
   setActiveController(tabId) {
     this.activeController = +tabId;
   }
 
-  callNewController(tabsCount) {
+  callNewController(tabsCount, lastCondition) {
     this.controllers[this.activeController].removeAllListeners();
-    this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
+    this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this, lastCondition)];
     this.controllers[this.controllers.length - 1].init();
     this.setActiveController(tabsCount);
   }
@@ -41,14 +68,14 @@ export class MainViewModel {
     this.setActiveController(tabId);
   }
 
-  createNewTab() {
+  createNewTab(lastCondition) {
     this.removeActiveConditionTab();
     this.removeActiveConditionTabControl();
 
     this.appView.renderTab();
     this.appView.renderTabControl();
 
-    this.callNewController(this.appView.tabs.length - 1);
+    this.callNewController(this.appView.tabs.length - 1, lastCondition);
   }
 
   openTab(tabId) {
@@ -129,11 +156,17 @@ export class MainViewModel {
   }
 
   saveLastCondition() {
-    this.controllers.forEach(controller => {
-      const tabLastCondition = controller.model.getLastCondition();
-      this.appLastCondition = [...this.appLastCondition, tabLastCondition];
-    });
+    // debugger
+    const appLastCondition = [];
 
-    localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(this.appLastCondition));
+    this.controllers.forEach(controller => {
+      // debugger
+      const tabLastCondition = controller.model.getLastCondition();
+      // appLastCondition = [...appLastCondition, tabLastCondition];
+      console.log(tabLastCondition)
+      appLastCondition.push(tabLastCondition);
+    });
+    console.log(appLastCondition)
+    localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(appLastCondition));
   }
 }

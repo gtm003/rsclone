@@ -14,8 +14,8 @@ export class Controller {
     this.svgRootElement = svgRootElement;
     this.viewModel = viewModel;
     // if (lastCondition !== undefined) this.lastCondition = lastCondition;
-    this.lastCondition = lastCondition;
-    this.model = new SvgAreaModel(this.appView, this.svgRootElement, this.lastCondition);
+    // this.lastCondition = lastCondition;
+    this.model = new SvgAreaModel(this.appView, this.svgRootElement, lastCondition);
 
     this.mainMenuController = null;
     this.functionalAreaController = null;
@@ -27,7 +27,7 @@ export class Controller {
     // this.tabsController = null;
 
     this.onChangeColorClick = this.onChangeColorClick.bind(this);
-    this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
+    // this.onWindowBeforeUnload = this.onWindowBeforeUnload.bind(this);
   }
 
   init() {
