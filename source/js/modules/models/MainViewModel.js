@@ -136,7 +136,7 @@ export class MainViewModel {
   loadLastCondition(tabsCount) {
     const lastConditions = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
 
-    if (lastConditions === null) {
+    if (lastConditions === null || lastConditions.length === 0) {
       this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
       this.controllers[tabsCount].init();
       this.setActiveController(tabsCount);
