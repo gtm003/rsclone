@@ -25,7 +25,7 @@ export class SvgAreaModel {
 
     this.text = '';
     this.isActiveText = false;
-    this.path = null;
+    this.pathArray = [];
     this.isStartPath = false;
     this.isEndPath = false;
     this.pathNodeCount = 0;
@@ -117,7 +117,7 @@ export class SvgAreaModel {
   }
 
   selectMove(e) {
-    if (this.mouseDownElemSVG.type === 'svg') {
+    if (this.mouseDownElemSVG.type === 'svg' && this.selectFrame !== null) {
       this.drawRect(e, this.selectFrame);
     } else {
       if (this.selectElements.length === 0) {
@@ -366,24 +366,20 @@ export class SvgAreaModel {
 
   pathDown(e) {
     if (this.pathNodeCount) {
-      console.log(e.shiftKey);
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
-      //console.log([e.offsetX, e.offsetY]);
       if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
         this.isEndPath = true;
-        console.log('end path');
+        console.log('stop path');
       } else {
+        this.elem.removeSegment(this.pathNodeCount);
         if (e.shiftKey) {
-          console.log('direct');
           this.drawDirectAnglePath(e);
         } else {
-          console.log('undirect');
           this.elem.L({x: e.offsetX, y: e.offsetY});
         }
       }
     } else {
-      console.log('start path');
       this.elem = this.svgArea.path().M({x: e.offsetX, y: e.offsetY}).stroke(this.strokeColor).fill(this.fillColor);
       this.isStartPath = true;
       this.isEndPath = false;
@@ -392,8 +388,9 @@ export class SvgAreaModel {
   }
 
   drawDirectAnglePath(e) {
-    let xLast = this.elem.getSegment(this.pathNodeCount - 1).coords[0];
-    let yLast = this.elem.getSegment(this.pathNodeCount - 1).coords[1];
+    let lastPoinCoord = this.getPointsCoord(this.elem).pop();
+    let xLast = lastPoinCoord[0];
+    let yLast = lastPoinCoord[1];
     let xDelta = Math.abs(e.offsetX - xLast);
     let yDelta = Math.abs(e.offsetY - yLast);
     let xSign = (e.offsetX - xLast) / Math.abs(e.offsetX - xLast);
@@ -413,7 +410,7 @@ export class SvgAreaModel {
   }
 
   pathMove(e) {
-    this.isEndPath = false;
+    //this.isEndPath = false;
     if (e.shiftKey) {
       this.elem.removeSegment(this.pathNodeCount);
       this.drawDirectAnglePath(e);
@@ -426,7 +423,30 @@ export class SvgAreaModel {
   pathUp(e) {
     if (this.isEndPath) {
       this.pathNodeCount = 0;
+      //console.log(this.getPointsCoord(this.elem));
     }
+  }
+
+  getPointsCoord(elem) {
+    let allPointsCoord = [];
+    let segmentCount = elem.getSegmentCount();
+    for (let i = 0; i < segmentCount; i += 1) {
+      let pointCoord = [];
+      switch (elem.getSegment(i).type) {
+        case 'M':
+        case 'L':
+          pointCoord = pointCoord.concat(elem.getSegment(i).coords);
+          break;
+        case 'H':
+          pointCoord = pointCoord.concat([elem.getSegment(i).coords[0], allPointsCoord[i - 1][1]]);
+          break;
+        case 'V':
+          pointCoord = pointCoord.concat([allPointsCoord[i - 1][0], elem.getSegment(i).coords[0]]);
+          break;
+      }
+      allPointsCoord.push(pointCoord);
+    }
+    return allPointsCoord;
   }
 
   changeFillColor(e) {

@@ -24,8 +24,10 @@ export class SvgAreaController {
     this.model.getTypeOfMouseDownAction(this.model.type, e);
     if (this.model.type !== 'path') { // This is a temporary option
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
+      console.log(`move start ${this.model.type}`);
     } else if (this.model.isStartPath) {
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
+      console.log(`move start path`);
     }
     this.model.svgArea.mouseup(this.onSvgAreaMouseUp);
     //console.log(e.type)
@@ -45,8 +47,13 @@ export class SvgAreaController {
     //this.appView.updateFunctionalArea(this.model.selectElements);
     if (this.model.type !== 'path') {
       this.model.svgArea.mousemove(null);
-    } else if (this.model.isEndPath) this.model.svgArea.mousemove(null);
+      console.log(`move ${this.model.type} stop`)
+    } else if (this.model.isEndPath) {
+      this.model.svgArea.mousemove(null);
+      console.log(`move path stop`);
+    }
     this.model.svgArea.mouseup(null);
+    console.log(`up ${this.model.type} stop`);
     //console.log(e.type)
   }
 }
