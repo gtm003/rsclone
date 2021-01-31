@@ -16,7 +16,6 @@ export class ToolsLeftController {
   }
 
   onToolsLeftClick({target}) {
-    console.log(target)
     if (target.closest('button')) {
       if (this.model.isActiveText) this.model.onTextBlur();
       this.model.removeSelect();

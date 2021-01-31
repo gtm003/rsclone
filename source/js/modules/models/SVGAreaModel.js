@@ -41,6 +41,7 @@ export class SvgAreaModel {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
+    this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
   }
@@ -102,6 +103,7 @@ export class SvgAreaModel {
       this.selectElements.forEach((elem) => this.removeSelectSingleElem(elem));
       this.selectFrame = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
       this.selectFrame.attr('id', 'select-frame');
+      this.isSelectFrame = true;
     } else {
       if (!e.ctrlKey) {
         if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
@@ -413,6 +415,7 @@ export class SvgAreaModel {
       }
     });
     this.elem.fill(this.fillColor);
+    this.saveHistory();
   }
 
   changeStrokeColor(e) {
@@ -424,6 +427,7 @@ export class SvgAreaModel {
       }
     });
     this.elem.stroke(this.strokeColor);
+    this.saveHistory();
   }
 
   drawRect(e, elem) {
@@ -592,7 +596,24 @@ export class SvgAreaModel {
 
   saveHistory() {
     const svgElements = this.svgArea.children();
-    const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
+    const svgElementsWithoutG = svgElements
+      .filter(initializer => initializer.type !== 'g')
+      .map(initializer => {
+        if (initializer.type === 'defs') {
+          return initializer;
+        }
+        if (initializer.type === 'text') {
+          return [
+            initializer.type,
+            initializer.attr(),
+            initializer.node.childNodes[0].textContent
+          ]
+        }
+        return [
+          initializer.type,
+          initializer.attr()
+        ]
+      });
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
     if (!this.isFirstSaveHistory) this.historyPosition++;
@@ -605,7 +626,14 @@ export class SvgAreaModel {
     this.historyPosition -= 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   reDo() {
@@ -614,7 +642,14 @@ export class SvgAreaModel {
     this.historyPosition += 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   getLastCondition() {

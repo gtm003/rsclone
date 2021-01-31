@@ -30,6 +30,7 @@ export class SvgAreaController {
     }
     this.model.svgArea.mouseup(this.onSvgAreaMouseUp);
     //console.log(e.type)
+    console.log('something')
   }
 
   onSvgAreaMouseMove(e) {
@@ -41,9 +42,11 @@ export class SvgAreaController {
 
   onSvgAreaMouseUp(e) {
     e.preventDefault();
+    console.log(this.model.wasMoved)
     this.model.getTypeOfMouseUpAction(this.model.type);
-    if (this.model.wasMoved) this.model.saveHistory();
+    if (this.model.wasMoved && !this.model.isSelectFrame) this.model.saveHistory();
     this.model.wasMoved = false;
+    this.model.isSelectFrame = false;
     //this.appView.removeVisibilityPanel(this.model.selectElements);
     //this.appView.updateFunctionalArea(this.model.selectElements);
     if (this.model.type !== 'path') {
