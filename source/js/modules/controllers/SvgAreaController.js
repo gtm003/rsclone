@@ -6,6 +6,7 @@ export class SvgAreaController {
     this.onSvgAreaMouseDown = this.onSvgAreaMouseDown.bind(this);
     this.onSvgAreaMouseMove = this.onSvgAreaMouseMove.bind(this);
     this.onSvgAreaMouseUp = this.onSvgAreaMouseUp.bind(this);
+    this.onSvgAreaMouseLeave = this.onSvgAreaMouseLeave.bind(this);
   }
 
   addAllListeners() {
@@ -13,11 +14,18 @@ export class SvgAreaController {
   }
 
   removeAllListeners() {
+    this.model.rootElement.childNodes[0].removeEventListener('mouseleave', this.onSvgAreaMouseLeave);
     this.model.svgArea.mousedown(null);
+    this.model.svgArea.mousemove(null);
+    this.model.svgArea.mouseup(null);
   }
 
   onSvgAreaMouseDown(e) {
+    if (e.which !== 1) return;
     e.preventDefault();
+
+    this.model.rootElement.childNodes[0].addEventListener('mouseleave', this.onSvgAreaMouseLeave);
+
     this.model.target = e.target;
     this.model.x = e.offsetX;
     this.model.y = e.offsetY;
@@ -29,20 +37,18 @@ export class SvgAreaController {
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
     }
     this.model.svgArea.mouseup(this.onSvgAreaMouseUp);
-    //console.log(e.type)
-    console.log('something')
   }
 
   onSvgAreaMouseMove(e) {
     e.preventDefault();
+
     this.model.getTypeOfMouseMoveAction(this.model.type, e);
     this.model.wasMoved = true;
-    //console.log(e.type)
   }
 
   onSvgAreaMouseUp(e) {
     e.preventDefault();
-    console.log(this.model.wasMoved)
+
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved && !this.model.isSelectFrame) this.model.saveHistory();
     this.model.wasMoved = false;
@@ -55,6 +61,17 @@ export class SvgAreaController {
       this.model.svgArea.mousemove(null);
     }
     this.model.svgArea.mouseup(null);
-    //console.log(e.type)
+  }
+
+  onSvgAreaMouseLeave(e) {
+    e.preventDefault();
+
+    this.model.svgArea.fire('mouseup');
+    this.model.svgArea.mousemove(null);
+    this.model.svgArea.mouseup(null);
+
+    //для окончания рисования path
+    this.model.isEndPath = true;
+    this.model.pathNodeCount = 0;
   }
 }
