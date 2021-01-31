@@ -17,6 +17,7 @@ export class SvgAreaController {
   }
 
   onSvgAreaMouseDown(e) {
+    e.preventDefault();
     this.model.target = e.target;
     this.model.x = e.offsetX;
     this.model.y = e.offsetY;
@@ -28,16 +29,18 @@ export class SvgAreaController {
       this.model.svgArea.mousemove(this.onSvgAreaMouseMove);
     }
     this.model.svgArea.mouseup(this.onSvgAreaMouseUp);
-    console.log(e.type)
+    //console.log(e.type)
   }
 
   onSvgAreaMouseMove(e) {
+    e.preventDefault();
     this.model.getTypeOfMouseMoveAction(this.model.type, e);
     this.model.wasMoved = true;
-    console.log(e.type)
+    //console.log(e.type)
   }
 
   onSvgAreaMouseUp(e) {
+    e.preventDefault();
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved) this.model.saveHistory();
     this.model.wasMoved = false;
@@ -45,8 +48,10 @@ export class SvgAreaController {
     //this.appView.updateFunctionalArea(this.model.selectElements);
     if (this.model.type !== 'path') {
       this.model.svgArea.mousemove(null);
-    } else if (this.model.isEndPath) this.model.svgArea.mousemove(null);
+    } else if (this.model.isEndPath) {
+      this.model.svgArea.mousemove(null);
+    }
     this.model.svgArea.mouseup(null);
-    console.log(e.type)
+    //console.log(e.type)
   }
 }
