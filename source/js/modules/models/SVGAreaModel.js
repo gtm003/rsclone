@@ -94,8 +94,6 @@ export class SvgAreaModel {
 
   selectDown(e) {
     this.mouseDownElemSVG = e.target.instance;
-    //console.log('select down');
-    //console.log(this.mouseDownElemSVG);
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
     }
@@ -143,6 +141,7 @@ export class SvgAreaModel {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
     }
+    //this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -179,19 +178,6 @@ export class SvgAreaModel {
     elem.xLast = elem.x();
     elem.yLast = elem.y();
   }
-  /*
-  checkSelectedElem(e) {
-    let isOnSelect = false;
-    this.svgArea.each(function() {
-      if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
-    })
-    if (!e.ctrlKey && !isOnSelect) {
-      this.removeSelect();
-      this.appView.removeVisibilityPanel(this.selectElements);                                                          //Лешин метод
-    }
-    this.x = e.offsetX;
-    this.y = e.offsetY;
-  }*/
 
   init() {
     this.createNewSvgWorkArea();
@@ -210,34 +196,8 @@ export class SvgAreaModel {
   }
 
   thinkAboutIt() {
-    console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
+    //console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
   }
-
-  /*
-  selectElem(e) {
-    const _that = this;
-    this.svgArea.each(function (i, children) {
-      if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-        _that.setSelectElements.add(this);
-        _that.selectElements = [..._that.setSelectElements];
-        this.addClass('selectedElem');
-        this.selectize().resize();
-        _that.onMouseMoveG();                                                                // Лешин метод
-        _that.cxLast = this.cx();
-        _that.cyLast = this.cy();
-      }
-    });
-
-    this.svgArea.each(function (i, children) {
-      if (this.hasClass('selectedElem')) {
-        this.cxLast = this.cx();
-        this.cyLast = this.cy();
-      }
-    });
-    _that.appView.removeVisibilityPanel(_that.selectElements);                         // Лешин метод
-    _that.appView.updateFunctionalArea(_that.selectElements);                         // Лешин метод
-  }
-  */
 
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
@@ -279,7 +239,6 @@ export class SvgAreaModel {
 
   createText(e) {
     this.isActiveText = true;
-    //this.text = '';
     this.elem = this.svgArea.text('').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     let tspan = this.elem.tspan('');
     this.elem.build(true);
@@ -340,7 +299,6 @@ export class SvgAreaModel {
       this.text += event.key;
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
-      //this.elem.text(`${this.text}`).dy(`${1.3 * this.elem.font('size')}`);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -370,7 +328,6 @@ export class SvgAreaModel {
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
       if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
         this.isEndPath = true;
-        console.log('stop path');
       } else {
         this.elem.removeSegment(this.pathNodeCount);
         if (e.shiftKey) {
@@ -410,7 +367,6 @@ export class SvgAreaModel {
   }
 
   pathMove(e) {
-    //this.isEndPath = false;
     if (e.shiftKey) {
       this.elem.removeSegment(this.pathNodeCount);
       this.drawDirectAnglePath(e);
@@ -423,7 +379,6 @@ export class SvgAreaModel {
   pathUp(e) {
     if (this.isEndPath) {
       this.pathNodeCount = 0;
-      //console.log(this.getPointsCoord(this.elem));
     }
   }
 
@@ -469,32 +424,6 @@ export class SvgAreaModel {
     });
     this.elem.stroke(this.strokeColor);
   }
-
-  /*
-  moveElem(e) {
-    const _that = this;
-    if (!e.ctrlKey && _that.selectElements.length === 1) {
-      _that.svgArea.each(function (i, children) {
-        if (this.hasClass('selectedElem')) {
-          this.cx(e.offsetX - _that.x + _that.cxLast);
-          //console.log(this.cx());
-          this.cy(e.offsetY - _that.y + _that.cyLast);
-          _that.appView.updateFunctionalArea(_that.selectElements);                                // Лешин метод - перенесла
-          // _that.saveHistory();
-        }
-      });
-    } else if(!e.ctrlKey && _that.selectElements.length > 1) {
-      _that.svgArea.each(function (i, children) {
-        if (this.hasClass('selectedElem')) {
-          this.cx(e.offsetX - _that.x + this.cxLast);
-          this.cy(e.offsetY - _that.y + this.cyLast);
-          //console.log(this.cx());
-          _that.appView.updateFunctionalArea(_that.selectElements);                                   // Лешин метод - перенесла
-          // _that.saveHistory();
-        }
-      });
-    }
-  }*/
 
   drawRect(e, elem) {
     let xNew, yNew, xDelta, yDelta;
@@ -599,7 +528,6 @@ export class SvgAreaModel {
       this.path.plot(arr);
       console.log(arr);
     } else {
-      console.log ('mouseMove')
     }
   }
 
