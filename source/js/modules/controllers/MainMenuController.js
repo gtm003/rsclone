@@ -35,7 +35,6 @@ export class MainMenuController {
       this.model.openNewImageModal();
       this.model.selectElements = [];
       this.appView.removeVisibilityPanel(this.model.selectElements);
-      // this.onContextMenuClick();
     } else if (buttonDataAttribute === 'Save SVG') {
       this.model.openModalSave();
     } else if (buttonDataAttribute === 'Document Properties') {
@@ -44,11 +43,9 @@ export class MainMenuController {
       this.model.openModalSvgCode();
     } else if (buttonDataAttribute === 'Undo') {
       this.model.unDo();
-      // this.appearContextMenu();
       this.appView.removeVisibilityPanel(this.model.selectElements);
     } else if (buttonDataAttribute === 'Redo') {
       this.model.reDo();
-      // this.appearContextMenu();
       this.appView.removeVisibilityPanel(this.model.selectElements);
     }
   }
