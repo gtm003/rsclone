@@ -10,8 +10,8 @@ export class SvgAreaModel {
   constructor(appView, rootElement, lastCondition) {
     this.appView = appView;
     this.rootElement = rootElement;
-    // if (lastCondition !== undefined) this.lastCondition = lastCondition;
     this.lastCondition = lastCondition;
+
     this.svgArea = null;
     this.type = 'select';
     this.selectElements = [];
@@ -614,27 +614,9 @@ export class SvgAreaModel {
     const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
-    // const svgInnerWithoutSelect = this.getSvgInnerWithoutSelect();
-    // this.history.push(svgInnerWithoutSelect);
     if (!this.isFirstSaveHistory) this.historyPosition++;
     this.isFirstSaveHistory = false;
   }
-
-  // getSvgInnerWithoutSelect() {
-  //   const svgWorkAreaNode = this.rootElement.childNodes[0];
-  //   const tempDivElement = document.createElement('div');
-  //   tempDivElement.innerHTML = svgWorkAreaNode.innerHTML;
-
-  //   [...tempDivElement.childNodes].forEach(item => {
-  //     if (item.tagName.toLowerCase() === 'g') item.remove();
-  //     if (item.classList.contains('selectedElem')) item.classList.remove('selectedElem');
-  //   })
-
-  //   const svgInnerWithoutSelect = tempDivElement.innerHTML;
-  //   tempDivElement.remove();
-
-  //   return svgInnerWithoutSelect;
-  // }
 
   unDo() {
     this.selectElements = [];
@@ -643,8 +625,6 @@ export class SvgAreaModel {
 
     this.svgArea.clear();
     this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
-    // this.rootElement.childNodes[0].innerHTML = '';
-    // this.svgArea.svg(this.history[this.historyPosition]);
   }
 
   reDo() {
@@ -654,13 +634,10 @@ export class SvgAreaModel {
 
     this.svgArea.clear();
     this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
-    // this.rootElement.childNodes[0].innerHTML = '';
-    // this.svgArea.svg(this.history[this.historyPosition]);
   }
 
   getLastCondition() {
     this.removeSelect();
-    // this.removeDefs();
 
     const svgElements = this.svgArea.children();
     const svgData = [...svgElements
@@ -679,17 +656,12 @@ export class SvgAreaModel {
         ]
       }
     )];
-    // const svgAreaInner = this.rootElement.childNodes[0].innerHTML;
 
     return svgData;
-    localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(svgData));
   }
 
   loadLastCondition() {
-    // const lastCondition = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
     if (!this.lastCondition || this.lastCondition.length === 0) return;
-    // this.svgArea.svg(lastCondition);
-    // lastCondition.forEach(initializer => this.svgArea.add(initializer));
     this.lastCondition.forEach(data => this.drawAfterFirstLoading(data));
   }
 
@@ -711,17 +683,8 @@ export class SvgAreaModel {
     }
   }
 
-  // removeDefs() {
-  //   const svgAreaNode = this.rootElement.childNodes[0];
-  //   [...svgAreaNode.childNodes].forEach(item => {
-  //     if (item.tagName.toLowerCase() === 'defs') item.remove();
-  //   })
-  // }
-
   createNewImage() {
-    // this.rootElement.innerHTML = '';
     this.selectElements = [];
-    // this.createNewSvgWorkArea();
     this.svgArea.each(function() {
       if (this.type !== 'defs') this.remove();
     });

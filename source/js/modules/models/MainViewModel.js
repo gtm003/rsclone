@@ -8,47 +8,13 @@ export class MainViewModel {
     this.appView = appView;
 
     this.controllers = [];
-    // this.appLastCondition = [];
   }
 
   init(tabsCount) {
-    const lastConditions = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
-    console.log(lastConditions)
-
-    // if (lastConditions && lastConditions.length !== 0) {
-    //   this.appView.renderTab();
-    //   this.appView.renderTabControl();
-
-    //   new SwitcherLanguageController(this.appView, this).addAllListeners();
-    //   new TabsController(this.appView, this).addAllListeners();
-    //   new LoadingController(this).addAllListeners();
-
-    //   lastConditions.forEach((lastCondition, i) => {
-    //     this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[i], this, lastCondition)];
-    //     this.controllers[tabsCount].init();
-    //     this.setActiveController(i);
-    //   });
-    // }
-    // if (lastConditions === null || (lastConditions.length === 1 && lastConditions[0].length === 0)) {
     new SwitcherLanguageController(this.appView, this).addAllListeners();
     new TabsController(this.appView, this).addAllListeners();
     new LoadingController(this).addAllListeners();
-
-    if (lastConditions === null) {
-      this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
-      this.controllers[tabsCount].init();
-      this.setActiveController(tabsCount);
-    } else {
-      lastConditions.forEach((lastCondition, i) => {
-        if (i === 0) {
-          this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[i], this, lastCondition)];
-          this.controllers[i].init();
-          this.setActiveController(i);
-        } else {
-          this.createNewTab(lastCondition);
-        }
-      });
-    }
+    this.loadLastCondition(tabsCount);
   }
 
   setActiveController(tabId) {
@@ -156,17 +122,36 @@ export class MainViewModel {
   }
 
   saveLastCondition() {
-    // debugger
-    const appLastCondition = [];
+    let appLastCondition = [];
 
     this.controllers.forEach(controller => {
-      // debugger
       const tabLastCondition = controller.model.getLastCondition();
-      // appLastCondition = [...appLastCondition, tabLastCondition];
-      console.log(tabLastCondition)
-      appLastCondition.push(tabLastCondition);
+      appLastCondition = [...appLastCondition, tabLastCondition];
     });
-    console.log(appLastCondition)
+
     localStorage.setItem('SvgEditor_lastCondition', JSON.stringify(appLastCondition));
+  }
+
+  loadLastCondition(tabsCount) {
+    const lastConditions = JSON.parse(localStorage.getItem('SvgEditor_lastCondition'));
+
+    if (lastConditions === null) {
+      this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[tabsCount], this)];
+      this.controllers[tabsCount].init();
+      this.setActiveController(tabsCount);
+      return
+    }
+
+    lastConditions.forEach((lastCondition, i) => {
+      if (i === 0) {
+        this.controllers = [...this.controllers, new Controller(this.appView, this.appView.tabs[i], this, lastCondition)];
+        this.controllers[i].init();
+        this.setActiveController(i);
+      } else {
+        this.createNewTab(lastCondition);
+      }
+    });
+
+    this.openTab(tabsCount);
   }
 }
