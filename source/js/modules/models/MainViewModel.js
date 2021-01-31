@@ -2,6 +2,7 @@ import {Controller} from '../controllers/Controller';
 import {SwitcherLanguageController} from '../controllers/SwitcherLanguageController';
 import {TabsController} from '../controllers/TabsController';
 import {LoadingController} from '../controllers/LoadingController';
+import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 export class MainViewModel {
   constructor(appView) {
@@ -153,5 +154,31 @@ export class MainViewModel {
     });
 
     this.openTab(tabsCount);
+  }
+
+  changeLanguage(menuButtons, toolTips, contextMenuButtons, strLang) {
+    menuButtons.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = MENU_BUTTONS_NAMES_RUS[index];
+      } else {
+        item.textContent = MENU_BUTTONS_NAMES_EN[index];
+      }
+    });
+
+    toolTips.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = TOOLS_LEFT_NAMES_RUS[index];
+      } else {
+        item.textContent = TOOLS_LEFT_NAMES_EN[index];
+      }
+    });
+
+    contextMenuButtons.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.textContent = CONTEXTMENU_NAMES_RUS[index];
+      } else {
+        item.textContent = CONTEXTMENU_NAMES_EN[index];
+      }
+    });
   }
 }

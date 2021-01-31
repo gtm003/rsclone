@@ -2,7 +2,6 @@ import { } from '../../vendor/svg.js';
 import { } from '../../vendor/svg.select.js';
 import { } from '../../vendor/svg.resize.js';
 import { } from '../../vendor/svg.path.js';
-import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
 
 const FILE_TYPE = 'svg';
 
@@ -928,31 +927,5 @@ export class SvgAreaModel {
       this.appView.contextMenuWindow.childNodes[3].disabled = false;
       this.appView.contextMenuWindow.childNodes[4].disabled = false;
     }
-  }
-
-  changeLanguage(menuButtons, toolTips, contextMenuButtons, strLang) {
-    menuButtons.forEach((item, index) => {
-      if (strLang === 'rus') {
-        item.textContent = MENU_BUTTONS_NAMES_RUS[index];
-      } else {
-        item.textContent = MENU_BUTTONS_NAMES_EN[index];
-      }
-    });
-
-    toolTips.forEach((item, index) => {
-      if (strLang === 'rus') {
-        item.textContent = TOOLS_LEFT_NAMES_RUS[index];
-      } else {
-        item.textContent = TOOLS_LEFT_NAMES_EN[index];
-      }
-    });
-
-    contextMenuButtons.forEach((item, index) => {
-      if (strLang === 'rus') {
-        item.textContent = CONTEXTMENU_NAMES_RUS[index];
-      } else {
-        item.textContent = CONTEXTMENU_NAMES_EN[index];
-      }
-    });
   }
 }

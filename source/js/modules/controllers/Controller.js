@@ -5,6 +5,7 @@ import {SvgAreaController} from './SvgAreaController';
 import {ToolsLeftController} from './ToolsLeftController';
 import {ContextMenuController} from './ContextMenuController';
 import {HotKeysController} from './HotKeysController';
+import {ColorPickerController} from './ColorPickerController';
 
 export class Controller {
   constructor(appView, svgRootElement, viewModel, lastCondition) {
@@ -19,8 +20,7 @@ export class Controller {
     this.toolsLeftController = null;
     this.contextMenuController = null;
     this.hotKeysController = null;
-
-    this.onChangeColorClick = this.onChangeColorClick.bind(this);
+    this.colorController = null;
   }
 
   init() {
@@ -32,6 +32,7 @@ export class Controller {
     this.toolsLeftController = new ToolsLeftController(this.appView, this.model, this.svgAreaController); // модуль контроллер ToolsLeft
     this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
     this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
+    this.colorController = new ColorPickerController(this.appView, this.model); // модуль контроллер ColorPicker
 
     this.addAllListeners();
   }
@@ -47,13 +48,13 @@ export class Controller {
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
-    this.appView.colorPicker.btnUserAnswerContainer.addEventListener('click', this.onChangeColorClick);
     this.mainMenuController.addAllListeners();
     this.functionalAreaController.addAllListeners();
     this.svgAreaController.addAllListeners();
     this.toolsLeftController.addAllListeners();
     this.contextMenuController.addAllListeners();
     this.hotKeysController.addAllListeners();
+    this.colorController.addAllListeners();
   }
 
   removeAllListeners() {
@@ -61,29 +62,13 @@ export class Controller {
       this.model.svgArea.node.tabIndex = '1';
       this.model.svgArea.node.focus();
     });
-    this.appView.colorPicker.btnUserAnswerContainer.removeEventListener('click', this.onChangeColorClick);
     this.mainMenuController.removeAllListeners();
     this.functionalAreaController.removeAllListeners();
     this.svgAreaController.removeAllListeners();
     this.toolsLeftController.removeAllListeners();
     this.contextMenuController.removeAllListeners();
     this.hotKeysController.removeAllListeners();
+    this.colorController.removeAllListeners();
     this.model.removeSelect()
-  }
-
-  onChangeColorClick({target}) {
-    if (target.id === 'OK') {
-      if (this.model.type === 'fill') {
-        this.model.fillColor = this.appView.colorPicker.color;
-        [...this.appView.toolsLeftContainer.childNodes][7].style.background = this.appView.colorPicker.color;
-      }
-      else if (this.model.type === 'stroke') {
-        this.model.strokeColor = this.appView.colorPicker.color;
-      }
-      this.appView.colorPicker.closeColorPicker();
-    }
-    if (target.id === 'CANSEL') {
-      this.appView.colorPicker.closeColorPicker();
-    }
   }
 }
