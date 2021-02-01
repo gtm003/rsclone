@@ -26,9 +26,10 @@ export class SvgAreaModel {
 
     this.text = '';
     this.isActiveText = false;
-    this.path = null;
+    this.pathArray = [];
     this.isStartPath = false;
     this.isEndPath = false;
+    this.isPath = false;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
@@ -41,6 +42,7 @@ export class SvgAreaModel {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
+    this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
 
@@ -97,8 +99,6 @@ export class SvgAreaModel {
 
   selectDown(e) {
     this.mouseDownElemSVG = e.target.instance;
-    //console.log('select down');
-    //console.log(this.mouseDownElemSVG);
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
     }
@@ -106,6 +106,7 @@ export class SvgAreaModel {
       this.selectElements.forEach((elem) => this.removeSelectSingleElem(elem));
       this.selectFrame = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
       this.selectFrame.attr('id', 'select-frame');
+      this.isSelectFrame = true;
     } else {
       if (!e.ctrlKey) {
         if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
@@ -120,7 +121,7 @@ export class SvgAreaModel {
   }
 
   selectMove(e) {
-    if (this.mouseDownElemSVG.type === 'svg') {
+    if (this.mouseDownElemSVG.type === 'svg' && this.selectFrame !== null) {
       this.drawRect(e, this.selectFrame);
     } else {
       if (this.selectElements.length === 0) {
@@ -146,6 +147,7 @@ export class SvgAreaModel {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
     }
+    //this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -182,19 +184,6 @@ export class SvgAreaModel {
     elem.xLast = elem.x();
     elem.yLast = elem.y();
   }
-  /*
-  checkSelectedElem(e) {
-    let isOnSelect = false;
-    this.svgArea.each(function() {
-      if (this.inside(e.offsetX, e.offsetY) && this.hasClass('selectedElem')) isOnSelect = true;
-    })
-    if (!e.ctrlKey && !isOnSelect) {
-      this.removeSelect();
-      this.appView.removeVisibilityPanel(this.selectElements);                                                          //Лешин метод
-    }
-    this.x = e.offsetX;
-    this.y = e.offsetY;
-  }*/
 
   init() {
     this.createNewSvgWorkArea();
@@ -208,39 +197,13 @@ export class SvgAreaModel {
     this.svgArea.node.classList.add('svg-work-area');
   }
 
-  resizeSvgArea(svgWidth, svgHeight) {
-    this.svgArea.size(svgWidth, svgHeight);
-  }
+  // resizeSvgArea(svgWidth, svgHeight) {
+  //   this.svgArea.size(svgWidth, svgHeight);
+  // }
 
   thinkAboutIt() {
-    console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
+    //console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
   }
-
-  /*
-  selectElem(e) {
-    const _that = this;
-    this.svgArea.each(function (i, children) {
-      if (this.inside(e.offsetX, e.offsetY) && this.node.tagName !== 'g') {
-        _that.setSelectElements.add(this);
-        _that.selectElements = [..._that.setSelectElements];
-        this.addClass('selectedElem');
-        this.selectize().resize();
-        _that.onMouseMoveG();                                                                // Лешин метод
-        _that.cxLast = this.cx();
-        _that.cyLast = this.cy();
-      }
-    });
-
-    this.svgArea.each(function (i, children) {
-      if (this.hasClass('selectedElem')) {
-        this.cxLast = this.cx();
-        this.cyLast = this.cy();
-      }
-    });
-    _that.appView.removeVisibilityPanel(_that.selectElements);                         // Лешин метод
-    _that.appView.updateFunctionalArea(_that.selectElements);                         // Лешин метод
-  }
-  */
 
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
@@ -282,7 +245,6 @@ export class SvgAreaModel {
 
   createText(e) {
     this.isActiveText = true;
-    //this.text = '';
     this.elem = this.svgArea.text('').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     let tspan = this.elem.tspan('');
     this.elem.build(true);
@@ -343,7 +305,6 @@ export class SvgAreaModel {
       this.text += event.key;
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
-      //this.elem.text(`${this.text}`).dy(`${1.3 * this.elem.font('size')}`);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -368,17 +329,21 @@ export class SvgAreaModel {
   }
 
   pathDown(e) {
+    this.isPath = true;
     if (this.pathNodeCount) {
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
-      //console.log([e.offsetX, e.offsetY]);
       if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
         this.isEndPath = true;
-        console.log('end path');
+      } else {
+        this.elem.removeSegment(this.pathNodeCount);
+        if (e.shiftKey) {
+          this.drawDirectAnglePath(e);
+        } else {
+          this.elem.L({x: e.offsetX, y: e.offsetY});
+        }
       }
-      this.elem.L({x: e.offsetX, y: e.offsetY});
     } else {
-      console.log('start path');
       this.elem = this.svgArea.path().M({x: e.offsetX, y: e.offsetY}).stroke(this.strokeColor).fill(this.fillColor);
       this.isStartPath = true;
       this.isEndPath = false;
@@ -386,16 +351,66 @@ export class SvgAreaModel {
     this.pathNodeCount += 1;
   }
 
+  drawDirectAnglePath(e) {
+    let lastPoinCoord = this.getPointsCoord(this.elem).pop();
+    let xLast = lastPoinCoord[0];
+    let yLast = lastPoinCoord[1];
+    let xDelta = Math.abs(e.offsetX - xLast);
+    let yDelta = Math.abs(e.offsetY - yLast);
+    let xSign = (e.offsetX - xLast) / Math.abs(e.offsetX - xLast);
+    let ySign = (e.offsetY - yLast) / Math.abs(e.offsetY - yLast);
+    let xEnd, yEnd;
+    if (Math.min(xDelta, yDelta) / Math.max(xDelta, yDelta) > 0.5) {
+      xEnd = xLast + xSign * Math.max(xDelta, yDelta);
+      yEnd = yLast + ySign * Math.max(xDelta, yDelta);
+      this.elem.L({x: xEnd, y: yEnd})
+    } else {
+      if (xDelta < yDelta) {
+        this.elem.V(e.offsetY)
+      } else {
+        this.elem.H(e.offsetX)
+      }
+    }
+  }
+
   pathMove(e) {
-    this.isEndPath = false;
-    this.elem.removeSegment(this.pathNodeCount);
-    this.elem.L({x: e.offsetX, y: e.offsetY});
+    if (e.shiftKey) {
+      this.elem.removeSegment(this.pathNodeCount);
+      this.drawDirectAnglePath(e);
+    } else {
+      this.elem.removeSegment(this.pathNodeCount);
+      this.elem.L({x: e.offsetX, y: e.offsetY});
+    }
   }
 
   pathUp(e) {
     if (this.isEndPath) {
+      this.isPath = false;
+      this.saveHistory();
       this.pathNodeCount = 0;
     }
+  }
+
+  getPointsCoord(elem) {
+    let allPointsCoord = [];
+    let segmentCount = elem.getSegmentCount();
+    for (let i = 0; i < segmentCount; i += 1) {
+      let pointCoord = [];
+      switch (elem.getSegment(i).type) {
+        case 'M':
+        case 'L':
+          pointCoord = pointCoord.concat(elem.getSegment(i).coords);
+          break;
+        case 'H':
+          pointCoord = pointCoord.concat([elem.getSegment(i).coords[0], allPointsCoord[i - 1][1]]);
+          break;
+        case 'V':
+          pointCoord = pointCoord.concat([allPointsCoord[i - 1][0], elem.getSegment(i).coords[0]]);
+          break;
+      }
+      allPointsCoord.push(pointCoord);
+    }
+    return allPointsCoord;
   }
 
   changeFillColor(e) {
@@ -406,6 +421,7 @@ export class SvgAreaModel {
       }
     });
     this.elem.fill(this.fillColor);
+    this.saveHistory();
   }
 
   changeStrokeColor(e) {
@@ -417,33 +433,8 @@ export class SvgAreaModel {
       }
     });
     this.elem.stroke(this.strokeColor);
+    this.saveHistory();
   }
-
-  /*
-  moveElem(e) {
-    const _that = this;
-    if (!e.ctrlKey && _that.selectElements.length === 1) {
-      _that.svgArea.each(function (i, children) {
-        if (this.hasClass('selectedElem')) {
-          this.cx(e.offsetX - _that.x + _that.cxLast);
-          //console.log(this.cx());
-          this.cy(e.offsetY - _that.y + _that.cyLast);
-          _that.appView.updateFunctionalArea(_that.selectElements);                                // Лешин метод - перенесла
-          // _that.saveHistory();
-        }
-      });
-    } else if(!e.ctrlKey && _that.selectElements.length > 1) {
-      _that.svgArea.each(function (i, children) {
-        if (this.hasClass('selectedElem')) {
-          this.cx(e.offsetX - _that.x + this.cxLast);
-          this.cy(e.offsetY - _that.y + this.cyLast);
-          //console.log(this.cx());
-          _that.appView.updateFunctionalArea(_that.selectElements);                                   // Лешин метод - перенесла
-          // _that.saveHistory();
-        }
-      });
-    }
-  }*/
 
   drawRect(e, elem) {
     let xNew, yNew, xDelta, yDelta;
@@ -548,7 +539,6 @@ export class SvgAreaModel {
       this.path.plot(arr);
       console.log(arr);
     } else {
-      console.log ('mouseMove')
     }
   }
 
@@ -612,7 +602,44 @@ export class SvgAreaModel {
 
   saveHistory() {
     const svgElements = this.svgArea.children();
-    const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
+
+    const svgElementsWithoutG = svgElements
+      .filter(initializer => initializer.type !== 'g')
+      .map(initializer => {
+        if (initializer.type === 'defs') {
+          return initializer;
+        }
+        if (initializer.type === 'text') {
+          return [
+            initializer.type,
+            initializer.attr(),
+            initializer.node.childNodes[0].textContent
+          ];
+        }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
+          ]
+        }
+        return [
+          initializer.type,
+          initializer.attr()
+        ];
+      });
+
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgElementsWithoutG.push(svgProp);
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
     if (!this.isFirstSaveHistory) this.historyPosition++;
@@ -625,7 +652,14 @@ export class SvgAreaModel {
     this.historyPosition -= 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   reDo() {
@@ -634,7 +668,14 @@ export class SvgAreaModel {
     this.historyPosition += 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   getLastCondition() {
@@ -651,12 +692,31 @@ export class SvgAreaModel {
             initializer.node.childNodes[0].textContent
           ]
         }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
+          ]
+        }
         return [
           initializer.type,
           initializer.attr()
         ]
       }
     )];
+
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgData.push(svgProp);
 
     return svgData;
   }
@@ -668,10 +728,12 @@ export class SvgAreaModel {
 
   drawAfterFirstLoading(data) {
     const type = data[0];
-    const attr = data[1];
+    const attr = data[1] || []; //костыль из-за pencil
     const text = data[2];
 
-    if (type === 'rect') {
+    if (type === 'svg') {
+      this.svgArea.size(attr.width, attr.height);
+    } else if (type === 'rect') {
       this.svgArea.rect().attr(attr);
     } else if (type === 'ellipse') {
       this.svgArea.ellipse().attr(attr);
@@ -680,8 +742,26 @@ export class SvgAreaModel {
     } else if (type === 'text') {
       this.svgArea.text(`${text}`).attr(attr);
     } else if (type === 'path') {
-      this.svgArea.path().attr(attr);
+      Array.isArray(attr) ? this.drawPathAfterLoading(attr) : this.svgArea.path().attr(attr);
     }
+  }
+
+  drawPathAfterLoading(segments) {
+    const elem = this.svgArea.path();
+    segments.forEach(segment => {
+
+      if (segment.type === 'M') {
+        elem.M(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'L') {
+        elem.L(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'V') {
+        elem.V(segment.coords[0]);
+      } else if (segment.type === 'H') {
+        elem.H(segment.coords[0]);
+      }
+    });
+
+    elem.stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createNewImage() {
@@ -723,7 +803,9 @@ export class SvgAreaModel {
   changeProperties() {
     const svgWidth = this.appView.settingsModal.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModal.querySelector('[data-modal-settings="height"]').value;
-    this.resizeSvgArea(svgWidth, svgHeight);
+    // this.resizeSvgArea(svgWidth, svgHeight);
+    this.svgArea.size(svgWidth, svgHeight);
+    this.saveHistory();
   }
 
   openModalSave(flagStr) {

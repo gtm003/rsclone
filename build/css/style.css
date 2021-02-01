@@ -1038,11 +1038,6 @@ button,
   border: none; }
   .svg-work-area #select-frame {
     pointer-events: none; }
-  .svg-work-area text {
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none; }
 
 .modal-svg-code {
   width: 600px;
