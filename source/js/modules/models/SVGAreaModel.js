@@ -343,6 +343,7 @@ export class SvgAreaModel {
       this.isEndPath = false;
     }
     this.pathNodeCount += 1;
+    console.log(this.elem.array());
   }
 
   drawDirectAnglePath(e) {
@@ -380,6 +381,10 @@ export class SvgAreaModel {
   pathUp(e) {
     if (this.isEndPath) {
       this.pathNodeCount = 0;
+      console.log(this.elem.array());
+      console.log(this.getPathArray(this.elem));
+      this.elem.plot(this.getPathArray(this.elem));
+      console.log(this.elem.array());
     }
   }
 
@@ -403,6 +408,17 @@ export class SvgAreaModel {
       allPointsCoord.push(pointCoord);
     }
     return allPointsCoord;
+  }
+
+  getPathArray(elem) {
+    let pathArray = [];
+    let pathNodeCount = elem.getSegmentCount();
+    for (let i = 0; i < pathNodeCount; i += 1) {
+      let nodeArray = [elem.getSegment(i).type];
+      nodeArray = nodeArray.concat(elem.getSegment(i).coords);
+      pathArray.push(nodeArray);
+    }
+    return pathArray;
   }
 
   changeFillColor(e) {
