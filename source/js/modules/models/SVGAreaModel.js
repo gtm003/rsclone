@@ -194,9 +194,9 @@ export class SvgAreaModel {
     this.svgArea.node.classList.add('svg-work-area');
   }
 
-  resizeSvgArea(svgWidth, svgHeight) {
-    this.svgArea.size(svgWidth, svgHeight);
-  }
+  // resizeSvgArea(svgWidth, svgHeight) {
+  //   this.svgArea.size(svgWidth, svgHeight);
+  // }
 
   thinkAboutIt() {
     //console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
@@ -596,6 +596,7 @@ export class SvgAreaModel {
 
   saveHistory() {
     const svgElements = this.svgArea.children();
+
     const svgElementsWithoutG = svgElements
       .filter(initializer => initializer.type !== 'g')
       .map(initializer => {
@@ -614,6 +615,13 @@ export class SvgAreaModel {
           initializer.attr()
         ]
       });
+
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgElementsWithoutG.push(svgProp);
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
     if (!this.isFirstSaveHistory) this.historyPosition++;
@@ -673,6 +681,13 @@ export class SvgAreaModel {
       }
     )];
 
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgData.push(svgProp);
+
     return svgData;
   }
 
@@ -685,8 +700,10 @@ export class SvgAreaModel {
     const type = data[0];
     const attr = data[1];
     const text = data[2];
-
-    if (type === 'rect') {
+    if (type === 'svg') {
+      // this.resizeSvgArea(attr.width, attr.height);
+      this.svgArea.size(attr.width, attr.height);
+    } else if (type === 'rect') {
       this.svgArea.rect().attr(attr);
     } else if (type === 'ellipse') {
       this.svgArea.ellipse().attr(attr);
@@ -738,7 +755,9 @@ export class SvgAreaModel {
   changeProperties() {
     const svgWidth = this.appView.settingsModal.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModal.querySelector('[data-modal-settings="height"]').value;
-    this.resizeSvgArea(svgWidth, svgHeight);
+    // this.resizeSvgArea(svgWidth, svgHeight);
+    this.svgArea.size(svgWidth, svgHeight);
+    this.saveHistory();
   }
 
   openModalSave() {
