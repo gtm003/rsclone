@@ -43,6 +43,8 @@ export class SvgAreaModel {
     this.wasMoved = false;
 
     this.inputText = this.inputText.bind(this);
+
+    this.idClient = null;
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -724,27 +726,35 @@ export class SvgAreaModel {
     this.resizeSvgArea(svgWidth, svgHeight);
   }
 
-  openModalSave() {
-    this.appView.saveModal.classList.add('modal-save--show');
+  openModalSave(flagStr) {
+    if (flagStr === 'server') {
+      this.appView.saveModal.classList.add('modal-save--server');
+    } else {
+      this.appView.saveModal.classList.add('modal-save--show');
+    }
   }
 
   closeModalSave() {
     this.appView.inputFileName.value = '';
     this.appView.errorMessage.style.visibility = 'hidden';
-    this.appView.saveModal.classList.remove('modal-save--show');
+    this.appView.saveModal.classList.remove('modal-save--show', 'modal-save--server');
   }
 
-  saveFile(fileName) {
+  saveFile(fileName, flagStr) {
     if (fileName === '') {
       this.appView.errorMessage.style.visibility = 'visible';
       return;
     }
     this.closeModalSave();
     this.removeSelect();
-    this.download(this.svgArea.svg(), fileName, 'image/svg+xml');
+    if (flagStr === 'client') {
+      this.downloadClient(this.svgArea.svg(), fileName, 'image/svg+xml');
+    } else if (flagStr === 'server') {
+      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml');
+    }
   }
 
-  download(data, filename, type) {
+  downloadClient(data, filename, type) {
     let file = new Blob([data], {type});
     if (window.navigator.msSaveOrOpenBlob) { // IE10+
       window.navigator.msSaveOrOpenBlob(file, filename);
@@ -759,6 +769,24 @@ export class SvgAreaModel {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       }, 0);
+    }
+  }
+
+  downloadServer(data, filename, type) {
+    let xhr = new XMLHttpRequest();
+    console.log(this.idClient);
+    xhr.open('PUT', `https://rs-demo-back.herokuapp.com/auth/login/${this.idClient}`);
+    xhr.responseType = 'json';
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    const json = {
+      'id': this.idClient,
+      'filenames': filename,
+      'projects': this.getLastCondition(),
+    };
+    console.log(json);
+    xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
+    xhr.onload = () => {
+      console.log(xhr.response);
     }
   }
 

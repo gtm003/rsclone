@@ -979,7 +979,7 @@ button,
           transform: translate(-50%, -50%); }
   .modal-save__save-btn {
     margin: 20px 0; }
-  .modal-save--show {
+  .modal-save--server, .modal-save--show {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex; }
@@ -1185,6 +1185,114 @@ button,
 
 .selectedElem {
   cursor: move; }
+
+.modal-sign-in {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  background-color: #16323B;
+  padding: 20px;
+  border-radius: 5px;
+  color: #E9ECEF;
+  border: 0; }
+  .modal-sign-in__field {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    padding-bottom: 10px; }
+    .modal-sign-in__field input {
+      outline: none;
+      border-radius: 5px;
+      border: 1px solid #000;
+      padding: 5px; }
+  .modal-sign-in__message {
+    padding-bottom: 10px; }
+  .modal-sign-in__unregistered {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    width: 190px;
+    padding-bottom: 10px; }
+    .modal-sign-in__unregistered input {
+      color: #E9ECEF;
+      border: 0;
+      background-color: transparent;
+      outline: none;
+      cursor: pointer; }
+    .modal-sign-in__unregistered input:hover {
+      color: #F8F9FA; }
+  .modal-sign-in__container-btn {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    width: 190px; }
+    .modal-sign-in__container-btn input {
+      color: #E9ECEF;
+      -webkit-filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+              filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      background: rgba(206, 212, 218, 0.2);
+      outline: none;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      cursor: pointer; }
+    .modal-sign-in__container-btn input:hover {
+      color: #F8F9FA; }
+
+.modal--open {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 600px;
+  height: 350px;
+  background-color: aqua;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 5;
+  padding: 10px;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+  .modal--open__btn {
+    height: 50px;
+    margin: 0 10px;
+    padding: 10px; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,

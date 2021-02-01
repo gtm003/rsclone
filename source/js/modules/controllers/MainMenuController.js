@@ -70,7 +70,11 @@ export class MainMenuController {
     const buttonDataAttribute = target.dataset[`${this.appView.saveElementsDataAttribute}`];
 
     if (buttonDataAttribute === 'save') {
-      this.model.saveFile(this.appView.inputFileName.value);
+      if (this.appView.saveModal.classList.contains('modal-save--server')) {
+        this.model.saveFile(this.appView.inputFileName.value, 'server');
+      } else {
+        this.model.saveFile(this.appView.inputFileName.value, 'client');
+      }
     } else if (buttonDataAttribute === 'close') {
       this.model.closeModalSave();
     }

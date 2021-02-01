@@ -10,7 +10,7 @@ export class HotKeysController {
     this.model.svgArea.node.addEventListener('keyup', this.onHotKeysKeyUp);
   }
 
-  removeAllListeners(){
+  removeAllListeners() {
     this.model.svgArea.node.removeEventListener('keyup', this.onHotKeysKeyUp);
   }
 
