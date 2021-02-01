@@ -29,6 +29,7 @@ export class SvgAreaModel {
     this.pathArray = [];
     this.isStartPath = false;
     this.isEndPath = false;
+    this.isPath = false;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
@@ -326,6 +327,7 @@ export class SvgAreaModel {
   }
 
   pathDown(e) {
+    this.isPath = true;
     if (this.pathNodeCount) {
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
@@ -381,6 +383,8 @@ export class SvgAreaModel {
 
   pathUp(e) {
     if (this.isEndPath) {
+      this.isPath = false;
+      this.saveHistory();
       this.pathNodeCount = 0;
     }
   }
@@ -608,12 +612,24 @@ export class SvgAreaModel {
             initializer.type,
             initializer.attr(),
             initializer.node.childNodes[0].textContent
+          ];
+        }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
           ]
         }
         return [
           initializer.type,
           initializer.attr()
-        ]
+        ];
       });
 
     const svgProp = [
@@ -674,6 +690,18 @@ export class SvgAreaModel {
             initializer.node.childNodes[0].textContent
           ]
         }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
+          ]
+        }
         return [
           initializer.type,
           initializer.attr()
@@ -698,10 +726,10 @@ export class SvgAreaModel {
 
   drawAfterFirstLoading(data) {
     const type = data[0];
-    const attr = data[1];
+    const attr = data[1] || []; //костыль из-за pencil
     const text = data[2];
+
     if (type === 'svg') {
-      // this.resizeSvgArea(attr.width, attr.height);
       this.svgArea.size(attr.width, attr.height);
     } else if (type === 'rect') {
       this.svgArea.rect().attr(attr);
@@ -712,8 +740,26 @@ export class SvgAreaModel {
     } else if (type === 'text') {
       this.svgArea.text(`${text}`).attr(attr);
     } else if (type === 'path') {
-      this.svgArea.path().attr(attr);
+      Array.isArray(attr) ? this.drawPathAfterLoading(attr) : this.svgArea.path().attr(attr);
     }
+  }
+
+  drawPathAfterLoading(segments) {
+    const elem = this.svgArea.path();
+    segments.forEach(segment => {
+
+      if (segment.type === 'M') {
+        elem.M(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'L') {
+        elem.L(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'V') {
+        elem.V(segment.coords[0]);
+      } else if (segment.type === 'H') {
+        elem.H(segment.coords[0]);
+      }
+    });
+
+    elem.stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createNewImage() {
