@@ -41,6 +41,7 @@ export class SvgAreaModel {
     this.historyPosition = 0;
     this.isFirstSaveHistory = false;
     this.wasMoved = false;
+    this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
   }
@@ -70,8 +71,6 @@ export class SvgAreaModel {
       text: (e) => this.resizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.pathMove(e),
-      fill : (e) => this.thinkAboutIt(e),
-      stroke : (e) => this.thinkAboutIt(e),
     }
 
     return mouseMoveActions[type](e);
@@ -86,8 +85,6 @@ export class SvgAreaModel {
       text: () => this.finishResizeText(),
       pencil: () => this.finishDrawElem(),
       path: () => this.pathUp(),
-      fill : () => this.thinkAboutIt(),
-      stroke : () => this.thinkAboutIt(),
     }
 
     return mouseUpActions[type]();
@@ -102,6 +99,7 @@ export class SvgAreaModel {
       this.selectElements.forEach((elem) => this.removeSelectSingleElem(elem));
       this.selectFrame = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
       this.selectFrame.attr('id', 'select-frame');
+      this.isSelectFrame = true;
     } else {
       if (!e.ctrlKey) {
         if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
@@ -192,13 +190,9 @@ export class SvgAreaModel {
     this.svgArea.node.classList.add('svg-work-area');
   }
 
-  resizeSvgArea(svgWidth, svgHeight) {
-    this.svgArea.size(svgWidth, svgHeight);
-  }
-
-  thinkAboutIt() {
-    //console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
-  }
+  // resizeSvgArea(svgWidth, svgHeight) {
+  //   this.svgArea.size(svgWidth, svgHeight);
+  // }
 
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
@@ -429,6 +423,7 @@ export class SvgAreaModel {
       }
     });
     this.elem.fill(this.fillColor);
+    this.saveHistory();
   }
 
   changeStrokeColor(e) {
@@ -440,6 +435,7 @@ export class SvgAreaModel {
       }
     });
     this.elem.stroke(this.strokeColor);
+    this.saveHistory();
   }
 
   drawRect(e, elem) {
@@ -608,7 +604,32 @@ export class SvgAreaModel {
 
   saveHistory() {
     const svgElements = this.svgArea.children();
-    const svgElementsWithoutG = svgElements.filter(initializer => initializer.type !== 'g');
+
+    const svgElementsWithoutG = svgElements
+      .filter(initializer => initializer.type !== 'g')
+      .map(initializer => {
+        if (initializer.type === 'defs') {
+          return initializer;
+        }
+        if (initializer.type === 'text') {
+          return [
+            initializer.type,
+            initializer.attr(),
+            initializer.node.childNodes[0].textContent
+          ]
+        }
+        return [
+          initializer.type,
+          initializer.attr()
+        ]
+      });
+
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgElementsWithoutG.push(svgProp);
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
     if (!this.isFirstSaveHistory) this.historyPosition++;
@@ -621,7 +642,14 @@ export class SvgAreaModel {
     this.historyPosition -= 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   reDo() {
@@ -630,7 +658,14 @@ export class SvgAreaModel {
     this.historyPosition += 1;
 
     this.svgArea.clear();
-    this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
+    this.history[this.historyPosition].forEach(data => {
+      if (data.type === 'defs') {
+        this.svgArea.add(data);
+        return;
+      }
+      this.drawAfterFirstLoading(data)
+    });
   }
 
   getLastCondition() {
@@ -654,6 +689,13 @@ export class SvgAreaModel {
       }
     )];
 
+    const svgProp = [
+      this.svgArea.type,
+      this.svgArea.attr()
+    ];
+
+    svgData.push(svgProp);
+
     return svgData;
   }
 
@@ -666,8 +708,10 @@ export class SvgAreaModel {
     const type = data[0];
     const attr = data[1];
     const text = data[2];
-
-    if (type === 'rect') {
+    if (type === 'svg') {
+      // this.resizeSvgArea(attr.width, attr.height);
+      this.svgArea.size(attr.width, attr.height);
+    } else if (type === 'rect') {
       this.svgArea.rect().attr(attr);
     } else if (type === 'ellipse') {
       this.svgArea.ellipse().attr(attr);
@@ -719,7 +763,9 @@ export class SvgAreaModel {
   changeProperties() {
     const svgWidth = this.appView.settingsModal.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModal.querySelector('[data-modal-settings="height"]').value;
-    this.resizeSvgArea(svgWidth, svgHeight);
+    // this.resizeSvgArea(svgWidth, svgHeight);
+    this.svgArea.size(svgWidth, svgHeight);
+    this.saveHistory();
   }
 
   openModalSave() {
