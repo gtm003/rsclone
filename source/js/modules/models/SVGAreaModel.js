@@ -139,7 +139,6 @@ export class SvgAreaModel {
       this.selectFrame = null;
     }
     if (this.mouseDownElemSVG.type !== 'svg') {
-      console.log('select');
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
@@ -200,11 +199,6 @@ export class SvgAreaModel {
 
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).stroke(this.strokeColor).fill(this.fillColor);
-    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
-  }
-
-  createEllipse(e) {
-    this.elem = this.svgArea.ellipse(0, 0).stroke(this.strokeColor).fill(this.fillColor);
     this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
@@ -483,12 +477,18 @@ export class SvgAreaModel {
     }
   }
 
+  createEllipse(e) {
+    this.elem = this.svgArea.ellipse(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
+  }
+
   drawEllipse(e) {
     if (e.shiftKey) {
       this.elem.attr({
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
+      this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
     } else {
       this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),
@@ -868,34 +868,41 @@ export class SvgAreaModel {
     this.appView.deleteVisibilityContextMenu();
     switch (dataAttribute) {
       case 'align_horizontal_left':
-        this.selectElements.forEach((item) => item.x(0));
+        this.selectElements.forEach((item) => {
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().x + this.svgArea.rbox().x})
+        });
         break;
       case 'align_horizontal_right':
         this.selectElements.forEach((item) => {
-          if (item.type === 'text') {
-            item.x(this.svgArea.width() - item.length());
-          } else {
-            item.x(this.svgArea.width() - item.width());
-          }
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().x2 + this.svgArea.rbox().x2})
         });
         break;
       case 'align_vertical_top':
-        this.selectElements.forEach((item) => item.y(0));
+        this.selectElements.forEach((item) => {
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().y + this.svgArea.rbox().y});
+        });
         break;
       case 'align_vertical_bottom':
         this.selectElements.forEach((item) => {
-          if (item.type === 'text') {
-            item.y(this.svgArea.height() - 1.11 * item.attr('size'));
-          } else {
-            item.y(this.svgArea.height() - item.height());
-          }
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().y2 + this.svgArea.rbox().y2});
         });
         break;
       case 'align_horizontal_center':
-        this.selectElements.forEach((item) => item.cx(this.svgArea.width() / 2));
+
+        this.selectElements.forEach((item) => {
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().cx + this.svgArea.rbox().cx});
+        });
         break;
       case 'align_vertical_center':
-        this.selectElements.forEach((item) => item.cy(this.svgArea.height() / 2));
+        this.selectElements.forEach((item) => {
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().cy + this.svgArea.rbox().cy});
+        });
         break;
     }
     this.saveHistory();
