@@ -48,15 +48,15 @@ export class SvgAreaController {
 
   onSvgAreaMouseUp(e) {
     e.preventDefault();
-
+    if (this.model.type === 'fill' || this.model.type === 'stroke') return;
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved && !this.model.isSelectFrame && !this.model.isPath) {
       this.model.saveHistory();
     }
     this.model.wasMoved = false;
     this.model.isSelectFrame = false;
-    //this.appView.removeVisibilityPanel(this.model.selectElements);
-    //this.appView.updateFunctionalArea(this.model.selectElements);
+    this.appView.removeVisibilityPanel(this.model.selectElements);
+    this.appView.updateFunctionalArea(this.model.selectElements);
     if (this.model.type !== 'path') {
       this.model.svgArea.mousemove(null);
     } else if (this.model.isEndPath) {
