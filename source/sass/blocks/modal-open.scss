@@ -1,0 +1,19 @@
+.modal--open {
+  display: flex;
+  width: 600px;
+  height: 350px;
+  background-color: aqua;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  padding: 10px;
+  flex-wrap: wrap;
+
+  &__btn {
+    height: 50px;
+    margin: 0 10px;
+    padding: 10px;
+  }
+}

@@ -6,6 +6,7 @@ import {ToolsLeftController} from './ToolsLeftController';
 import {ContextMenuController} from './ContextMenuController';
 import {HotKeysController} from './HotKeysController';
 import {ColorPickerController} from './ColorPickerController';
+import {SignInModalController} from './SignInModalController';
 
 export class Controller {
   constructor(appView, svgRootElement, viewModel, lastCondition) {
@@ -21,6 +22,7 @@ export class Controller {
     this.contextMenuController = null;
     this.hotKeysController = null;
     this.colorController = null;
+    this.signInModelController = null;
   }
 
   init() {
@@ -33,6 +35,7 @@ export class Controller {
     this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
     this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
     this.colorController = new ColorPickerController(this.appView, this.model); // модуль контроллер ColorPicker
+    this.signInModelController = new SignInModalController(this.appView, this.model); // модуль контроллер входа в систему
 
     this.addAllListeners();
   }
@@ -55,6 +58,7 @@ export class Controller {
     this.contextMenuController.addAllListeners();
     this.hotKeysController.addAllListeners();
     this.colorController.addAllListeners();
+    this.signInModelController.addAllListeners();
   }
 
   removeAllListeners() {
@@ -69,6 +73,7 @@ export class Controller {
     this.contextMenuController.removeAllListeners();
     this.hotKeysController.removeAllListeners();
     this.colorController.removeAllListeners();
-    this.model.removeSelect()
+    this.model.removeSelect();
+
   }
 }

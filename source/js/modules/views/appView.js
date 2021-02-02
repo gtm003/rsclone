@@ -1,12 +1,12 @@
 import {createElement} from '../../utils/createELement';
 import {ColorPicker} from './ColorPicker';
-import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 import {MainMenu} from './MainMenu';
 import {NewImageModal} from './NewImageModal';
-import { SettingsModal } from './SettingsModal';
-import { SvgCodeModal } from './SvgCodeModal';
-import { SaveModal } from './SaveModal';
-import { MainViewModel } from '../models/MainViewModel';
+import {SettingsModal} from './SettingsModal';
+import {SvgCodeModal} from './SvgCodeModal';
+import {SaveModal} from './SaveModal';
+import {MainViewModel} from '../models/MainViewModel';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -40,6 +40,7 @@ export class AppView {
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
     this.tabsDataAttribute = 'tab';
+    this.signInButtonsDataAttribute = 'register';
 
     this.menuContainer = null;
     this.newImageModal = null;
@@ -64,6 +65,8 @@ export class AppView {
     this.pencilContainerPanel = null;
     this.alignContainerPanel = null;
     this.selectProperty = null;
+
+    this.signInModal = null;
   }
 
   init() {
@@ -435,6 +438,9 @@ export class AppView {
     this.contentElement.appendChild(this.contentContainer);
 
     this.toolsRightContainer = createElement('div', ['tools-right']);
+    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'}, 'Sign In');
+    button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
+    this.toolsRightContainer.append(button);
     this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
   }
 
