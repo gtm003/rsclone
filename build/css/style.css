@@ -886,10 +886,14 @@ button,
   height: calc(100vh - 176px);
   background-color: #ADB5BD; }
   .tools-right button {
-    width: 59px;
-    height: 44px;
-    border-radius: 5px;
-    margin: 1px; }
+    background: transparent;
+    border: 0;
+    font-family: "Roboto", "Arial", sans-serif;
+    color: #16323b;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 24px;
+    padding: 5px; }
   .tools-right button:hover {
     cursor: pointer;
     background: #dcc8b4; }
@@ -1298,22 +1302,59 @@ button,
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   width: 600px;
   height: 350px;
-  background-color: aqua;
   position: absolute;
+  background-color: #16323B;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   z-index: 5;
   padding: 10px;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap; }
-  .modal--open__btn {
-    height: 50px;
-    margin: 0 10px;
-    padding: 10px; }
+  border-radius: 5px; }
+  .modal--open__content {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap; }
+    .modal--open__content__btn {
+      height: 50px;
+      margin: 0 10px;
+      padding: 10px;
+      margin-bottom: 5px;
+      color: #E9ECEF;
+      -webkit-filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+              filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      background: rgba(206, 212, 218, 0.2);
+      outline: none;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      cursor: pointer; }
+    .modal--open__content__cancel {
+      width: 100px;
+      padding: 10px;
+      margin: 0 auto;
+      color: #E9ECEF;
+      -webkit-filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+              filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      background: rgba(206, 212, 218, 0.2);
+      outline: none;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      cursor: pointer; }
+    .modal--open__content__btn:hover, .modal--open__content__cancel:hover {
+      color: #F8F9FA; }
 
 /* @media (hover: hover), screen and (min-width: 0\0) {
   &:hover,
