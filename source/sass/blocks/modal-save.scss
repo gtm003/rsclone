@@ -1,22 +1,92 @@
 .modal-save {
   width: 300px;
-  height: 200px;
+  height: 180px;
 
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  background-color: coral;
+  background-color: rgba($color-blue, 0.95);
+  box-shadow: 0px 4px 4px rgba($color-default-black, 0.25);
+  border-radius: 5px;
   position: fixed;
   top: 50%;
   left: 50%;
   z-index: 3;
   transform: translate(-50%, -50%);
 
-  &__save-btn {
-    margin: 20px 0;
+  font-family: $font-family--roboto;
+  font-size: 18px;
+  line-height: 21px;
+  font-weight: 300;
+  text-align: center;
+
+  &__file-name {
+    padding: 5px;
+    border: 0;
+    color: $color-light-xxl-gray;
+
+    background: rgba($color-light-gray, 0.5);
+    border-radius: 5px;
+
+    &:focus {
+      transform: scale(1.03);
+      box-shadow: 0px 2px 4px rgba($color-default-black, 0.25);
+      background-color: $color-dark-gray;
+    }
   }
+
+  &__title,
+  &__clue {
+    margin: 5px;
+  }
+
+  &__title {
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  &__clue {
+    font-size: 14px;
+    color: $color-orange;
+  }
+
+
+    &__btns {
+      display: flex;
+
+
+      button {
+        margin: 20px;
+        border: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px 10px;
+
+        background: rgba($color-light-gray, 0.2);
+        border-radius: 5px;
+
+        font-weight: 300;
+        color:  $color-light-xxl-gray;
+
+        cursor: pointer;
+
+        &:hover {
+          background: rgba($color-light-gray, 0.5);
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+    }
+
+  // &__save-btn {
+  //   margin: 20px 0;
+  // }
 
   &--server,
   &--show {

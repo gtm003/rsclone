@@ -562,6 +562,7 @@ export class SvgAreaModel {
       this.elem = this.svgArea.last();
       if (this.target.nodeName !== 'svg') {
         this.type = 'select';
+        this.changeActiveButton(this.type);
       }
     } else {
       if (this.elem !== null) {
@@ -800,14 +801,26 @@ export class SvgAreaModel {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModal.innerHTML = '';
+    const textArea = this.appView.svgCodeModal.querySelector('textarea');
+
+    textArea.innerHTML = '';
     this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModal.textContent = this.rootElement.innerHTML;
+    textArea.textContent = this.rootElement.innerHTML;
+  }
+
+  closeModalSvgCode() {
+    this.appView.svgCodeModal.classList.remove('modal-svg-code--show');
   }
 
   openModalSettings() {
     this.appView.settingsModal.classList.add('modal-settings--show');
+    const svgWidthInput = this.appView.settingsModal.querySelector('[data-modal-settings="width"]');
+    const svgHeightInput = this.appView.settingsModal.querySelector('[data-modal-settings="height"]');
+
+    svgWidthInput.focus();
+    svgWidthInput.value = this.svgArea.attr().width;
+    svgHeightInput.value = this.svgArea.attr().height;
   }
 
   closeModalSettings() {
@@ -828,6 +841,7 @@ export class SvgAreaModel {
     } else {
       this.appView.saveModal.classList.add('modal-save--show');
     }
+    this.appView.inputFileName.focus();
   }
 
   closeModalSave() {
@@ -896,6 +910,13 @@ export class SvgAreaModel {
 
       reader.readAsText(file);
     }
+  }
+
+  changeActiveButton(buttonId) {
+    const activeButton = this.appView.toolsLeftContainer.querySelector('.active');
+    if (activeButton) activeButton.classList.remove('active');
+
+    this.appView.toolsLeftContainer.querySelector(`#${buttonId}`).classList.add('active');
   }
 
   // часть по functionalArea 11alexey11

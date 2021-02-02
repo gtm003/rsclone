@@ -8,6 +8,7 @@ export class MainMenuController {
     this.onImportSvgChange = this.onImportSvgChange.bind(this);
     this.onSaveModalClick = this.onSaveModalClick.bind(this);
     this.onSettingsModalClick = this.onSettingsModalClick.bind(this);
+    this.onSvgCodeModalClick = this.onSvgCodeModalClick.bind(this);
   }
 
   addAllListeners() {
@@ -16,6 +17,7 @@ export class MainMenuController {
     this.appView.newImageModal.addEventListener('click', this.onNewImageModalClick);
     this.appView.saveModal.addEventListener('click', this.onSaveModalClick);
     this.appView.settingsModal.addEventListener('click', this.onSettingsModalClick);
+    this.appView.svgCodeModal.addEventListener('click', this.onSvgCodeModalClick);
   }
 
   removeAllListeners() {
@@ -24,11 +26,11 @@ export class MainMenuController {
     this.appView.newImageModal.removeEventListener('click', this.onNewImageModalClick);
     this.appView.saveModal.removeEventListener('click', this.onSaveModalClick);
     this.appView.settingsModal.removeEventListener('click', this.onSettingsModalClick);
+    this.appView.svgCodeModal.removeEventListener('click', this.onSvgCodeModalClick);
   }
 
   onMenuButtonsClick({target}) {
     this.appView.deleteVisibilityContextMenu();
-
     const buttonDataAttribute = target.dataset[`${this.appView.menuButtonsDataAttribute}`];
 
     if (buttonDataAttribute === 'Create') {
@@ -41,15 +43,23 @@ export class MainMenuController {
       this.model.openModalSettings();
     } else if (buttonDataAttribute === 'Get the code') {
       this.model.openModalSvgCode();
-      console.log(JSON.stringify(this.model.getLastCondition()));
-      console.log(this.model.getLastCondition());
-    } else if (buttonDataAttribute === 'Undo') {
+      // console.log(JSON.stringify(this.model.getLastCondition()));
+      // console.log(this.model.getLastCondition());
+    }
+
+    const button = target.closest('[data-menu]');
+    if (!button) return;
+    const buttonId = button.dataset[`${this.appView.menuButtonsDataAttribute}`];
+
+    if (buttonId === 'Undo') {
       this.model.unDo();
       this.appView.removeVisibilityPanel(this.model.selectElements);
-    } else if (buttonDataAttribute === 'Redo') {
+    } else if (buttonId === 'Redo') {
       this.model.reDo();
       this.appView.removeVisibilityPanel(this.model.selectElements);
     }
+
+    //порефакторить
   }
 
   onImportSvgChange({target}) {
@@ -77,7 +87,7 @@ export class MainMenuController {
       } else {
         this.model.saveFile(this.appView.inputFileName.value, 'client');
       }
-    } else if (buttonDataAttribute === 'close') {
+    } else if (buttonDataAttribute === 'cancel') {
       this.model.closeModalSave();
     }
   }
@@ -88,8 +98,13 @@ export class MainMenuController {
     if (buttonDataAttribute === 'save') {
       this.model.changeProperties();
       this.model.closeModalSettings();
-    } else if (buttonDataAttribute === 'close') {
+    } else if (buttonDataAttribute === 'cancel') {
       this.model.closeModalSettings();
     }
+  }
+
+  onSvgCodeModalClick({target}) {
+    const buttonDataId = target.dataset[`${this.appView.svgCodeDataAttribute}`];
+    if (buttonDataId === 'cancel') this.model.closeModalSvgCode();
   }
 }

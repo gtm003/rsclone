@@ -40,6 +40,7 @@ export class AppView {
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
     this.tabsDataAttribute = 'tab';
+    this.svgCodeDataAttribute = 'svgCode';
     this.signInButtonsDataAttribute = 'register';
 
     this.menuContainer = null;
@@ -73,7 +74,7 @@ export class AppView {
     this.menuContainer = new MainMenu(this.menuButtonsDataAttribute).createMenuContainer();
     this.newImageModal = new NewImageModal(this.newImageDataAttribute).createNewImageModal();
     this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
-    this.svgCodeModal = new SvgCodeModal().createSvgCodeModal();
+    this.svgCodeModal = new SvgCodeModal(this.svgCodeDataAttribute).createSvgCodeModal();
     this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
     this.saveModal = this.saveModalInstance.createSaveModal();
     this.inputFileName = this.saveModalInstance.createInputFileName();
@@ -371,9 +372,10 @@ export class AppView {
 
   createToolsBottom() {
     const toolsBottomContainer = createElement('div', ['tools-bottom']);
-    const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'}, '+');
+    const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'});
 
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
+    buttonNewTab.innerHTML = `<svg width="20" height="20"><use xlink:href="#icon-new"></use></svg>`;
     toolsBottomContainer.append(buttonNewTab);
 
     return toolsBottomContainer;
@@ -383,9 +385,11 @@ export class AppView {
     const tabControlsCount = this.tabControls.length;
     const tabControlWrapper = createElement('div', ['tools-bottom__control-wrap']);
     const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabControlsCount}`);
-    const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
+    const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'});
+    closeButton.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-close"></use></svg>`;
 
     tabControl.dataset[`${this.tabsDataAttribute}`] = tabControlsCount;
+    closeButton.dataset[`${this.tabsDataAttribute}`] = 'close';
     tabControlWrapper.append(tabControl, closeButton);
 
     this.tabControls = [...this.tabControls, tabControl];
@@ -400,10 +404,16 @@ export class AppView {
       toolsLeftContainer.append(tooltip);
 
       const btn = createElement('button', false, {id: `${item}`});
-      btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
+      if (item === 'select') btn.classList.add('active');
       btn.append(tooltip);
 
       toolsLeftContainer.append(btn);
+
+      if (item === 'fill' || item === 'stroke') {
+        btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-color"></use></svg>`;
+        return;
+      }
+      btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
     });
 
     return toolsLeftContainer;
