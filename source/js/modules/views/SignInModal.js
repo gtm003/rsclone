@@ -77,7 +77,7 @@ export class SignInModal {
     this.containerModalOpenFiles = createElement('div', ['modal--open']);
     const contentButtons = createElement('div', ['modal--open__content']);
     for (let i = 0; i < arrayFiles.length; i += 1) {
-      const btn = createElement('input', ['modal--open__content__btn'], {'type': 'button', 'value': `${arrayFiles[i]}.svg`});
+      const btn = createElement('input', ['modal--open__content__btn'], {'type': 'button', 'value': `${arrayFiles[i]}`});
       btn.dataset[this.appView.signInButtonsDataAttribute] = 'File';
       contentButtons.append(btn);
     }

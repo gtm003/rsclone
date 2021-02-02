@@ -871,16 +871,22 @@ export class SvgAreaModel {
   downloadServer(data, filename, type) {
     let xhr = new XMLHttpRequest();
     console.log(this.idClient);
-    xhr.open('PUT', `https://rs-demo-back.herokuapp.com/auth/login/${this.idClient}`);
+    xhr.open('PUT', 'https://rs-demo-back.herokuapp.com/auth/save');
     xhr.responseType = 'json';
     xhr.setRequestHeader('Content-Type', 'application/json');
+    const id = this.idClient;
+    const filenames = filename;
+    const projects = this.getLastCondition();
     const json = {
-      'id': this.idClient,
-      'filenames': filename,
-      'projects': this.getLastCondition(),
+      id,
+      filenames,
+      projects
     };
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
+    xhr.onload = () => {
+      console.log(xhr.response);
+    }
   }
 
   uploadSVG(input) {

@@ -122,7 +122,7 @@ export class SignInModalController {
   onContainerModalOpenFilesClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'File') {
       const index = this.filenames.indexOf(target.value);
-      // this.projects[index];
+      console.log(this.projects[index]);
       // вот здесь делать создание нового холста по клику, мб придется перефакторить код
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.signInModalObject.containerModalOpenFiles.removeEventListener('click', this.onContainerModalOpenFilesClick);
