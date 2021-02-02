@@ -21,6 +21,7 @@ export class ToolsLeftController {
       this.model.removeSelect();
       const toolButtonId = target.closest('button').id;
       this.model.type = toolButtonId;
+      this.model.changeActiveButton(toolButtonId);
       // this.model.svgArea.mousedown(null);
       // this.model.svgArea.mousedown(this.svgAreaController.onSvgAreaMouseDown);
       // this.svgAreaController.removeAllListeners();

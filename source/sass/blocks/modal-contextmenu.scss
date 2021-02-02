@@ -5,17 +5,48 @@
   z-index: 3;
   margin: 5px;
 
+  background-color: rgba($color-blue, 0.95);
+  // opacity: 0.95;
+  box-shadow: 0px 4px 4px rgba($color-default-black, 0.25);
+  border-radius: 5px;
+  font-family: $font-family--roboto;
+  font-size: 18px;
+  line-height: 21px;
+  font-weight: 300;
+
   &__btn-delete,
   &__btn-copy,
   &__btn-paste,
   &__btn-bring-to-front,
   &__btn-send-to-back {
+    width: 200px;
+    height: 36px;
+    color: $color-light-xxl-gray;
+    background-color: transparent;
     border: none;
+    border-bottom: 1px solid $color-dark-gray;
     padding: 10px;
     outline: none;
-    box-shadow: 1px 1px 5px -1px rgba(0,0,0,1) inset;
-    background-color: #fff;
     cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background-color: $color-dark-blue;
+    }
+
+    &:disabled {
+      color: rgba($color-light-xxl-gray, 0.15)
+    }
+  }
+
+  &__btn-send-to-back {
+    border: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+  &__btn-delete {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
   }
 }
 

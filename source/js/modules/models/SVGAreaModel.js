@@ -96,6 +96,8 @@ export class SvgAreaModel {
   }
 
   selectDown(e) {
+    //console.log(this.getAttr(e.target.instance));
+    //console.log(e.target.instance.attr());
     this.mouseDownElemSVG = e.target.instance;
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
@@ -154,6 +156,7 @@ export class SvgAreaModel {
     elem.addClass('selectedElem');
     this.setSelectElements.add(elem);
     this.selectElements = [...this.setSelectElements];
+    //console.log(this.getAttr(elem));
   }
 
   rectanglesOverlap(r1, r2) {
@@ -202,6 +205,7 @@ export class SvgAreaModel {
 
   createRect(e) {
     this.elem = this.svgArea.rect(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.attr('stroke-width', 2);
     this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
@@ -329,13 +333,13 @@ export class SvgAreaModel {
 
   createPencilTrace(e) {
     this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.attr('stroke-width', 2);
   }
 
   pathDown(e) {
     this.isPath = true;
     if (this.pathNodeCount) {
       this.isStartPath = false;
-      let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
       let xFirst = this.elem.transform('x');
       let yFirst = this.elem.transform('y');
       if (this.xLast === e.offsetX && this.yLast === e.offsetY) {
@@ -351,6 +355,7 @@ export class SvgAreaModel {
     } else {
       this.elem = this.svgArea.path().M(0, 0).stroke(this.strokeColor).fill(this.fillColor);
       this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
+      this.elem.attr('stroke-width', 2);
       this.isStartPath = true;
       this.isEndPath = false;
     }
@@ -485,6 +490,7 @@ export class SvgAreaModel {
 
   createEllipse(e) {
     this.elem = this.svgArea.ellipse(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.attr('stroke-width', 2);
     this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
@@ -505,6 +511,7 @@ export class SvgAreaModel {
 
   createLine(e) {
     this.elem = this.svgArea.line(0, 0, 0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.attr('stroke-width', 3);
     this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
@@ -562,6 +569,7 @@ export class SvgAreaModel {
       this.elem = this.svgArea.last();
       if (this.target.nodeName !== 'svg') {
         this.type = 'select';
+        this.changeActiveButton(this.type);
       }
     } else {
       if (this.elem !== null) {
@@ -588,6 +596,43 @@ export class SvgAreaModel {
     }
   }
 
+  //                  GetAttribute
+  getAttr(elem) {
+    let svgAreaX = this.svgArea.rbox().x;
+    let svgAreaY = this.svgArea.rbox().y;
+    let matrix = new SVG.Matrix(elem);
+    let pointStart = new SVG.Point(0, 0);
+    let pointEnd = new SVG.Point(0, 0);
+    let size = null;
+    if (elem.type === 'line') {
+      pointEnd = new SVG.Point(elem.attr('x2'), elem.attr('y2'));
+    }
+    if (elem.type === 'text') {
+      size = elem.font('size');
+    }
+    let attrOBJ = {
+      type : elem.type,
+      id: elem.attr('id'),
+      class: elem.attr('class'),
+      angle : elem.transform('rotation'),
+      stroke : elem.attr('stroke-width'),
+      x: (elem.rbox().x - svgAreaX),
+      y: (elem.rbox().y - svgAreaY),
+      width: (elem.width()),
+      height: (elem.height()),
+      cx: (elem.rbox().cx - svgAreaX),
+      cy: (elem.rbox().cy - svgAreaY),
+      rx: (elem.width()) / 2,
+      ry: (elem.height()) / 2,
+      x1 : pointStart.transform(matrix).x,
+      y1 : pointStart.transform(matrix).y,
+      x2 : pointEnd.transform(matrix).x,
+      y2 : pointEnd.transform(matrix).y,
+      size : size,
+    }
+    return attrOBJ;
+  }
+
   removeSelect() {
     this.svgArea.each(function () {
       if (this.hasClass('selectedElem')) {
@@ -606,7 +651,7 @@ export class SvgAreaModel {
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
         if (this.selectElements.length === 1) {
-          this.appView.updateFunctionalArea(this.selectElements);
+          this.appView.updateFunctionalArea(this.model.selectElements, this.model.getAttr(this.model.selectElements[0]));
         }
       });
     }
@@ -800,14 +845,26 @@ export class SvgAreaModel {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModal.innerHTML = '';
+    const textArea = this.appView.svgCodeModal.querySelector('textarea');
+
+    textArea.innerHTML = '';
     this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModal.textContent = this.rootElement.innerHTML;
+    textArea.textContent = this.rootElement.innerHTML;
+  }
+
+  closeModalSvgCode() {
+    this.appView.svgCodeModal.classList.remove('modal-svg-code--show');
   }
 
   openModalSettings() {
     this.appView.settingsModal.classList.add('modal-settings--show');
+    const svgWidthInput = this.appView.settingsModal.querySelector('[data-modal-settings="width"]');
+    const svgHeightInput = this.appView.settingsModal.querySelector('[data-modal-settings="height"]');
+
+    svgWidthInput.focus();
+    svgWidthInput.value = this.svgArea.attr().width;
+    svgHeightInput.value = this.svgArea.attr().height;
   }
 
   closeModalSettings() {
@@ -828,6 +885,7 @@ export class SvgAreaModel {
     } else {
       this.appView.saveModal.classList.add('modal-save--show');
     }
+    this.appView.inputFileName.focus();
   }
 
   closeModalSave() {
@@ -871,16 +929,22 @@ export class SvgAreaModel {
   downloadServer(data, filename, type) {
     let xhr = new XMLHttpRequest();
     console.log(this.idClient);
-    xhr.open('PUT', `https://rs-demo-back.herokuapp.com/auth/login/${this.idClient}`);
+    xhr.open('PUT', 'https://rs-demo-back.herokuapp.com/auth/save');
     xhr.responseType = 'json';
     xhr.setRequestHeader('Content-Type', 'application/json');
+    const id = this.idClient;
+    const filenames = filename;
+    const projects = this.getLastCondition();
     const json = {
-      'id': this.idClient,
-      'filenames': filename,
-      'projects': this.getLastCondition(),
+      id,
+      filenames,
+      projects
     };
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
+    xhr.onload = () => {
+      console.log(xhr.response);
+    }
   }
 
   uploadSVG(input) {
@@ -896,6 +960,13 @@ export class SvgAreaModel {
 
       reader.readAsText(file);
     }
+  }
+
+  changeActiveButton(buttonId) {
+    const activeButton = this.appView.toolsLeftContainer.querySelector('.active');
+    if (activeButton) activeButton.classList.remove('active');
+
+    this.appView.toolsLeftContainer.querySelector(`#${buttonId}`).classList.add('active');
   }
 
   // часть по functionalArea 11alexey11
@@ -919,6 +990,7 @@ export class SvgAreaModel {
         break;
       default:
         if (target.value.length !== 0) {
+          console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.value);
         } else {
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.getAttribute('placeholder'));
