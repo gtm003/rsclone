@@ -151,16 +151,16 @@ export class AppView {
     }
   }
 
-  updateFunctionalArea(selectElements) {
-    if (selectElements.length === 1) {
+  updateFunctionalArea(attribute) {
+    //if (selectElements.length === 1) {
       // const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-      const attribute = selectElements[0].attr();
-      switch (selectElements[0].type) {
+      //const attribute = selectElements[0].attr();
+      switch (attribute.type) {
         case 'rect':
           const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelRect[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelRect[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', 1);
+          arrayLabelRect[2].childNodes[1].setAttribute('placeholder', attribute.angle);
+          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
           arrayLabelRect[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelRect[5].childNodes[1].setAttribute('placeholder', attribute.y);
           arrayLabelRect[6].childNodes[1].setAttribute('placeholder', attribute.width);
@@ -169,28 +169,28 @@ export class AppView {
         case 'line':
           const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelLine[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelLine[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', 1);
+          arrayLabelLine[2].childNodes[1].setAttribute('placeholder', attribute.angle);
+          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
           arrayLabelLine[4].childNodes[1].setAttribute('placeholder', attribute.x1);
           arrayLabelLine[5].childNodes[1].setAttribute('placeholder', attribute.y1);
           arrayLabelLine[6].childNodes[1].setAttribute('placeholder', attribute.x2);
-          arrayLabelLine[7].childNodes[1].setAttribute('placeholder', attribute.y1);
+          arrayLabelLine[7].childNodes[1].setAttribute('placeholder', attribute.y2);
           break;
         case 'text':
           const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelText[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelText[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelText[3].childNodes[1].setAttribute('placeholder', 1);
+          arrayLabelText[2].childNodes[1].setAttribute('placeholder', attribute.angle);
+          arrayLabelText[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
           arrayLabelText[4].childNodes[1].setAttribute('placeholder', attribute.x);
           arrayLabelText[5].childNodes[1].setAttribute('placeholder', attribute.y);
-          arrayLabelText[6].childNodes[1].setAttribute('placeholder', attribute['font-size']);
+          arrayLabelText[6].childNodes[1].setAttribute('placeholder', attribute.size);
           // здесь долджно быть начертание
           break;
         case 'ellipse':
           const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelEllipse[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', 1);
+          arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', attribute.angle);
+          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
           arrayLabelEllipse[4].childNodes[1].setAttribute('placeholder', attribute.cx);
           arrayLabelEllipse[5].childNodes[1].setAttribute('placeholder', attribute.cy);
           arrayLabelEllipse[6].childNodes[1].setAttribute('placeholder', attribute.rx);
@@ -199,10 +199,10 @@ export class AppView {
         case 'path':
           const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
           arrayLabelPencil[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayLabelPencil[2].childNodes[1].setAttribute('placeholder', this.getCurrentRotation(selectElements[0]));
-          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', 1);
+          arrayLabelPencil[2].childNodes[1].setAttribute('placeholder', attribute.angle);
+          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
           break;
-      }
+      //}
     }
   }
 
