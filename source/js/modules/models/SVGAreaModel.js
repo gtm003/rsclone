@@ -952,6 +952,8 @@ export class SvgAreaModel {
   changePropertiesSVGElement(target) {
     this.appView.deleteVisibilityContextMenu();
     const objSVG = this.selectElements[0];
+    let svgAreaX = this.svgArea.rbox().x;
+    let svgAreaY = this.svgArea.rbox().y;
     switch (target.dataset[this.appView.propertiesDataAttribute]) {
       case 'angle':
         if (target.value.length !== 0) {
@@ -960,13 +962,24 @@ export class SvgAreaModel {
           objSVG.rotate(0);
         }
         break;
+        case 'x':
+          let xlast = objSVG.rbox().x;
+          objSVG.transform({x : target.value})
+          break;
       case 'size':
         if (target.value.length !== 0) {
-          objSVG.attr('font-size', target.value);
+          objSVG.attr('font-size', target.value - objSVG.rbox().x + svgAreaX);
         } else {
           objSVG.attr('font-size', target.getAttribute('placeholder'));
         }
         break;
+        case 'stroke':
+          if (target.value.length !== 0) {
+            objSVG.attr('stroke-width', target.value);
+          } else {
+            objSVG.attr('stroke', target.getAttribute('placeholder'));
+          }
+          break;
       default:
         if (target.value.length !== 0) {
           console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
