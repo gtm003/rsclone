@@ -74,11 +74,16 @@ export class SignInModal {
   }
 
   createModalOpen(arrayFiles) {
-    const containerModalOpenFiles = createElement('div', ['modal--open']);
+    this.containerModalOpenFiles = createElement('div', ['modal--open']);
+    const contentButtons = createElement('div', ['modal--open__content']);
     for (let i = 0; i < arrayFiles.length; i += 1) {
-      const btn = createElement('input', ['modal--open__btn'], {'type': 'button', 'value': `${arrayFiles[i]}.svg`});
-      containerModalOpenFiles.append(btn);
+      const btn = createElement('input', ['modal--open__content__btn'], {'type': 'button', 'value': `${arrayFiles[i]}.svg`});
+      btn.dataset[this.appView.signInButtonsDataAttribute] = 'File';
+      contentButtons.append(btn);
     }
-    this.rootElement.append(containerModalOpenFiles);
+    const btnCancel = createElement('input', ['modal--open__content__cancel'], {'type': 'button', 'value': 'Cancel'});
+    btnCancel.dataset[this.appView.signInButtonsDataAttribute] = 'Cancel';
+    this.containerModalOpenFiles.append(contentButtons, btnCancel);
+    this.rootElement.append(this.containerModalOpenFiles);
   }
 }
