@@ -37,6 +37,8 @@ export class SvgAreaModel {
     this.target = null;
     this.x = null;
     this.y = null;
+    this.xLast = null;
+    this.yLast = null;
 
     this.history = [];
     this.historyPosition = 0;
@@ -74,8 +76,6 @@ export class SvgAreaModel {
       text: (e) => this.resizeText(e),
       pencil: (e) => this.drawPencilTrace(e),
       path: (e) => this.pathMove(e),
-      fill : (e) => this.thinkAboutIt(e),
-      stroke : (e) => this.thinkAboutIt(e),
     }
 
     return mouseMoveActions[type](e);
@@ -90,8 +90,6 @@ export class SvgAreaModel {
       text: () => this.finishResizeText(),
       pencil: () => this.finishDrawElem(),
       path: () => this.pathUp(),
-      fill : () => this.thinkAboutIt(),
-      stroke : () => this.thinkAboutIt(),
     }
 
     return mouseUpActions[type]();
@@ -104,7 +102,8 @@ export class SvgAreaModel {
     }
     if (this.mouseDownElemSVG.type === 'svg') {
       this.selectElements.forEach((elem) => this.removeSelectSingleElem(elem));
-      this.selectFrame = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
+      this.selectFrame = this.svgArea.rect(0, 0).stroke('rgba(0, 90, 180, 0.8)').fill('rgba(0, 90, 180, 0.5)');
+      this.selectFrame.transform({x : e.offsetX}).transform({y : e.offsetY});
       this.selectFrame.attr('id', 'select-frame');
       this.isSelectFrame = true;
     } else {
@@ -160,10 +159,10 @@ export class SvgAreaModel {
   rectanglesOverlap(r1, r2) {
     let dimX = 0;
     let dimY = 0;
-    if (r1.x() < r2.x()) dimX = r2.x() + r2.width() - r1.x();
-    else dimX = r1.x() + r1.width() - r2.x();
-    if (r1.y() < r2.y()) dimY = r2.y() + r2.height() - r1.y();
-    else dimY = r1.y() + r1.height() - r2.y();
+    if (r1.transform('x') < r2.transform('x')) dimX = r2.transform('x') + r2.width() - r1.transform('x');
+    else dimX = r1.transform('x') + r1.width() - r2.transform('x');
+    if (r1.transform('y') < r2.transform('y')) dimY = r2.transform('y') + r2.height() - r1.transform('y');
+    else dimY = r1.transform('y') + r1.height() - r2.transform('y');
     return (dimX < (r1.width() + r2.width())) && (dimY < (r1.height() + r2.height()));
   }
 
@@ -175,14 +174,14 @@ export class SvgAreaModel {
   }
 
   moveSingleElem(e, elem) {
-    elem.x(e.offsetX - this.x + elem.xLast);
-    elem.y(e.offsetY - this.y + elem.yLast);
+    elem.transform({x : e.offsetX - this.x + elem.xLast});
+    elem.transform({y : e.offsetY - this.y + elem.yLast});
     //this.appView.updateFunctionalArea(this.selectElements);
   }
 
   rememberCoordCenter(elem) {
-    elem.xLast = elem.x();
-    elem.yLast = elem.y();
+    elem.xLast = elem.transform('x');
+    elem.yLast = elem.transform('y');
   }
 
   init() {
@@ -201,20 +200,9 @@ export class SvgAreaModel {
   //   this.svgArea.size(svgWidth, svgHeight);
   // }
 
-  thinkAboutIt() {
-    //console.log(`${this.type}: mouseEvent: ${this.target}. Whats should happen?`)
-  }
-
   createRect(e) {
-    this.elem = this.svgArea.rect(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-  }
-
-  createEllipse(e) {
-    this.elem = this.svgArea.ellipse(0, 0).move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
-  }
-
-  createLine(e) {
-    this.elem = this.svgArea.line(e.offsetX, e.offsetY, e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.rect(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
   createCursor() {
@@ -245,7 +233,8 @@ export class SvgAreaModel {
 
   createText(e) {
     this.isActiveText = true;
-    this.elem = this.svgArea.text('').move(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.text('').stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
     let tspan = this.elem.tspan('');
     this.elem.build(true);
     this.createCursor();
@@ -259,11 +248,25 @@ export class SvgAreaModel {
     });
   }
 
+  resizeText(e) {
+    if (this.elem !== null && this.text === '') {
+      this.elem.selectize().resize();
+      this.elem.font({
+        family: 'Helvetica',
+        size: Math.abs(e.offsetY - this.y),
+      });
+      this.elem.transform({y : e.offsetY});
+    }
+  }
+
   finishResizeText() {
     if (this.text === '') {
-      let tspan = this.elem.tspan('new text');
+      let tspan = this.elem.tspan('l');
+      tspan.fill('transparent').stroke('transparent');
       tspan.dy(`${1.3 * this.elem.font('size')}`);
-      this.elem.dy(`${-1.3 * this.elem.font('size')}`);
+      let yLast = this.elem.transform('y');
+      this.elem.transform({y : yLast - 1.3 * this.elem.font('size')})
+      //this.elem.dy(`${-1.3 * this.elem.font('size')}`);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -287,7 +290,7 @@ export class SvgAreaModel {
     }
     this.isActiveText = false;
     document.removeEventListener('keydown', this.inputText);
-    this.saveHistory();                                                            // почему-то не сохраняется
+    this.saveHistory();
   }
 
   editText(e) {
@@ -333,32 +336,38 @@ export class SvgAreaModel {
     if (this.pathNodeCount) {
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
-      if (lastCoord[0] === e.offsetX && lastCoord[1] === e.offsetY) {
+      let xFirst = this.elem.transform('x');
+      let yFirst = this.elem.transform('y');
+      if (this.xLast === e.offsetX && this.yLast === e.offsetY) {
         this.isEndPath = true;
       } else {
         this.elem.removeSegment(this.pathNodeCount);
         if (e.shiftKey) {
           this.drawDirectAnglePath(e);
         } else {
-          this.elem.L({x: e.offsetX, y: e.offsetY});
+          this.elem.L({x: e.offsetX - xFirst, y: e.offsetY - yFirst});
         }
       }
     } else {
-      this.elem = this.svgArea.path().M({x: e.offsetX, y: e.offsetY}).stroke(this.strokeColor).fill(this.fillColor);
+      this.elem = this.svgArea.path().M(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+      this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
       this.isStartPath = true;
       this.isEndPath = false;
     }
     this.pathNodeCount += 1;
+    console.log(this.elem.array());
   }
 
   drawDirectAnglePath(e) {
     let lastPoinCoord = this.getPointsCoord(this.elem).pop();
+    let xFirst = this.elem.transform('x');
+    let yFirst = this.elem.transform('y');
     let xLast = lastPoinCoord[0];
     let yLast = lastPoinCoord[1];
-    let xDelta = Math.abs(e.offsetX - xLast);
-    let yDelta = Math.abs(e.offsetY - yLast);
-    let xSign = (e.offsetX - xLast) / Math.abs(e.offsetX - xLast);
-    let ySign = (e.offsetY - yLast) / Math.abs(e.offsetY - yLast);
+    let xDelta = Math.abs(e.offsetX - xLast - xFirst);
+    let yDelta = Math.abs(e.offsetY - yLast - yFirst);
+    let xSign = (e.offsetX - xLast - xFirst) / Math.abs(e.offsetX - xLast - xFirst);
+    let ySign = (e.offsetY - yLast - yFirst) / Math.abs(e.offsetY - yLast - yFirst);
     let xEnd, yEnd;
     if (Math.min(xDelta, yDelta) / Math.max(xDelta, yDelta) > 0.5) {
       xEnd = xLast + xSign * Math.max(xDelta, yDelta);
@@ -366,20 +375,22 @@ export class SvgAreaModel {
       this.elem.L({x: xEnd, y: yEnd})
     } else {
       if (xDelta < yDelta) {
-        this.elem.V(e.offsetY)
+        this.elem.V(e.offsetY - yFirst)
       } else {
-        this.elem.H(e.offsetX)
+        this.elem.H(e.offsetX - xFirst)
       }
     }
   }
 
   pathMove(e) {
+    let xFirst = this.elem.transform('x');
+    let yFirst = this.elem.transform('y');
     if (e.shiftKey) {
       this.elem.removeSegment(this.pathNodeCount);
       this.drawDirectAnglePath(e);
     } else {
       this.elem.removeSegment(this.pathNodeCount);
-      this.elem.L({x: e.offsetX, y: e.offsetY});
+      this.elem.L({x: e.offsetX - xFirst, y: e.offsetY - yFirst});
     }
   }
 
@@ -388,7 +399,14 @@ export class SvgAreaModel {
       this.isPath = false;
       this.saveHistory();
       this.pathNodeCount = 0;
+      //console.log(this.elem.array());
+      //console.log(this.getPathArray(this.elem));
+      //this.elem.plot(this.getPathArray(this.elem));
+      //console.log(this.elem.array());
+      console.log(this.getPointsCoord(this.elem));
     }
+    this.xLast = this.x;
+    this.yLast = this.y;
   }
 
   getPointsCoord(elem) {
@@ -413,26 +431,24 @@ export class SvgAreaModel {
     return allPointsCoord;
   }
 
+  getPathArray(elem) {
+    let pathArray = [];
+    let pathNodeCount = elem.getSegmentCount();
+    for (let i = 0; i < pathNodeCount; i += 1) {
+      let nodeArray = [elem.getSegment(i).type];
+      nodeArray = nodeArray.concat(elem.getSegment(i).coords);
+      pathArray.push(nodeArray);
+    }
+    return pathArray;
+  }
+
   changeFillColor(e) {
-    const _that = this;
-    this.svgArea.each(function () {
-      if (this.inside(e.offsetX, e.offsetY)) {
-        _that.elem = this;
-      }
-    });
-    this.elem.fill(this.fillColor);
+    e.target.instance.fill(this.fillColor);
     this.saveHistory();
   }
 
   changeStrokeColor(e) {
-    const _that = this;
-    this.selectElements.forEach((elem) => elem.stroke(this.strokeColor));
-    this.svgArea.each(function () {
-      if (this.inside(e.offsetX, e.offsetY)) {
-        _that.elem = this;
-      }
-    });
-    this.elem.stroke(this.strokeColor);
+    e.target.instance.stroke(this.strokeColor);
     this.saveHistory();
   }
 
@@ -454,19 +470,22 @@ export class SvgAreaModel {
       elem.attr({
         width: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
         height: Math.max(Math.abs(e.offsetX - this.x), Math.abs(e.offsetY - this.y)),
-        x: xNew,
-        y: yNew,
       });
+      elem.transform({x : xNew}).transform({y : yNew});
     } else {
       xNew = Math.min(e.offsetX, this.x);
       yNew = Math.min(e.offsetY, this.y);
       elem.attr({
         width: Math.abs(e.offsetX - this.x),
         height: Math.abs(e.offsetY - this.y),
-        x: xNew,
-        y: yNew,
       });
+      elem.transform({x : xNew}).transform({y : yNew});
     }
+  }
+
+  createEllipse(e) {
+    this.elem = this.svgArea.ellipse(0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
   drawEllipse(e) {
@@ -475,12 +494,18 @@ export class SvgAreaModel {
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
+      this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
     } else {
       this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),
         ry: Math.abs(e.offsetY - this.y),
       });
     }
+  }
+
+  createLine(e) {
+    this.elem = this.svgArea.line(0, 0, 0, 0).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
   }
 
   drawLine(e) {
@@ -491,15 +516,15 @@ export class SvgAreaModel {
       let ySign = (e.offsetY - this.y) / Math.abs(e.offsetY - this.y);
       let xEnd, yEnd;
       if (Math.min(xDelta, yDelta) / Math.max(xDelta, yDelta) > 0.5) {
-        xEnd = this.x + xSign * Math.max(xDelta, yDelta);
-        yEnd = this.y + ySign * Math.max(xDelta, yDelta);
+        xEnd = xSign * Math.max(xDelta, yDelta);
+        yEnd = ySign * Math.max(xDelta, yDelta);
       } else {
         if (xDelta < yDelta) {
-          xEnd = this.x;
-          yEnd = e.offsetY
+          xEnd = 0;
+          yEnd = ySign * yDelta;
         } else {
-          xEnd = e.offsetX;
-          yEnd = this.y;
+          xEnd = xSign * xDelta;
+          yEnd = 0;
         }
       }
       this.elem.attr({
@@ -508,19 +533,8 @@ export class SvgAreaModel {
       })
     } else {
       this.elem.attr({
-        x2: e.offsetX,
-        y2: e.offsetY,
-      });
-    }
-  }
-
-  resizeText(e) {
-    if (this.elem !== null && this.text === '') {
-      this.elem.selectize().resize();
-      this.elem.font({
-        family: 'Helvetica',
-        size: Math.abs(e.offsetY - this.y),
-        y: e.offsetY
+        x2: e.offsetX - this.x,
+        y2: e.offsetY - this.y,
       });
     }
   }
@@ -928,34 +942,41 @@ export class SvgAreaModel {
     this.appView.deleteVisibilityContextMenu();
     switch (dataAttribute) {
       case 'align_horizontal_left':
-        this.selectElements.forEach((item) => item.x(0));
+        this.selectElements.forEach((item) => {
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().x + this.svgArea.rbox().x})
+        });
         break;
       case 'align_horizontal_right':
         this.selectElements.forEach((item) => {
-          if (item.type === 'text') {
-            item.x(this.svgArea.width() - item.length());
-          } else {
-            item.x(this.svgArea.width() - item.width());
-          }
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().x2 + this.svgArea.rbox().x2})
         });
         break;
       case 'align_vertical_top':
-        this.selectElements.forEach((item) => item.y(0));
+        this.selectElements.forEach((item) => {
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().y + this.svgArea.rbox().y});
+        });
         break;
       case 'align_vertical_bottom':
         this.selectElements.forEach((item) => {
-          if (item.type === 'text') {
-            item.y(this.svgArea.height() - 1.11 * item.attr('size'));
-          } else {
-            item.y(this.svgArea.height() - item.height());
-          }
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().y2 + this.svgArea.rbox().y2});
         });
         break;
       case 'align_horizontal_center':
-        this.selectElements.forEach((item) => item.cx(this.svgArea.width() / 2));
+
+        this.selectElements.forEach((item) => {
+          let xLast = item.transform('x');
+          item.transform({x : xLast - item.rbox().cx + this.svgArea.rbox().cx});
+        });
         break;
       case 'align_vertical_center':
-        this.selectElements.forEach((item) => item.cy(this.svgArea.height() / 2));
+        this.selectElements.forEach((item) => {
+          let yLast = item.transform('y');
+          item.transform({y : yLast - item.rbox().cy + this.svgArea.rbox().cy});
+        });
         break;
     }
     this.saveHistory();
