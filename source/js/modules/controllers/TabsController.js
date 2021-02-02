@@ -15,18 +15,21 @@ export class TabsController {
   }
 
   onToolsBottomClick({ target }) {
-    const tabDataId = target.dataset[`${this.appView.tabsDataAttribute}`];
+    const button = target.closest('[data-tab]');
+    const tabDataId = button.dataset[`${this.appView.tabsDataAttribute}`];
 
     if (tabDataId) {
       if (tabDataId === 'new') {
         this.viewModel.createNewTab();
-      } else {
+      } else if (tabDataId !== 'close') {
         this.viewModel.openTab(tabDataId);
       }
     }
 
-    if (target.classList.contains('tools-bottom__tab-close')) {
-      const numberClosedTab = target.previousSibling.dataset[`${this.appView.tabsDataAttribute}`];
+    const closeBtn = target.closest('.tools-bottom__tab-close');
+
+    if (closeBtn) {
+      const numberClosedTab = closeBtn.previousSibling.dataset[`${this.appView.tabsDataAttribute}`];
       this.viewModel.closeTab(numberClosedTab);
     }
   }

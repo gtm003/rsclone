@@ -23,19 +23,106 @@
       margin-bottom: 3px;
       position: relative;
 
-      &#fill {
+      &#fill,
+      &#stroke {
         height: 83px;
       }
-    }
 
-    button:hover {
+      &#select,
+      &#rect,
+      &#ellipse,
+      &#line {
+        padding-left: 2px;
+      }
+
+      &.active {
+      // &.active:not(#fill) {
+        background-color: $color-orange;
+      }
+
+      &#fill.active {
+        background-size: 50%;
+      }
+
+      svg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &#fill,
+      &#stroke {
+        position: relative;
+
+        svg {
+          position: absolute;
+          left: 5px;
+          bottom: 5px;
+          fill: $color-default-white;
+        }
+
+        &::before {
+          content: "";
+          width: 40px;
+          height: 41px;
+          background-image: url("../img/sprite/icon-fill.svg");
+          background-repeat: no-repeat;
+          background-size: 30px 30px;
+          background-position: 6px 5px;
+          // background-color: #fff;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+
+        &::after {
+          content: "";
+          width: 40px;
+          height: 2px;
+
+          background-color: $color-dark-blue;
+        }
+
+        &#stroke::before {
+          background-image: url("../img/sprite/icon-stroke.svg");
+        }
+
+        &.active {
+          background-color: $color-light-xl-gray;
+
+          &::before {
+            background-color: $color-orange;
+          }
+        }
+
+        &:hover:not(.active) {
+          background-color: $color-light-xl-gray;
+
+          &::before {
+            background-color: $color-dark-gray;
+          }
+        }
+      }
+
+      &:active {
+        transform: scale(0.97);
+      }
+
+      &:hover:not(.active) {
+        background-color: $color-dark-gray;
+      }
+
+      &:hover {
         cursor: pointer;
-        background: rgb(220, 200, 180);
 
         .tooltip {
           display: flex;
           opacity: 1;
         }
+      }
     }
 
     .tooltip {

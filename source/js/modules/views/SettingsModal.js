@@ -26,10 +26,13 @@ export class SettingsModal {
     const saveButton = createElement('button', ['modal-settings__save-btn'], {type: 'button'}, 'Save');
     saveButton.dataset[`${this.settingsElementsDataAttribute}`] = 'save';
 
-    const closeButton = createElement('button', ['modal-settings__close-btn'], {type: 'button'}, 'Close');
-    closeButton.dataset[`${this.settingsElementsDataAttribute}`] = 'close';
+    const closeButton = createElement('button', ['modal-settings__close-btn'], {type: 'button'}, 'Cancel');
+    closeButton.dataset[`${this.settingsElementsDataAttribute}`] = 'cancel';
 
-    settingsModal.append(modalTitle, widthSvg, heightSvg, saveButton, closeButton);
+    const btnsContainer = createElement('div', ['modal-settings__btns']);
+    btnsContainer.append(saveButton, closeButton);
+
+    settingsModal.append(modalTitle, widthSvg, heightSvg, btnsContainer);
 
     return settingsModal;
   }

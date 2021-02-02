@@ -14,7 +14,7 @@ export class NewImageModal {
     modalText.append(p1, p2);
 
     const buttonsContainer = createElement('div', ['modal-new-image__btns']);
-    const okButton = createElement('button', false, {type: 'button'}, 'Ok');
+    const okButton = createElement('button', false, {type: 'button'}, 'OK');
     okButton.dataset[`${this.newImageDataAttribute}`] = 'ok';
     const cancelButton = createElement('button', false, {type: 'button'}, 'Cancel');
     cancelButton.dataset[`${this.newImageDataAttribute}`] = 'cancel';

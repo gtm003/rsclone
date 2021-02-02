@@ -11,6 +11,22 @@ export class MainMenu {
     menuContainer.classList.add();
 
     MENU_BUTTONS_NAMES_EN.forEach((item) => {
+      if (item === 'Undo') {
+        const button = createElement('button', false, {type: 'button'});
+        button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
+        button.innerHTML = `<svg width="25" height="25"><use xlink:href="#icon-${item.toLowerCase()}"></use></svg>`;
+        menuContainer.appendChild(button);
+        return;
+      }
+
+      if (item === 'Redo') {
+        const button = createElement('button', false, {type: 'button'});
+        button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
+        button.innerHTML = `<svg width="25" height="25"><use xlink:href="#icon-${item.toLowerCase()}"></use></svg>`;
+        menuContainer.appendChild(button);
+        return;
+      }
+
       if (item !== 'Import') {
         const button = createElement('button', false, {type: 'button'}, `${item}`);
         button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;

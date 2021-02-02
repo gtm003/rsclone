@@ -33,6 +33,7 @@ export class MainViewModel {
     this.controllers[this.activeController].removeAllListeners();
     this.controllers[tabId].addAllListeners();
     this.setActiveController(tabId);
+    this.controllers[tabId].model.changeActiveButton(this.controllers[tabId].model.type);
   }
 
   createNewTab(lastCondition) {
