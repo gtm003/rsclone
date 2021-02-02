@@ -1,0 +1,16 @@
+.main {
+  .container {
+    display: grid;
+    grid-template-columns: 46px calc(100vw - 92px) 46px;
+    grid-template-rows: 38px auto 38px;
+    padding: 0;
+    min-width: $viewport--sm - 20px;
+    margin: 0;
+
+    @include viewport--sm {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+  }
+}

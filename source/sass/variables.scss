@@ -1,0 +1,77 @@
+// Colors
+//---------------------------------
+
+// Default
+
+$color-default-black:             #000000;
+$color-default-white:             #ffffff;
+$color-transparent:               rgba(255, 255, 255, 0);
+
+// Base
+
+$color-black:                     #0e0e0e;
+$color-white:                     #f2f2f2;
+$color-blue:                      #2c39f2;
+$color-grey:                      #dbdbdb;
+$color-green:                     #d2d9a0;
+$color-orange:                    #db9974;
+$color-light-blue:                #b0dbda;
+$color-purple:                    #cbb8d9;
+$color-dark-purple:               #c2a4f5;
+$color-pink:                      #ffbac3;
+
+//new color
+
+$color-dark-xl-green:             #183d42;
+$color-dark-green:                #21555c;
+$color-light-green:               #3b97a3;
+$color-gray-green:                #4d7175;
+$color-red:                       #f2583f;
+$color-light:                     #e4ffff;
+$color-dark-red:                  #8f3425;
+$color-dark-xl-red:               #612319;
+$color-yellow:                    #e0c224;
+$color-dark-blue:                 #0b162b;
+
+$color-white-abs:                 #FFFFFF;
+$color-white:                     #F2F2F2;
+$color-dark-xxl-gray:             #343A40;
+$color-dark-xl-gray:              #42565F;
+$color-dark-gray:                 #6C757D;
+$color-gray:                      #ADB5BD;
+$color-light-gray:                #CED4DA;
+$color-light-xl-gray:             #E5E5E5;
+$color-light-xxl-gray:            #E9ECEF;
+$color-dark-blue:                 #16323B;
+$color-blue:                      #1C353E;
+$color-orange:                    #D75F1D;
+
+// Gradient
+
+$black-to-right:                    linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 75%);
+
+// Typography
+//---------------------------------
+
+$font-family--roboto:               "Roboto", "Arial", sans-serif;
+
+// Animation
+//---------------------------------
+
+$default-transition-settings:       0.3s ease;
+$modal-transition-settings:         0.6s cubic-bezier(0.55, 0, 0.1, 1);
+
+// Viewports
+//---------------------------------
+
+$viewport--sm:                      320px;
+$viewport--md:                      768px;
+$viewport--lg:                      1024px;
+$viewport--xl:                      1440px;
+$viewport--xxl:                     1920px;
+
+// Retina
+//---------------------------------
+
+$retina-dpi:                        144dpi;
+$retina-dppx:                       1.5dppx;
