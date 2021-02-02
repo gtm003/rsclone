@@ -87,11 +87,11 @@ export class MainViewModel {
   }
 
   removeTabControl(tabId) {
-    this.appView.tabControls[tabId].remove();
+    this.appView.tabControls[tabId].parentElement.remove();
     this.appView.tabControls.splice(tabId, 1);
-    this.appView.tabControls.forEach((tab, i) => {
-      tab.dataset[`${this.appView.tabsDataAttribute}`] = i;
-      tab.innerHTML = `SVG ${i}<button class="tools-bottom__tab-close" type="button">x</button>`;
+    this.appView.tabControls.forEach((tabControl, i) => {
+      tabControl.dataset[`${this.appView.tabsDataAttribute}`] = i;
+      tabControl.textContent = `SVG ${i}`;
     });
   }
 

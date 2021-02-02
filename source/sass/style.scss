@@ -2,7 +2,7 @@
 //---------------------------------
 
 @import "vendor/normalize";
-@import "vendor/svg.select";
+@import "vendor/svg.select.scss";
 // @import "vendor/swiper";
 
 // Global
@@ -35,6 +35,8 @@
 @import "blocks/modal-contextmenu";
 @import "blocks/modal-new-image";
 @import "blocks/tab";
+@import "blocks/modal-sign-in.scss";
+@import "blocks/modal-open.scss";
 
 // используйте это для отключения ховеров на тач устройствах
 // ! но не используйте это для текстовых полей ( input, textarea )

@@ -33,6 +33,19 @@ $color-dark-xl-red:               #612319;
 $color-yellow:                    #e0c224;
 $color-dark-blue:                 #0b162b;
 
+$color-white-abs:                 #FFFFFF;
+$color-white:                     #F2F2F2;
+$color-dark-xxl-gray:             #343A40;
+$color-dark-xl-gray:              #42565F;
+$color-dark-gray:                 #6C757D;
+$color-gray:                      #ADB5BD;
+$color-light-gray:                #CED4DA;
+$color-light-xl-gray:             #E5E5E5;
+$color-light-xxl-gray:            #E9ECEF;
+$color-dark-blue:                 #16323B;
+$color-blue:                      #1C353E;
+$color-orange:                    #D75F1D;
+
 // Gradient
 
 $black-to-right:                    linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 75%);
@@ -40,7 +53,7 @@ $black-to-right:                    linear-gradient(90deg, rgba(0, 0, 0, 0.75) 0
 // Typography
 //---------------------------------
 
-$font-family--:                     "", "Arial", sans-serif;
+$font-family--roboto:               "Roboto", "Arial", sans-serif;
 
 // Animation
 //---------------------------------

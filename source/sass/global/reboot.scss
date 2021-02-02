@@ -2,6 +2,9 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: none;
 }
 
 // ! Не используйте scroll-behavior: smooth вместе с текущим utils/scroll-lock.js
@@ -23,10 +26,8 @@ body {
   font-weight: 400;
   font-size: 16px;
   line-height: 24px;
-  font-family: $font-family--;
-  color: $color-default-black;
-
-  background-color: $color-default-white;
+  font-family: $font-family--roboto;
+  color: $color-white;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

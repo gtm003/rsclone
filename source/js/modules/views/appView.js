@@ -1,12 +1,12 @@
 import {createElement} from '../../utils/createELement';
 import {ColorPicker} from './ColorPicker';
-import {toolsBottomBtnName, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
+import {CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, FUNCTIONAL_AREA_ICONS, ALIGNMENT_ICONS} from '../../utils/btn-names';
 import {MainMenu} from './MainMenu';
 import {NewImageModal} from './NewImageModal';
-import { SettingsModal } from './SettingsModal';
-import { SvgCodeModal } from './SvgCodeModal';
-import { SaveModal } from './SaveModal';
-import { MainViewModel } from '../models/MainViewModel';
+import {SettingsModal} from './SettingsModal';
+import {SvgCodeModal} from './SvgCodeModal';
+import {SaveModal} from './SaveModal';
+import {MainViewModel} from '../models/MainViewModel';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -20,7 +20,6 @@ export class AppView {
   constructor(rootElement) {
     this.rootElement = rootElement;
     this.headerElement = null;
-    this.headerContainer = null;
     this.footerElement = null;
     this.footerContainer = null;
     this.contentElement = null;
@@ -41,6 +40,7 @@ export class AppView {
     this.alignPanelDataAttribute = 'align';
     this.newImageDataAttribute = 'newImage';
     this.tabsDataAttribute = 'tab';
+    this.signInButtonsDataAttribute = 'register';
 
     this.menuContainer = null;
     this.newImageModal = null;
@@ -65,6 +65,8 @@ export class AppView {
     this.pencilContainerPanel = null;
     this.alignContainerPanel = null;
     this.selectProperty = null;
+
+    this.signInModal = null;
   }
 
   init() {
@@ -78,7 +80,7 @@ export class AppView {
     this.errorMessage = this.saveModalInstance.createErrorMessage();
 
     const wrapper = this.createWrapper();
-    this.renderHeader();
+    this.headerElement = this.createHeader();
     this.renderContent();
     this.renderFooter();
     this.rootElement.appendChild(wrapper);
@@ -379,14 +381,15 @@ export class AppView {
 
   renderTabControl() {
     const tabControlsCount = this.tabControls.length;
+    const tabControlWrapper = createElement('div', ['tools-bottom__control-wrap']);
     const tabControl = createElement('div', ['tools-bottom__tab-control', 'tools-bottom__tab-control--active'], false, `SVG ${tabControlsCount}`);
     const closeButton = createElement('button', ['tools-bottom__tab-close'], {type: 'button'}, 'x');
 
     tabControl.dataset[`${this.tabsDataAttribute}`] = tabControlsCount;
-    tabControl.append(closeButton);
+    tabControlWrapper.append(tabControl, closeButton);
 
     this.tabControls = [...this.tabControls, tabControl];
-    this.toolsBottomContainer.append(tabControl);
+    this.toolsBottomContainer.append(tabControlWrapper);
   }
 
   createToolsLeft() {
@@ -396,7 +399,8 @@ export class AppView {
       const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
       toolsLeftContainer.append(tooltip);
 
-      let btn = createElement('button', false, {id: `${item}`}, `${item}`);
+      const btn = createElement('button', false, {id: `${item}`});
+      btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
       btn.append(tooltip);
 
       toolsLeftContainer.append(btn);
@@ -410,13 +414,12 @@ export class AppView {
     return wrapper;
   }
 
-  renderHeader() {
-    this.headerElement = document.createElement('header');
-    this.headerElement.classList.add('header');
-    this.headerContainer = document.createElement('div');
-    this.headerContainer.classList.add('container');
-    this.headerContainer.textContent = 'SVG EDITOR';
-    this.headerElement.appendChild(this.headerContainer);
+  createHeader() {
+    const header = createElement('header', ['header']);
+    const title = createElement('h1', ['header__title'], false, 'SVG EDITOR');
+    header.append(title);
+
+    return header;
   }
 
   renderContent() {
@@ -435,32 +438,35 @@ export class AppView {
     this.contentElement.appendChild(this.contentContainer);
 
     this.toolsRightContainer = createElement('div', ['tools-right']);
+    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'}, 'Sign In');
+    button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
+    this.toolsRightContainer.append(button);
     this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
   }
 
   renderFooter() {
-    const yearSpan = createElement('span', ['copyright__year'], false, '2020 ©');
-    const by = createElement('span', false, false, 'by');
+    // const yearSpan = createElement('span', ['copyright__year'], false, '2020 ©');
+    // const by = createElement('span', false, false, 'by');
 
-    const student1Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/alexk08', target: '__blank'}, 'Aleksandr Krasinikov');
-    const student2Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/11alexey11', target: '__blank'}, 'Alexey Yanvarev');
-    const student3Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/gtm003', target: '__blank'}, 'Tatyana Grigorovich');
+    // const student1Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/alexk08', target: '__blank'}, 'Aleksandr Krasinikov');
+    // const student2Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/11alexey11', target: '__blank'}, 'Alexey Yanvarev');
+    // const student3Link = createElement('a', ['copyright__student-link'], {href: 'https://github.com/gtm003', target: '__blank'}, 'Tatyana Grigorovich');
 
-    const logo = createElement('img', ['copyright__logo-rs'], {
-      src: 'img/svg/rs_school_js.svg',
-      alt: 'Logo RS School',
-      width: '100px'
-    });
+    // const logo = createElement('img', ['copyright__logo-rs'], {
+    //   src: 'img/svg/rs_school_js.svg',
+    //   alt: 'Logo RS School',
+    //   width: '100px'
+    // });
 
-    const courseLink = createElement('a', ['copyright__course-link'], {href: 'https://rs.school/js/', target: '__blank'});
-    courseLink.appendChild(logo);
+    // const courseLink = createElement('a', ['copyright__course-link'], {href: 'https://rs.school/js/', target: '__blank'});
+    // courseLink.appendChild(logo);
 
-    const copyrightElement = createElement('div', ['copyright']);
-    copyrightElement.append(yearSpan, by, student1Link, student2Link, student3Link, courseLink);
+    // const copyrightElement = createElement('div', ['copyright']);
+    // copyrightElement.append(yearSpan, by, student1Link, student2Link, student3Link, courseLink);
 
     this.footerElement = createElement('footer', ['footer']);
-    this.footerContainer = createElement('div', ['container']);
-    this.footerContainer.append(copyrightElement);
-    this.footerElement.appendChild(this.footerContainer);
+    // this.footerContainer = createElement('div', ['container']);
+    // this.footerContainer.append(copyrightElement);
+    // this.footerElement.appendChild(this.footerContainer);
   }
 }

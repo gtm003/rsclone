@@ -1,48 +1,18 @@
 .header {
+  height: 70px;
   display: flex;
-  align-items: center;
-  min-height: 80px;
-  padding: 0 40px;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 0 15px;
 
-  background-color: $color-red;
+  background-color: $color-dark-xxl-gray;
 
-  &__wrapper {
-    display: flex;
-    align-items: center;
-  }
 
-  a,
-  p {
-    color: $color-white;
-  }
-
-  ul {
-    display: flex;
+  &__title {
     margin: 0;
-    margin-right: 20px;
-    margin-left: 60px;
-    padding: 0;
 
-    list-style: none;
-
-    li {
-      margin-right: 20px;
-    }
-  }
-
-  .main-nav__toggle {
-    display: none;
-  }
-
-  .container {
-    text-align: center;
-    color: $color-dark-blue;
-    font-size: 40px;
-    font-weight: bold;
-    line-height: 46px;
-
-    @include viewport--sm {
-      font-size: 34px;
-    }
+    font-weight: 300;
+    font-size: 48px;
+    line-height: 56px;
   }
 }

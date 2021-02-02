@@ -11,7 +11,7 @@ export class MainMenu {
     menuContainer.classList.add();
 
     MENU_BUTTONS_NAMES_EN.forEach((item) => {
-      if (item !== 'Import SVG') {
+      if (item !== 'Import') {
         const button = createElement('button', false, {type: 'button'}, `${item}`);
         button.dataset[`${this.menuButtonsDataAttribute}`] = `${item}`;
         menuContainer.appendChild(button);

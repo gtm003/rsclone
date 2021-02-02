@@ -5,7 +5,7 @@ const createElement = (tagName, classList, attributes, textContent) => {
   // dataAttributes - object - пока без дата-атрибутов
   // textContent - string
 
-  classList = Array.isArray(classList) ?  classList : false;
+  classList = Array.isArray(classList) ? classList : false;
   attributes = typeof attributes !== undefined ? attributes : false;
   textContent = typeof textContent === 'string' ? textContent : false;
 

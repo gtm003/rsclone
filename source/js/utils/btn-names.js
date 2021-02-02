@@ -1,5 +1,5 @@
 const toolsBottomBtnName = ['red', 'green', 'blue'];
-const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
+const MENU_BUTTONS_NAMES_EN = ['Create', 'Save', 'Import', 'Properties', 'Get the code', 'Undo', 'Redo'];
 const CONTEXTMENU_NAMES_EN = ['Delete', 'Copy', 'Paste', 'Bring to Front', 'Send to Back'];
 const TOOLS_LEFT_NAMES_EN = ['select', 'rect', 'ellipse', 'line', 'text', 'pencil', 'path', 'fill', 'stroke'];
 const MENU_BUTTONS_NAMES_RUS = ['Создать', 'Сохранить', 'Импортировать', 'Свойства документа', 'Получить код', 'Назад', 'Вперед'];

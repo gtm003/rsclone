@@ -31,16 +31,18 @@ export class MainMenuController {
 
     const buttonDataAttribute = target.dataset[`${this.appView.menuButtonsDataAttribute}`];
 
-    if (buttonDataAttribute === 'New Image') {
+    if (buttonDataAttribute === 'Create') {
       this.model.openNewImageModal();
       this.model.selectElements = [];
       this.appView.removeVisibilityPanel(this.model.selectElements);
-    } else if (buttonDataAttribute === 'Save SVG') {
+    } else if (buttonDataAttribute === 'Save') {
       this.model.openModalSave();
-    } else if (buttonDataAttribute === 'Document Properties') {
+    } else if (buttonDataAttribute === 'Properties') {
       this.model.openModalSettings();
-    } else if (buttonDataAttribute === 'Get SVG-code') {
+    } else if (buttonDataAttribute === 'Get the code') {
       this.model.openModalSvgCode();
+      console.log(JSON.stringify(this.model.getLastCondition()));
+      console.log(this.model.getLastCondition());
     } else if (buttonDataAttribute === 'Undo') {
       this.model.unDo();
       this.appView.removeVisibilityPanel(this.model.selectElements);
@@ -51,7 +53,7 @@ export class MainMenuController {
   }
 
   onImportSvgChange({target}) {
-    if (target.dataset[`${this.appView.menuButtonsDataAttribute}`] === 'Import SVG') {
+    if (target.dataset[`${this.appView.menuButtonsDataAttribute}`] === 'Import') {
       this.model.uploadSVG(target);
     }
   }
@@ -70,7 +72,11 @@ export class MainMenuController {
     const buttonDataAttribute = target.dataset[`${this.appView.saveElementsDataAttribute}`];
 
     if (buttonDataAttribute === 'save') {
-      this.model.saveFile(this.appView.inputFileName.value);
+      if (this.appView.saveModal.classList.contains('modal-save--server')) {
+        this.model.saveFile(this.appView.inputFileName.value, 'server');
+      } else {
+        this.model.saveFile(this.appView.inputFileName.value, 'client');
+      }
     } else if (buttonDataAttribute === 'close') {
       this.model.closeModalSave();
     }

@@ -29,6 +29,7 @@ export class SvgAreaModel {
     this.pathArray = [];
     this.isStartPath = false;
     this.isEndPath = false;
+    this.isPath = false;
     this.pathNodeCount = 0;
     this.segmentPathStraight = false;
 
@@ -46,6 +47,8 @@ export class SvgAreaModel {
     this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
+
+    this.idClient = null;
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -329,6 +332,7 @@ export class SvgAreaModel {
   }
 
   pathDown(e) {
+    this.isPath = true;
     if (this.pathNodeCount) {
       this.isStartPath = false;
       let lastCoord = this.elem.getSegment(this.pathNodeCount - 1).coords;
@@ -392,6 +396,8 @@ export class SvgAreaModel {
 
   pathUp(e) {
     if (this.isEndPath) {
+      this.isPath = false;
+      this.saveHistory();
       this.pathNodeCount = 0;
       //console.log(this.elem.array());
       //console.log(this.getPathArray(this.elem));
@@ -622,12 +628,24 @@ export class SvgAreaModel {
             initializer.type,
             initializer.attr(),
             initializer.node.childNodes[0].textContent
+          ];
+        }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
           ]
         }
         return [
           initializer.type,
           initializer.attr()
-        ]
+        ];
       });
 
     const svgProp = [
@@ -688,6 +706,18 @@ export class SvgAreaModel {
             initializer.node.childNodes[0].textContent
           ]
         }
+        if (initializer.type === 'path') {
+          if (initializer._segments) {
+            return [
+              initializer.type,
+              initializer._segments
+            ];
+          }
+          return [
+            initializer.type,
+            initializer.attr()
+          ]
+        }
         return [
           initializer.type,
           initializer.attr()
@@ -712,10 +742,10 @@ export class SvgAreaModel {
 
   drawAfterFirstLoading(data) {
     const type = data[0];
-    const attr = data[1];
+    const attr = data[1] || []; //костыль из-за pencil
     const text = data[2];
+
     if (type === 'svg') {
-      // this.resizeSvgArea(attr.width, attr.height);
       this.svgArea.size(attr.width, attr.height);
     } else if (type === 'rect') {
       this.svgArea.rect().attr(attr);
@@ -726,8 +756,26 @@ export class SvgAreaModel {
     } else if (type === 'text') {
       this.svgArea.text(`${text}`).attr(attr);
     } else if (type === 'path') {
-      this.svgArea.path().attr(attr);
+      Array.isArray(attr) ? this.drawPathAfterLoading(attr) : this.svgArea.path().attr(attr);
     }
+  }
+
+  drawPathAfterLoading(segments) {
+    const elem = this.svgArea.path();
+    segments.forEach(segment => {
+
+      if (segment.type === 'M') {
+        elem.M(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'L') {
+        elem.L(segment.coords[0], segment.coords[1]);
+      } else if (segment.type === 'V') {
+        elem.V(segment.coords[0]);
+      } else if (segment.type === 'H') {
+        elem.H(segment.coords[0]);
+      }
+    });
+
+    elem.stroke(this.strokeColor).fill(this.fillColor);
   }
 
   createNewImage() {
@@ -774,27 +822,35 @@ export class SvgAreaModel {
     this.saveHistory();
   }
 
-  openModalSave() {
-    this.appView.saveModal.classList.add('modal-save--show');
+  openModalSave(flagStr) {
+    if (flagStr === 'server') {
+      this.appView.saveModal.classList.add('modal-save--server');
+    } else {
+      this.appView.saveModal.classList.add('modal-save--show');
+    }
   }
 
   closeModalSave() {
     this.appView.inputFileName.value = '';
     this.appView.errorMessage.style.visibility = 'hidden';
-    this.appView.saveModal.classList.remove('modal-save--show');
+    this.appView.saveModal.classList.remove('modal-save--show', 'modal-save--server');
   }
 
-  saveFile(fileName) {
+  saveFile(fileName, flagStr) {
     if (fileName === '') {
       this.appView.errorMessage.style.visibility = 'visible';
       return;
     }
     this.closeModalSave();
     this.removeSelect();
-    this.download(this.svgArea.svg(), fileName, 'image/svg+xml');
+    if (flagStr === 'client') {
+      this.downloadClient(this.svgArea.svg(), fileName, 'image/svg+xml');
+    } else if (flagStr === 'server') {
+      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml');
+    }
   }
 
-  download(data, filename, type) {
+  downloadClient(data, filename, type) {
     let file = new Blob([data], {type});
     if (window.navigator.msSaveOrOpenBlob) { // IE10+
       window.navigator.msSaveOrOpenBlob(file, filename);
@@ -809,6 +865,24 @@ export class SvgAreaModel {
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
       }, 0);
+    }
+  }
+
+  downloadServer(data, filename, type) {
+    let xhr = new XMLHttpRequest();
+    console.log(this.idClient);
+    xhr.open('PUT', `https://rs-demo-back.herokuapp.com/auth/login/${this.idClient}`);
+    xhr.responseType = 'json';
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    const json = {
+      'id': this.idClient,
+      'filenames': filename,
+      'projects': this.getLastCondition(),
+    };
+    console.log(json);
+    xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
+    xhr.onload = () => {
+      console.log(xhr.response);
     }
   }
 
