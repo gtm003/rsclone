@@ -11,6 +11,7 @@ export class SignInModalController {
     this.onSignInModalClick = this.onSignInModalClick.bind(this);
     this.onSignUpModalClick = this.onSignUpModalClick.bind(this);
     this.onToolsRightProfileClick = this.onToolsRightProfileClick.bind(this);
+    this.onContainerModalOpenFilesClick = this.onContainerModalOpenFilesClick.bind(this);
   }
 
   addAllListeners() {
@@ -32,6 +33,7 @@ export class SignInModalController {
 
   onSignInModalClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
+      target.setAttribute('disabled', 'disabled');
       let xhr = new XMLHttpRequest();
       xhr.open('POST', 'https://rs-demo-back.herokuapp.com/auth/login');
       xhr.responseType = 'json';
@@ -69,6 +71,7 @@ export class SignInModalController {
 
   onSignUpModalClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign Up') {
+      target.setAttribute('disabled', 'disabled');
       let xhr = new XMLHttpRequest();
       xhr.open('POST', 'https://rs-demo-back.herokuapp.com/auth/register');
       xhr.responseType = 'json';
@@ -100,18 +103,30 @@ export class SignInModalController {
 
   onToolsRightProfileClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
-      // let xhr = new XMLHttpRequest();
-      // xhr.open('GET', `https://rs-demo-back.herokuapp.com/auth/login/${this.viewModel.idClient}`);
-      // xhr.responseType = 'json';
-      // xhr.setRequestHeader('Content-Type', 'application/json');
-      // xhr.send();
-      // xhr.onload = () => {
-      //   console.log(xhr.response); // почему-то cors не работает
-      //   this.signInModalObject.createModalOpen(['123', '123']);
-      // };
-      this.signInModalObject.createModalOpen(['123', '123', '123', '123', '123', '123', '123', '123']);
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', `https://rs-demo-back.herokuapp.com/auth/login/${this.viewModel.idClient}`);
+      xhr.responseType = 'json';
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send();
+      xhr.onload = () => {
+        this.filenames = xhr.response.filenames;
+        this.projects = xhr.response.projects;
+        this.signInModalObject.createModalOpen(this.filenames);
+        this.signInModalObject.containerModalOpenFiles.addEventListener('click', this.onContainerModalOpenFilesClick);
+      };
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Save') {
       this.viewModel.openModalSave('server');
+    }
+  }
+
+  onContainerModalOpenFilesClick({target}) {
+    if (target.dataset[this.appView.signInButtonsDataAttribute] === 'File') {
+      const index = this.filenames.indexOf(target.value);
+      // this.projects[index];
+      // вот здесь делать создание нового холста по клику, мб придется перефакторить код
+    } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
+      this.signInModalObject.containerModalOpenFiles.removeEventListener('click', this.onContainerModalOpenFilesClick);
+      this.signInModalObject.containerModalOpenFiles.remove();
     }
   }
 }

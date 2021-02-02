@@ -881,9 +881,6 @@ export class SvgAreaModel {
     };
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
-    xhr.onload = () => {
-      console.log(xhr.response);
-    }
   }
 
   uploadSVG(input) {
