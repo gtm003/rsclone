@@ -26,7 +26,7 @@ export class TabsController {
     }
 
     if (target.classList.contains('tools-bottom__tab-close')) {
-      const numberClosedTab = target.parentElement.dataset[`${this.appView.tabsDataAttribute}`];
+      const numberClosedTab = target.previousSibling.dataset[`${this.appView.tabsDataAttribute}`];
       this.viewModel.closeTab(numberClosedTab);
     }
   }

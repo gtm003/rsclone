@@ -1,21 +1,16 @@
 .main {
-    background-color: $color-dark-green;
-  
-    .container {
-      display: grid;
-      grid-template-columns: 65px auto 65px;
-      grid-template-rows: 50px auto 50px;
-      grid-column-gap: 5px;
-      grid-row-gap: 5px;
-      padding: 5px;
-      width: calc(100vw - 20px);
-      margin: 0 auto;
-      min-width: $viewport--sm - 20px;
-  
-      @include viewport--sm {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
+  .container {
+    display: grid;
+    grid-template-columns: 46px calc(100vw - 92px) 46px;
+    grid-template-rows: 38px auto 38px;
+    padding: 0;
+    min-width: $viewport--sm - 20px;
+    margin: 0;
+
+    @include viewport--sm {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
     }
+  }
 }

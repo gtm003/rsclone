@@ -1,8 +1,11 @@
 .work-area {
   grid-area: 2 / 2 / 3 / 3;
-  width: calc(100vw - 170px);
-  height: calc(100vh - 240px);
-  border: black solid 1px;
+  height: calc(100vh - 176px);
   position: relative;
   display: flex;
+
+  background-color: $color-dark-gray;
+  background-image: url("../img/bg/texture.png");
+  background-repeat: repeat;
+  box-shadow: inset 0px 0px 10px 4px rgba($color-default-black, 0.2);
 }

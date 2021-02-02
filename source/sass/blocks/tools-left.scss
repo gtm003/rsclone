@@ -2,18 +2,30 @@
     grid-area: 2 / 1 / 3 / 2;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
-    padding: 2px;
-    border: black solid 1px;
-    height: calc(100vh - 240px);
+    height: calc(100vh - 176px);
+
+    background-color: $color-gray;
 
     button {
-        width: 59px;
-        height: 44px;
-        border-radius: 5px;
-        margin: 1px;
-        position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0px 0px 4px rgba($color-default-black, 0.25);
+      box-shadow: 2px 4px 4px rgba($color-default-black, 0.25);
+      width: 40px;
+      height: 40px;
+      border-radius: 5px;
+      background-color: $color-light-xl-gray;
+      border: 0;
+      padding: 0;
+      margin-bottom: 3px;
+      position: relative;
+
+      &#fill {
+        height: 83px;
+      }
     }
 
     button:hover {
@@ -30,29 +42,32 @@
       position: absolute;
       top: 0;
       left: 0;
-      background: #05F2AE;
+      background-color: $color-dark-blue;
+      color: $color-light-xxl-gray;
       border-radius: 5px;
-      padding: 5px;
+      padding: 10px;
       align-items: center;
       justify-content: center;
       font-size: 14px;
       display: none;
       opacity: 0;
       z-index: 3;
+      box-shadow: 0px 4px 4px rgba($color-default-black, 0.25);
 
       &::before {
         content: "";
         position: absolute;
-        top: 0;
+        top: 7px;
         left: -10px;
-        border-left: 10px solid transparent;
-        border-right: 10px solid transparent;
-        border-top: 10px solid #05F2AE;
-        border-bottom: 10px solid transparent;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid $color-dark-blue;
+        border-bottom: 5px solid transparent;
+        transform: rotate(90deg);
       }
     }
 
     .tooltip-right {
-      left: 70px;
+      left: 50px;
     }
 }
