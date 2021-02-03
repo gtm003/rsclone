@@ -28,6 +28,7 @@ export class ToolsLeftController {
       // this.svgAreaController.addAllListeners();
       if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
         this.appView.colorPicker.openColorPicker();
+        this.model.addOverlay();
       }
     }
   }

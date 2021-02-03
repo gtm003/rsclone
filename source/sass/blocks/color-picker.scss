@@ -7,28 +7,38 @@
   margin: 5px;
   // gap: 10px;
   padding: 15px;
-  border-radius: 10px;
   grid-row-gap: 5px;
-  background: rgb(64, 64, 64);
   position: absolute;
   top: 40%;
-  z-index: 2;
+  z-index: 7;
   border-radius: 5px;
+
+  background-color: rgba($color-blue, 0.95);
+  box-shadow: 0px 4px 4px rgba($color-default-black, 0.25);
+
+  font-family: $font-family--roboto;
+  font-size: 18px;
+  line-height: 21px;
+  font-weight: 300;
+  text-align: center;
 
   .pallete {
     grid-area: 1 / 1 / 2 / 5;
     border-radius: 5px;
+    cursor: url("../img/svg/pipette-tool.svg") 0 30, crosshair;
   }
   .transparency {
     grid-area: 2 / 1 / 3 / 4;
     margin: 5px 7.5px;
     border-radius: 5px;
+    cursor: crosshair;
   }
   .new-color {
     grid-area: 2 / 4 / 3 / 5;
     background: rgb(9, 255, 0);
     margin: 5px;
     border-radius: 5px;
+    cursor: crosshair;
   }
 
   .btn-RGBA_container {
@@ -42,6 +52,27 @@
       width: 40px;
       height: 30px;
       border-radius: 5px;
+
+      background-color: $color-light-gray;
+      border: 0;
+      color: $color-blue;
+
+      color: $color-light-xxl-gray;
+
+      background: rgba($color-light-gray, 0.5);
+      border-radius: 5px;
+      font-weight: 300;
+      padding: 0 3px;
+
+      &::placeholder {
+        color: $color-gray;
+      }
+
+      &:focus {
+        transform: scale(1.03);
+        box-shadow: 0px 2px 4px rgba($color-default-black, 0.25);
+        background-color: $color-dark-gray;
+      }
     }
     span {
       margin-left: 3px;
@@ -54,14 +85,22 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    #OK, #CANСEL {
-      width: 80px;
+    #OK, #Cancel {
+      // width: 80px;
+      padding: 5px 10px;
       text-align: center;
-      color: #fff;
-      background: rgb(64, 64, 64);
       border-radius: 5px;
+
+      background: rgba($color-light-gray, 0.3);
+      border: 0;
+      color: $color-blue;
+      color:  $color-light-xxl-gray;
+      font-weight: 300;
+      cursor: pointer;
+
       &:hover {
-        background: rgb(120, 120, 120);
+        background: rgba($color-light-gray, 0.5);
+        // background: rgb(120, 120, 120);
       }
     }
   }

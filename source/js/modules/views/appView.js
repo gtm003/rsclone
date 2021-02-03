@@ -463,7 +463,8 @@ export class AppView {
     button.innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
     button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
     this.toolsRightContainer.append(button);
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
+    this.overlay = createElement('div', ['overlay']);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal, this.overlay);
   }
 
   renderFooter() {

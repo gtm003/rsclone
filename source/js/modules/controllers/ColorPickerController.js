@@ -26,9 +26,11 @@ export class ColorPickerController {
         [...this.appView.toolsLeftContainer.childNodes][8].querySelector('svg').style.fill = this.appView.colorPicker.color;
       }
       this.appView.colorPicker.closeColorPicker();
+      this.model.removeOverlay();
     }
-    if (target.id === 'CANSEL') {
+    if (target.id === 'Cancel') {
       this.appView.colorPicker.closeColorPicker();
+      this.model.removeOverlay();
     }
   }
 }
