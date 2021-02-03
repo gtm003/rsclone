@@ -1,11 +1,19 @@
 .tools-bottom {
   grid-area: 3 / 1 / 4 / 4;
-  display: flex;
-  align-items: center;
+
   width: 100%;
+  height: 55px;
 
   background-color: $color-gray;
   padding: 0 46px;
+
+  &__container {
+    display: flex;
+    align-items: center;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+  }
 
   button {
     cursor: pointer;
@@ -44,7 +52,7 @@
     padding-right: 45px;
     background-color: rgba($color-dark-blue, 0.95);
     background-color: $color-dark-blue;
-    box-shadow: inset 0px 4px 4px rgba($color-default-black, 0.25);
+    // box-shadow: inset 0px 4px 4px rgba($color-default-black, 0.25);
     border-radius: 5px;
     cursor: pointer;
 

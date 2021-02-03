@@ -2,7 +2,9 @@
     grid-area: 1 / 1 / 2 / 4;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     align-items: center;
+    position: relative;
 
     padding-right: 46px;
     background-color: $color-gray;
@@ -12,7 +14,7 @@
       min-width: 100px;
       min-height: 38px;
       margin-right: 50px;
-      padding-left: 46px;
+      height: 38px;
 
       button, label {
         border: 0;
@@ -37,7 +39,15 @@
     }
 
     &__functional-area {
-      height: 100%;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      width: calc(100vw - 92px);
+      background-color: $color-gray;
+      right: 46px;
+      top: 38px;
+      position: absolute;
+      z-index: 4;
     }
 
     &__functional-area__rect,
@@ -47,18 +57,43 @@
     &__functional-area__ellipse,
     &__functional-area__pencil,
     &__functional-area__align {
-        height: 100%;
-        display: flex;
-        background-color: gray;
+      height: 88%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: $color-light-xl-gray;
+      background-color: $color-white;
+      border-radius: 5px;
+      padding-left: 7px;
 
         .tools-top__functional-area__container {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
+          flex-grow: 0;
+          flex-shrink: 1;
+
+          span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: $color-light-gray;
+
+            font-family: $font-family--roboto;
+            font-size: 18px;
+            line-height: 20px;
+
+            color: $color-dark-blue;
+            height: 26px;
+            padding: 0 7px;
+
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+          }
 
           img {
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 22px;
           }
 
           &__btn--click,
@@ -66,14 +101,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 4px;
+            margin: 0;
+            margin-right: 7px;
             padding: 2px;
             border: 0;
             border-radius: 5px;
+            font-size: 18px;
+            line-height: 18px;
+
+            background-color: $color-gray;
+            color: $color-blue;
           }
 
           &__btn--keyup {
-            width: 75px;
+            max-width: 50px;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+            height: 26px;
           }
 
           &__btn--click {
@@ -91,6 +135,7 @@
     }
 
     &__switcher-area {
+      margin-left: auto;
 
       &__switcher-lang {
         display: none;
@@ -133,7 +178,6 @@
         width: 40px;
         height: 28px;
         border-radius: 5px;
-        // background: #ccc linear-gradient(#fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
         background-color: $color-light-gray;
         transition: .5s;
       }

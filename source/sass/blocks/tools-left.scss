@@ -4,7 +4,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: calc(100vh - 176px);
+    height: calc(100vh - 193px);
 
     background-color: $color-gray;
 
@@ -13,7 +13,7 @@
       justify-content: center;
       align-items: center;
       box-shadow: 0px 0px 4px rgba($color-default-black, 0.25);
-      box-shadow: 2px 4px 4px rgba($color-default-black, 0.25);
+      // box-shadow: 2px 4px 4px rgba($color-default-black, 0.25);
       width: 40px;
       height: 40px;
       border-radius: 5px;
@@ -22,6 +22,10 @@
       padding: 0;
       margin-bottom: 3px;
       position: relative;
+
+      &:first-child {
+        margin-top: 3px;
+      }
 
       &#fill,
       &#stroke {
@@ -69,7 +73,6 @@
           background-repeat: no-repeat;
           background-size: 30px 30px;
           background-position: 6px 5px;
-          // background-color: #fff;
           border-top-left-radius: 5px;
           border-top-right-radius: 5px;
 
@@ -102,7 +105,7 @@
           background-color: $color-light-xl-gray;
 
           &::before {
-            background-color: $color-dark-gray;
+            background-color: $color-light-gray;
           }
         }
       }
@@ -112,7 +115,7 @@
       }
 
       &:hover:not(.active) {
-        background-color: $color-dark-gray;
+        background-color: $color-light-gray;
       }
 
       &:hover {
@@ -138,7 +141,7 @@
       font-size: 14px;
       display: none;
       opacity: 0;
-      z-index: 3;
+      z-index: 5;
       box-shadow: 0px 4px 4px rgba($color-default-black, 0.25);
 
       &::before {

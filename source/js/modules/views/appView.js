@@ -26,6 +26,7 @@ export class AppView {
     this.contentContainer = null;
 
     this.toolsTopContainer = null;
+    this.toolsBottom = null;
     this.toolsBottomContainer = null;
     this.toolsLeftContainer = null;
     this.workAreaContainer = null;
@@ -124,8 +125,10 @@ export class AppView {
   }
 
   removeVisibilityPanel(selectElements) {
+    this.functionalAreaContainer.classList.remove('visibility');
     if (selectElements.length === 0) {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
+      this.functionalAreaContainer.classList.add('visibility');
     } else if (selectElements.length === 1) {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
       switch (selectElements[0].type) {
@@ -266,6 +269,7 @@ export class AppView {
         containerButton.append(button);
         containerPanel.append(containerButton);
       } else if (arrayBtn[i] === 'stroke-width' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
+        const span = createElement('span');
         const icon = document.createElement('img');
         icon.setAttribute('src', `../../img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
@@ -273,7 +277,8 @@ export class AppView {
         button.setAttribute('input', 'text');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
-        containerButton.append(icon, button);
+        span.append(icon);
+        containerButton.append(span, button);
         containerPanel.append(containerButton);
         j += 1;
       } else if (arrayBtn[i] === 'family') {
@@ -326,7 +331,7 @@ export class AppView {
   }
 
   createFunctionalArea() {
-    const functionalArea = createElement('div', ['tools-top__functional-area']);
+    const functionalArea = createElement('div', ['tools-top__functional-area', 'visibility']);
     this.createFunctionalAreaPanels(functionalArea);
 
     return functionalArea;
@@ -371,15 +376,18 @@ export class AppView {
     this.workAreaContainer.append(tab);
   }
 
-  createToolsBottom() {
-    const toolsBottomContainer = createElement('div', ['tools-bottom']);
+  renderToolsBottom() {
+    this.toolsBottom = createElement('div', ['tools-bottom']);
     const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'});
 
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
     buttonNewTab.innerHTML = `<svg width="20" height="20"><use xlink:href="#icon-new"></use></svg>`;
-    toolsBottomContainer.append(buttonNewTab);
 
-    return toolsBottomContainer;
+    this.toolsBottomContainer = createElement('div', ['tools-bottom__container']);
+    this.toolsBottomContainer.append(buttonNewTab);
+    this.toolsBottom.append(this.toolsBottomContainer);
+
+    // return toolsBottomContainer;
   }
 
   renderTabControl() {
@@ -401,20 +409,21 @@ export class AppView {
     const toolsLeftContainer = createElement('div', ['tools-left']);
 
     TOOLS_LEFT_NAMES_EN.forEach((item) => {
-      const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
-      toolsLeftContainer.append(tooltip);
-
       const btn = createElement('button', false, {id: `${item}`});
-      if (item === 'select') btn.classList.add('active');
-      btn.append(tooltip);
 
-      toolsLeftContainer.append(btn);
+      if (item === 'select') btn.classList.add('active');
 
       if (item === 'fill' || item === 'stroke') {
         btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-color"></use></svg>`;
-        return;
+      } else {
+        btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
       }
-      btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
+
+      const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
+      // toolsLeftContainer.append(tooltip);
+      btn.append(tooltip);
+
+      toolsLeftContainer.append(btn);
     });
 
     return toolsLeftContainer;
@@ -441,7 +450,8 @@ export class AppView {
     this.workAreaContainer = this.createWorkArea();
     this.renderTab();
 
-    this.toolsBottomContainer = this.createToolsBottom();
+    // this.toolsBottomContainer = this.createToolsBottom();
+    this.renderToolsBottom();
     this.renderTabControl();
 
     this.contentElement = createElement('main', ['main']);
@@ -449,10 +459,11 @@ export class AppView {
     this.contentElement.appendChild(this.contentContainer);
 
     this.toolsRightContainer = createElement('div', ['tools-right']);
-    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'}, 'Sign In');
+    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'});
+    button.innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
     button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
     this.toolsRightContainer.append(button);
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
   }
 
   renderFooter() {
