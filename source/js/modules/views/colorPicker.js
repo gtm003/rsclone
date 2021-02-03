@@ -1,5 +1,5 @@
 const RGBA = ['R', 'G', 'B', 'A'];
-const USER_ANSWER = ['OK', 'CANСEL']
+const USER_ANSWER = ['OK', 'Cancel']
 
 export class ColorPicker {
   constructor(rootElement){

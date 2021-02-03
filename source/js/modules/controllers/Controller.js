@@ -23,6 +23,8 @@ export class Controller {
     this.hotKeysController = null;
     this.colorController = null;
     this.signInModelController = null;
+
+    this.onOverlayClick = this.onOverlayClick.bind(this);
   }
 
   init() {
@@ -59,6 +61,7 @@ export class Controller {
     this.hotKeysController.addAllListeners();
     this.colorController.addAllListeners();
     this.signInModelController.addAllListeners();
+    this.appView.overlay.addEventListener('click', this.onOverlayClick);
   }
 
   removeAllListeners() {
@@ -74,6 +77,16 @@ export class Controller {
     this.hotKeysController.removeAllListeners();
     this.colorController.removeAllListeners();
     this.model.removeSelect();
+    this.appView.overlay.removeEventListener('click', this.onOverlayClick);
+  }
 
+  onOverlayClick({target}) {
+    if (target.classList.contains('overlay')) {
+      this.model.closeModalSave();
+      this.model.closeModalSettings();
+      this.model.closeModalSvgCode();
+      this.model.closeNewImageModal();
+      this.appView.colorPicker.closeColorPicker();
+    }
   }
 }

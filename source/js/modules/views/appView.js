@@ -271,7 +271,7 @@ export class AppView {
       } else if (arrayBtn[i] === 'stroke-width' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
         const span = createElement('span');
         const icon = document.createElement('img');
-        icon.setAttribute('src', `../../img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
+        icon.setAttribute('src', `img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
         const button = document.createElement('input');
         button.setAttribute('input', 'text');
@@ -463,7 +463,8 @@ export class AppView {
     button.innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
     button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
     this.toolsRightContainer.append(button);
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
+    this.overlay = createElement('div', ['overlay']);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal, this.overlay);
   }
 
   renderFooter() {
