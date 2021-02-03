@@ -35,8 +35,9 @@
 @import "blocks/modal-contextmenu";
 @import "blocks/modal-new-image";
 @import "blocks/tab";
-@import "blocks/modal-sign-in.scss";
-@import "blocks/modal-open.scss";
+@import "blocks/modal-sign-in";
+@import "blocks/modal-open";
+@import "blocks/overlay";
 
 // используйте это для отключения ховеров на тач устройствах
 // ! но не используйте это для текстовых полей ( input, textarea )

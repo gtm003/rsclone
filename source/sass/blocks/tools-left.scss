@@ -103,7 +103,7 @@
         }
 
         &:hover:not(.active) {
-          background-color: $color-light-xl-gray;
+          background-color: $color-light-gray;
 
           &::before {
             background-color: $color-light-gray;
