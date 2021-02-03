@@ -5,6 +5,9 @@
   width: 0px;
   height: 0px;
   margin: 5px;
+  padding: 15px;
+  border-radius: 10px;
+  grid-row-gap: 5px;
   background: rgb(64, 64, 64);
   position: absolute;
   top: 40%;
@@ -12,16 +15,18 @@
 
   .pallete {
     grid-area: 1 / 1 / 2 / 5;
+    border-radius: 5px;
   }
   .transparency {
     grid-area: 2 / 1 / 3 / 4;
     margin: 5px 7.5px;
+    border-radius: 5px;
   }
   .new-color {
     grid-area: 2 / 4 / 3 / 5;
-    border: black solid 1px;
     background: rgb(9, 255, 0);
     margin: 5px;
+    border-radius: 5px;
   }
 
   .btn-RGBA_container {
@@ -30,9 +35,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
     #input-R, #input-G, #input-B, #input-A  {
-      width: 50px;
+      width: 40px;
       height: 30px;
+      border-radius: 5px;
+    }
+    span {
+      margin-left: 3px;
     }
   }
 
@@ -42,10 +52,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    #OK, #CANSEL {
-      width: 105px;
+    #OK, #CANСEL {
+      width: 80px;
       text-align: center;
+      color: #fff;
       background: rgb(64, 64, 64);
+      border-radius: 5px;
       &:hover {
         background: rgb(120, 120, 120);
       }
@@ -53,8 +65,8 @@
   }
   &.open {
     display: grid;
-    width: 300px;
-    height: 270px;
+    width: 330px;
+    height: 310px;
   }
 }
 
