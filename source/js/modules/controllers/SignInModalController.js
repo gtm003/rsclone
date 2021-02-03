@@ -133,7 +133,19 @@ export class SignInModalController {
   onContainerModalOpenFilesClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'File') {
       const index = this.filenames.indexOf(target.value);
-      console.log(this.projects[index]);
+      const projects = this.projects[index];
+      const projectArray = this.projects[index].split('@');
+      let arrayOut = [];
+      let arrayIn = [];
+      projectArray.forEach((itemOut) => {
+        const elem = itemOut.split('$');
+        elem.forEach((itemIn) => {
+          console.log(elem);
+          arrayIn.push(JSON.parse(itemIn));
+        });
+        arrayOut.push(arrayIn);
+        arrayIn = [];
+      });
       // вот здесь делать создание нового холста по клику, мб придется перефакторить код
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.signInModalObject.containerModalOpenFiles.removeEventListener('click', this.onContainerModalOpenFilesClick);
