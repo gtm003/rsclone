@@ -27,7 +27,7 @@ export class ColorPickerController {
       }
       this.appView.colorPicker.closeColorPicker();
     }
-    if (target.id === 'CANSEL') {
+    if (target.id === 'CANCEL') {
       this.appView.colorPicker.closeColorPicker();
     }
   }

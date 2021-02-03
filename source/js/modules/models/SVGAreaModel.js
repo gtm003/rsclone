@@ -147,12 +147,6 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
-      //console.log(`x: ${this.mouseDownElemSVG.x()}`);
-      //console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
-      //console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
-      //console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
-      //console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
-      //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
       this.onMouseMoveG();
     }
   }
@@ -162,17 +156,16 @@ export class SvgAreaModel {
     elem.addClass('selectedElem');
     this.setSelectElements.add(elem);
     this.selectElements = [...this.setSelectElements];
-    //console.log(this.getAttr(elem));
   }
 
   rectanglesOverlap(r1, r2) {
     let dimX = 0;
     let dimY = 0;
-    if (r1.transform('x') < r2.transform('x')) dimX = r2.transform('x') + r2.width() - r1.transform('x');
-    else dimX = r1.transform('x') + r1.width() - r2.transform('x');
-    if (r1.transform('y') < r2.transform('y')) dimY = r2.transform('y') + r2.height() - r1.transform('y');
-    else dimY = r1.transform('y') + r1.height() - r2.transform('y');
-    return (dimX < (r1.width() + r2.width())) && (dimY < (r1.height() + r2.height()));
+    if (r1.rbox().x < r2.rbox().x) dimX = r2.rbox().x + r2.rbox().width - r1.rbox().x;
+    else dimX = r1.rbox().x + r1.rbox().width - r2.rbox().x;
+    if (r1.rbox().y < r2.rbox().y) dimY = r2.rbox().y + r2.rbox().height - r1.rbox().y;
+    else dimY = r1.rbox().y + r1.rbox().height - r2.rbox().y;
+    return (dimX < (r1.rbox().width + r2.rbox().width)) && (dimY < (r1.rbox().height + r2.rbox().height));
   }
 
   removeSelectSingleElem(elem) {
@@ -185,7 +178,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));                        // Почему-то не срабатывает на move
+    this.appView.updateFunctionalArea(this.getAttr(elem));                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -323,7 +316,6 @@ export class SvgAreaModel {
       fillColor = this.fillColor;
       strokeColor = this.strokeColor;
     }
-    //console.log(color);
     if (this.type === 'text' && event.key.length < 2) {
       this.text += event.key;
       let tspan = this.elem.tspan(this.text);
@@ -378,7 +370,6 @@ export class SvgAreaModel {
       this.isEndPath = false;
     }
     this.pathNodeCount += 1;
-    console.log(this.elem.array());
   }
 
   drawDirectAnglePath(e) {
@@ -422,11 +413,6 @@ export class SvgAreaModel {
       this.isPath = false;
       this.saveHistory();
       this.pathNodeCount = 0;
-      //console.log(this.elem.array());
-      //console.log(this.getPathArray(this.elem));
-      //this.elem.plot(this.getPathArray(this.elem));
-      //console.log(this.elem.array());
-      console.log(this.getPointsCoord(this.elem));
     }
     this.xLast = this.x;
     this.yLast = this.y;
@@ -568,17 +554,6 @@ export class SvgAreaModel {
     this.elem.L(e.offsetX, e.offsetY);
   }
 
-  addPathNewNode(e) {
-    console.log(this.segmentPathStraight);
-    if (this.segmentPathStraight) {
-      let arr = this.path.array().value;
-      arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-      this.path.plot(arr);
-      console.log(arr);
-    } else {
-    }
-  }
-
   finishDrawElem() {
     if (this.isEmptyElem(this.elem)) {
       this.elem.remove();
@@ -666,7 +641,6 @@ export class SvgAreaModel {
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
-        console.log(this.selectElements);
         if (this.selectElements.length === 1) {
           this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
