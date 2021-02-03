@@ -147,10 +147,12 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
-      console.log(this.mouseDownElemSVG.x());
-      console.log(this.mouseDownElemSVG.transform('x'));
-      console.log(this.mouseDownElemSVG.cx());
-      console.log(this.mouseDownElemSVG.rbox().cx);
+      console.log(`x: ${this.mouseDownElemSVG.x()}`);
+      console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
+      console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
+      console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
+      console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
+      //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
       this.onMouseMoveG();
     }
   }
@@ -620,19 +622,19 @@ export class SvgAreaModel {
       class: elem.attr('class'),
       angle : elem.transform('rotation'),
       stroke : elem.attr('stroke-width'),
-      x: (elem.rbox().x - svgAreaX),
-      y: (elem.rbox().y - svgAreaY),
-      width: (elem.width()),
-      height: (elem.height()),
-      cx: (elem.rbox().cx - svgAreaX),
-      cy: (elem.rbox().cy - svgAreaY),
-      rx: (elem.width()) / 2,
-      ry: (elem.height()) / 2,
-      x1 : pointStart.transform(matrix).x,
-      y1 : pointStart.transform(matrix).y,
-      x2 : pointEnd.transform(matrix).x,
-      y2 : pointEnd.transform(matrix).y,
-      size : size,
+      x: Math.round((elem.rbox().x - svgAreaX)),
+      y: Math.round((elem.rbox().y - svgAreaY)),
+      width: Math.round((elem.width())),
+      height: Math.round((elem.height())),
+      cx: Math.round((elem.rbox().cx - svgAreaX)),
+      cy: Math.round((elem.rbox().cy - svgAreaY)),
+      rx: Math.round((elem.width()) / 2),
+      ry: Math.round((elem.height()) / 2),
+      x1 : Math.round(pointStart.transform(matrix).x + elem.attr('x1')),
+      y1 : Math.round(pointStart.transform(matrix).y + elem.attr('y1')),
+      x2 : Math.round(pointEnd.transform(matrix).x),
+      y2 : Math.round(pointEnd.transform(matrix).y),
+      size : Math.round(size),
     }
     return attrOBJ;
   }
@@ -987,20 +989,32 @@ export class SvgAreaModel {
           objSVG.rotate(0);
         }
         break;
-        case 'x':
-          let xDelta = objSVG.transform('x') - objSVG.rbox().x + svgAreaX;
-          objSVG.transform({x : Number(target.value) + xDelta});
-          break;
-        case 'y':
-          let yDelta = objSVG.transform('y') - objSVG.rbox().y + svgAreaY;
-          objSVG.transform({y : Number(target.value) + yDelta});
-          break;
-        case 'cx':
-            objSVG.transform({x : Number(target.value)});
-            break;
-            case 'cy':
-              objSVG.transform({y : Number(target.value)});
-              break;
+      case 'x':
+        let xDelta = objSVG.transform('x') - objSVG.rbox().x + svgAreaX;
+        objSVG.transform({x : Number(target.value) + xDelta});
+        break;
+      case 'y':
+        let yDelta = objSVG.transform('y') - objSVG.rbox().y + svgAreaY;
+        objSVG.transform({y : Number(target.value) + yDelta});
+        break;
+      case 'cx':
+        objSVG.transform({x : Number(target.value) - objSVG.cx()});       // Правильно только для неповернутых фигур
+        break;
+      case 'cy':
+        objSVG.transform({y : Number(target.value) - objSVG.cy()});       // Правильно только для неповернутых фигур
+        break;
+      case 'x1':
+        objSVG.attr('x1', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'x2':
+        objSVG.attr('x2', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y1':
+        objSVG.attr('y1', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y2':
+        objSVG.attr('y2', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
       case 'size':
         if (target.value.length !== 0) {
           objSVG.attr('font-size', target.value);
@@ -1008,13 +1022,13 @@ export class SvgAreaModel {
           objSVG.attr('font-size', target.getAttribute('placeholder'));
         }
         break;
-        case 'stroke':
-          if (target.value.length !== 0) {
-            objSVG.attr('stroke-width', target.value);
-          } else {
-            objSVG.attr('stroke', target.getAttribute('placeholder'));
-          }
-          break;
+      case 'stroke':
+        if (target.value.length !== 0) {
+          objSVG.attr('stroke-width', target.value);
+        } else {
+          objSVG.attr('stroke', target.getAttribute('placeholder'));
+        }
+        break;
       default:
         if (target.value.length !== 0) {
           console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
