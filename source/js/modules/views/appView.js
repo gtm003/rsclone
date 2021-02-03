@@ -155,7 +155,6 @@ export class AppView {
   }
 
   updateFunctionalArea(attribute) {
-    console.log(attribute);
     switch (attribute.type) {
       case 'rect':
         const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
