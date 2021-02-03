@@ -21,16 +21,21 @@ export class SaveModal {
     this.inputFileName = createElement('input', ['modal-save__file-name'], {type: 'text'});
     this.inputFileName.dataset[`${this.saveElementsDataAttribute}`] = 'name';
 
+    const modalTitle = createElement('div', ['modal-save__title'], false, 'Safe file as:')
+
     const saveButton = createElement('button', ['modal-save__save-btn'], {type: 'button'}, 'Save');
     saveButton.dataset[`${this.saveElementsDataAttribute}`] = 'save';
 
-    const closeButton = createElement('button', ['modal-save__close-btn'], {type: 'button'}, 'Close');
-    closeButton.dataset[`${this.saveElementsDataAttribute}`] = 'close';
+    const closeButton = createElement('button', ['modal-save__close-btn'], {type: 'button'}, 'Cancel');
+    closeButton.dataset[`${this.saveElementsDataAttribute}`] = 'cancel';
 
-    this.errorMessage = createElement('div', false, false, 'Please enter the file name');
+    const btnsContainer = createElement('div', ['modal-save__btns']);
+    btnsContainer.append(saveButton, closeButton);
+
+    this.errorMessage = createElement('div', ['modal-save__clue'], false, 'Please enter the file name');
     this.errorMessage.style.visibility = 'hidden';
 
-    saveModal.append(this.errorMessage, this.inputFileName, saveButton, closeButton);
+    saveModal.append(modalTitle, this.errorMessage, this.inputFileName, btnsContainer);
 
     return saveModal;
   }
