@@ -19,11 +19,16 @@ export class SwitcherLanguageController {
       const menuButtons = [...this.appView.menuContainer.childNodes].filter((item) => item.textContent.length !== 0);
       const toolTips = [...this.appView.toolsLeftContainer.childNodes].map((item) => item.lastChild);
       const contextMenuButtons = [...this.appView.contextMenuWindow.childNodes];
+      const newImageModal = [...this.appView.newImageModal.childNodes];
+      const saveModal = [...this.appView.saveModal.childNodes];
+      const settingsModal = [...this.appView.settingsModal.childNodes];
+      const svgCodeModal = [...this.appView.svgCodeModal.childNodes];
+      const btnColorPicker = [...this.appView.colorPicker.btnUserAnswerContainer.childNodes];
       this.appView.deleteVisibilityContextMenu();
       if (target.checked) {
-        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'rus');
+        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, newImageModal, saveModal, settingsModal, svgCodeModal, btnColorPicker, 'rus');
       } else {
-        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, 'en');
+        this.viewModel.changeLanguage(menuButtons, toolTips, contextMenuButtons, newImageModal, saveModal, settingsModal, svgCodeModal, btnColorPicker, 'en');
       }
     }
   }

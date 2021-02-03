@@ -2,7 +2,24 @@ import {Controller} from '../controllers/Controller';
 import {SwitcherLanguageController} from '../controllers/SwitcherLanguageController';
 import {TabsController} from '../controllers/TabsController';
 import {LoadingController} from '../controllers/LoadingController';
-import {MENU_BUTTONS_NAMES_EN, CONTEXTMENU_NAMES_EN, TOOLS_LEFT_NAMES_EN, MENU_BUTTONS_NAMES_RUS, CONTEXTMENU_NAMES_RUS, TOOLS_LEFT_NAMES_RUS} from '../../utils/btn-names';
+import {
+  MENU_BUTTONS_NAMES_EN,
+  CONTEXTMENU_NAMES_EN,
+  TOOLS_LEFT_NAMES_EN,
+  NEW_IMAGE_NAMES_EN,
+  SAVE_MODAL_NAMES_EN,
+  SETTING_MODAL_NAMES_EN,
+  SVG_CODE_MODAL_NAMES_EN,
+  BTN_COLOR_PICKER_EN,
+  MENU_BUTTONS_NAMES_RUS,
+  CONTEXTMENU_NAMES_RUS,
+  TOOLS_LEFT_NAMES_RUS,
+  NEW_IMAGE_NAMES_RUS,
+  SAVE_MODAL_NAMES_RUS,
+  SETTING_MODAL_NAMES_RUS,
+  SVG_CODE_MODAL_NAMES_RUS,
+  BTN_COLOR_PICKER_RUS,
+} from '../../utils/btn-names';
 
 export class MainViewModel {
   constructor(appView) {
@@ -157,7 +174,7 @@ export class MainViewModel {
     this.openTab(tabsCount);
   }
 
-  changeLanguage(menuButtons, toolTips, contextMenuButtons, strLang) {
+  changeLanguage(menuButtons, toolTips, contextMenuButtons, newImageModal, saveModal, settingsModal, svgCodeModal, btnColorPicker, strLang) {
     menuButtons.forEach((item, index) => {
       if (strLang === 'rus') {
         item.textContent = MENU_BUTTONS_NAMES_RUS[index];
@@ -179,6 +196,82 @@ export class MainViewModel {
         item.textContent = CONTEXTMENU_NAMES_RUS[index];
       } else {
         item.textContent = CONTEXTMENU_NAMES_EN[index];
+      }
+    });
+
+    newImageModal.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.childNodes[0].textContent = NEW_IMAGE_NAMES_RUS[index][0];
+        item.childNodes[1].textContent = NEW_IMAGE_NAMES_RUS[index][1];
+      } else {
+        item.childNodes[0].textContent = NEW_IMAGE_NAMES_EN[index][0];
+        item.childNodes[1].textContent = NEW_IMAGE_NAMES_EN[index][1];
+      }
+    });
+
+    saveModal.forEach((item, index) => {
+      if (index !== 2 && index !== 3) {
+        if (strLang === 'rus') {
+          item.textContent = SAVE_MODAL_NAMES_RUS[index];
+        } else {
+          item.textContent = SAVE_MODAL_NAMES_EN[index];
+        }
+      } else if (index === 3) {
+        if (strLang === 'rus') {
+          item.childNodes[0].textContent = SAVE_MODAL_NAMES_RUS[index - 1][0];
+          item.childNodes[1].textContent = SAVE_MODAL_NAMES_RUS[index - 1][1];
+        } else {
+          item.childNodes[0].textContent = SAVE_MODAL_NAMES_EN[index - 1][0];
+          item.childNodes[1].textContent = SAVE_MODAL_NAMES_EN[index - 1][1];
+        }
+      }
+    });
+
+    settingsModal.forEach((item, index) => {
+      if (index === 0) {
+        if (strLang === 'rus') {
+          item.textContent = SETTING_MODAL_NAMES_RUS[index];
+        } else {
+          item.textContent = SETTING_MODAL_NAMES_EN[index];
+        }
+      } else if (index === 1 || index === 2) {
+        if (strLang === 'rus') {
+          item.childNodes[0].textContent = SETTING_MODAL_NAMES_RUS[index];
+        } else {
+          item.childNodes[0].textContent = SETTING_MODAL_NAMES_EN[index];
+        }
+      } else {
+        if (strLang === 'rus') {
+          item.childNodes[0].textContent = SETTING_MODAL_NAMES_RUS[index][0];
+          item.childNodes[1].textContent = SETTING_MODAL_NAMES_RUS[index][1];
+        } else {
+          item.childNodes[0].textContent = SETTING_MODAL_NAMES_EN[index][0];
+          item.childNodes[1].textContent = SETTING_MODAL_NAMES_EN[index][1];
+        }
+      }
+    });
+
+    svgCodeModal.forEach((item, index) => {
+      if (index === 0) {
+        if (strLang === 'rus') {
+          item.textContent = SVG_CODE_MODAL_NAMES_RUS[index];
+        } else {
+          item.textContent = SVG_CODE_MODAL_NAMES_EN[index];
+        }
+      } else if (index === 2) {
+        if (strLang === 'rus') {
+          item.childNodes[0].textContent = SVG_CODE_MODAL_NAMES_RUS[index - 1];
+        } else {
+          item.childNodes[0].textContent = SVG_CODE_MODAL_NAMES_EN[index - 1];
+        }
+      }
+    });
+
+    btnColorPicker.forEach((item, index) => {
+      if (strLang === 'rus') {
+        item.value = BTN_COLOR_PICKER_RUS[index];
+      } else {
+        item.value = BTN_COLOR_PICKER_EN[index];
       }
     });
   }
