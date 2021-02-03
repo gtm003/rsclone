@@ -952,16 +952,21 @@ export class SvgAreaModel {
     const id = this.idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
+    let str = '';
+    projects.forEach((itemOut, indexOut) => {
+      itemOut.forEach((itemIn, indexIn) => {
+        str += (indexIn !== itemOut.length - 1) ? JSON.stringify(itemIn) + '$' : JSON.stringify(itemIn);
+      });
+      str += (indexOut !== projects.length - 1) ? '@' : '';
+    });
     // for (let i = 0; i < projects.length; i += 1) {
     //   projects[i][1] = JSON.stringify(projects[i][1]);
     // }
     const json = {
       id,
       filenames,
-      projects
+      projects: str
     };
-    console.log(this.getLastCondition());
-    console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
     xhr.onload = () => {
       console.log(xhr.response);
