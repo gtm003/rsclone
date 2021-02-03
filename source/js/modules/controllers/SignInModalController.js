@@ -2,9 +2,9 @@ import {SignInModal} from '../views/SignInModal';
 import {createElement} from '../../utils/createELement';
 
 export class SignInModalController {
-  constructor(appView, viewModel) {
+  constructor(appView, model) {
     this.appView = appView;
-    this.viewModel = viewModel;
+    this.model = model;
     this.signInModalObject = new SignInModal(this.appView, this.appView.contentContainer);
 
     this.openSignInModal = this.openSignInModal.bind(this);
@@ -19,10 +19,14 @@ export class SignInModalController {
   }
 
   openSignInModal({target}) {
-    if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
+    const button = target.closest('[data-register');
+    if (!button) return;
+    console.log(button);
+    if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
+      this.model.addOverlay();
       this.appView.signInModal = this.signInModalObject.createSignInModal(true);
       this.appView.signInModal.addEventListener('click', this.onSignInModalClick);
-    } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign Out') {
+    } else if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Sign Out') {
       this.signInModalObject.changeButtonSign(false);
       const lengthContainer = this.appView.toolsRightContainer.childNodes.length - 1;
       for (let i = 0; i < lengthContainer; i += 1) {
@@ -50,7 +54,8 @@ export class SignInModalController {
           if (xhr.response.statusCode === 200) {
             this.appView.signInModal.removeEventListener('click', this.onSignInModalClick);
             this.appView.signInModal.remove();
-            this.viewModel.idClient = xhr.response.id;
+            this.model.removeOverlay();
+            this.model.idClient = xhr.response.id;
             this.signInModalObject.changeButtonSign(true);
             this.signInModalObject.createProfile();
             this.appView.toolsRightContainer.addEventListener('click', this.onToolsRightProfileClick);
@@ -66,6 +71,7 @@ export class SignInModalController {
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.appView.signInModal.removeEventListener('click', this.onSignInModalClick);
       this.appView.signInModal.remove();
+      this.model.removeOverlay();
     }
   }
 
@@ -90,6 +96,7 @@ export class SignInModalController {
           if (xhr.response.statusCode === 200) {
             this.appView.signInModal.removeEventListener('click', this.onSignInModalClick);
             this.appView.signInModal.remove();
+            this.model.removeOverlay();
           } else {
             this.appView.signInModal.childNodes[1].textContent = xhr.response.reason;
           }
@@ -98,13 +105,16 @@ export class SignInModalController {
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.appView.signInModal.removeEventListener('click', this.onSignInModalClick);
       this.appView.signInModal.remove();
+      this.model.removeOverlay();
     }
   }
 
   onToolsRightProfileClick({target}) {
-    if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
+    const button = target.closest('[data-register');
+    if (!button) return;
+    if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
       let xhr = new XMLHttpRequest();
-      xhr.open('GET', `https://rs-demo-back.herokuapp.com/auth/login/${this.viewModel.idClient}`);
+      xhr.open('GET', `https://rs-demo-back.herokuapp.com/auth/login/${this.model.idClient}`);
       xhr.responseType = 'json';
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send();
@@ -113,9 +123,10 @@ export class SignInModalController {
         this.projects = xhr.response.projects;
         this.signInModalObject.createModalOpen(this.filenames);
         this.signInModalObject.containerModalOpenFiles.addEventListener('click', this.onContainerModalOpenFilesClick);
+        this.model.addOverlay();
       };
-    } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Save') {
-      this.viewModel.openModalSave('server');
+    } else if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Save') {
+      this.model.openModalSave('server');
     }
   }
 
@@ -127,6 +138,7 @@ export class SignInModalController {
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.signInModalObject.containerModalOpenFiles.removeEventListener('click', this.onContainerModalOpenFilesClick);
       this.signInModalObject.containerModalOpenFiles.remove();
+      this.model.removeOverlay();
     }
   }
 }

@@ -57,10 +57,12 @@ export class SignInModal {
 
   changeButtonSign(flag) {
     if (flag) {
-      this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign Out';
+      this.appView.toolsRightContainer.childNodes[0].innerHTML = '<svg width="36" height="36"><use xlink:href="#icon-sign-out"></use></svg>';
+      // this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign Out';
       this.appView.toolsRightContainer.childNodes[0].dataset[this.appView.signInButtonsDataAttribute] = 'Sign Out';
     } else {
-      this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign In';
+      this.appView.toolsRightContainer.childNodes[0].innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
+      // this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign In';
       this.appView.toolsRightContainer.childNodes[0].dataset[this.appView.signInButtonsDataAttribute] = 'Sign In';
     }
   }
@@ -68,7 +70,9 @@ export class SignInModal {
   createProfile() {
     const buttonOpen = createElement('button', ['tools-right__open'], {'type': 'button'}, 'Open Files');
     buttonOpen.dataset[this.appView.signInButtonsDataAttribute] = 'Open';
+    buttonOpen.innerHTML = '<svg width="30" height="28"><use xlink:href="#icon-open"></use></svg>';
     const buttonSave = createElement('button', ['tools-right__save'], {'type': 'button'}, 'Save in Profile');
+    buttonSave.innerHTML = '<svg width="28" height="28"><use xlink:href="#icon-save"></use></svg>';
     buttonSave.dataset[this.appView.signInButtonsDataAttribute] = 'Save';
     this.appView.toolsRightContainer.append(buttonOpen, buttonSave);
   }

@@ -147,8 +147,14 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
+      //console.log(`x: ${this.mouseDownElemSVG.x()}`);
+      //console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
+      //console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
+      //console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
+      //console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
+      //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
+      this.onMouseMoveG();
     }
-    //this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -179,7 +185,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    //this.appView.updateFunctionalArea(this.selectElements);
+    this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -286,7 +292,10 @@ export class SvgAreaModel {
         this.elem = null;
         //this.type = 'select';
       } else {
+        let fillColor = this.elem.node.childNodes[0].instance.attr('fill');
+        let strokeColor = this.elem.node.childNodes[0].instance.attr('stroke');
         let tspan = this.elem.tspan(this.text);
+        tspan.fill(fillColor).stroke(strokeColor);
         tspan.dy(`${1.3 * this.elem.font('size')}`);
         this.elem.resize('stop').selectize(false);
         this.text = '';
@@ -308,10 +317,18 @@ export class SvgAreaModel {
   }
 
   inputText(event) {
+    let fillColor = this.elem.node.childNodes[0].instance.attr('fill');
+    let strokeColor = this.elem.node.childNodes[0].instance.attr('stroke');
+    if (fillColor === 'transparent' && strokeColor === 'transparent') {
+      fillColor = this.fillColor;
+      strokeColor = this.strokeColor;
+    }
+    //console.log(color);
     if (this.type === 'text' && event.key.length < 2) {
       this.text += event.key;
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
+      tspan.fill(fillColor).stroke(strokeColor);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -323,6 +340,7 @@ export class SvgAreaModel {
       this.text = this.text.slice(0, -1);
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
+      tspan.fill(fillColor).stroke(strokeColor);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -547,9 +565,7 @@ export class SvgAreaModel {
   }
 
   drawPencilTrace(e) {
-    let arr = this.elem.array().value;
-    arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-    this.elem.plot(arr);
+    this.elem.L(e.offsetX, e.offsetY);
   }
 
   addPathNewNode(e) {
@@ -616,19 +632,19 @@ export class SvgAreaModel {
       class: elem.attr('class'),
       angle : elem.transform('rotation'),
       stroke : elem.attr('stroke-width'),
-      x: (elem.rbox().x - svgAreaX),
-      y: (elem.rbox().y - svgAreaY),
-      width: (elem.width()),
-      height: (elem.height()),
-      cx: (elem.rbox().cx - svgAreaX),
-      cy: (elem.rbox().cy - svgAreaY),
-      rx: (elem.width()) / 2,
-      ry: (elem.height()) / 2,
-      x1 : pointStart.transform(matrix).x,
-      y1 : pointStart.transform(matrix).y,
-      x2 : pointEnd.transform(matrix).x,
-      y2 : pointEnd.transform(matrix).y,
-      size : size,
+      x: Math.round((elem.rbox().x - svgAreaX)),
+      y: Math.round((elem.rbox().y - svgAreaY)),
+      width: Math.round((elem.width())),
+      height: Math.round((elem.height())),
+      cx: Math.round((elem.rbox().cx - svgAreaX)),
+      cy: Math.round((elem.rbox().cy - svgAreaY)),
+      rx: Math.round((elem.width()) / 2),
+      ry: Math.round((elem.height()) / 2),
+      x1 : Math.round(pointStart.transform(matrix).x + elem.attr('x1')),
+      y1 : Math.round(pointStart.transform(matrix).y + elem.attr('y1')),
+      x2 : Math.round(pointEnd.transform(matrix).x),
+      y2 : Math.round(pointEnd.transform(matrix).y),
+      size : Math.round(size),
     }
     return attrOBJ;
   }
@@ -650,14 +666,23 @@ export class SvgAreaModel {
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
+        console.log(this.selectElements);
         if (this.selectElements.length === 1) {
-          this.appView.updateFunctionalArea(this.model.selectElements, this.model.getAttr(this.model.selectElements[0]));
+          this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
       });
     }
   }
 
   // из контроллера часть alexk08
+
+  addOverlay() {
+    this.appView.overlay.classList.add('overlay--on');
+  }
+
+  removeOverlay() {
+    this.appView.overlay.classList.remove('overlay--on');
+  }
 
   saveHistory() {
     const svgElements = this.svgArea.children();
@@ -838,13 +863,16 @@ export class SvgAreaModel {
 
   openNewImageModal() {
     this.appView.newImageModal.classList.add('modal-new-image--show');
+    this.addOverlay();
   }
 
   closeNewImageModal() {
     this.appView.newImageModal.classList.remove('modal-new-image--show');
+    this.removeOverlay();
   }
 
   openModalSvgCode() {
+    this.addOverlay();
     const textArea = this.appView.svgCodeModal.querySelector('textarea');
 
     textArea.innerHTML = '';
@@ -855,6 +883,7 @@ export class SvgAreaModel {
 
   closeModalSvgCode() {
     this.appView.svgCodeModal.classList.remove('modal-svg-code--show');
+    this.removeOverlay();
   }
 
   openModalSettings() {
@@ -865,10 +894,12 @@ export class SvgAreaModel {
     svgWidthInput.focus();
     svgWidthInput.value = this.svgArea.attr().width;
     svgHeightInput.value = this.svgArea.attr().height;
+    this.addOverlay();
   }
 
   closeModalSettings() {
     this.appView.settingsModal.classList.remove('modal-settings--show');
+    this.removeOverlay();
   }
 
   changeProperties() {
@@ -880,6 +911,7 @@ export class SvgAreaModel {
   }
 
   openModalSave(flagStr) {
+    this.addOverlay();
     if (flagStr === 'server') {
       this.appView.saveModal.classList.add('modal-save--server');
     } else {
@@ -892,6 +924,7 @@ export class SvgAreaModel {
     this.appView.inputFileName.value = '';
     this.appView.errorMessage.style.visibility = 'hidden';
     this.appView.saveModal.classList.remove('modal-save--show', 'modal-save--server');
+    this.removeOverlay();
   }
 
   saveFile(fileName, flagStr) {
@@ -935,11 +968,15 @@ export class SvgAreaModel {
     const id = this.idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
+    // for (let i = 0; i < projects.length; i += 1) {
+    //   projects[i][1] = JSON.stringify(projects[i][1]);
+    // }
     const json = {
       id,
       filenames,
       projects
     };
+    console.log(this.getLastCondition());
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
     xhr.onload = () => {
@@ -973,6 +1010,8 @@ export class SvgAreaModel {
   changePropertiesSVGElement(target) {
     this.appView.deleteVisibilityContextMenu();
     const objSVG = this.selectElements[0];
+    let svgAreaX = this.svgArea.rbox().x;
+    let svgAreaY = this.svgArea.rbox().y;
     switch (target.dataset[this.appView.propertiesDataAttribute]) {
       case 'angle':
         if (target.value.length !== 0) {
@@ -981,6 +1020,32 @@ export class SvgAreaModel {
           objSVG.rotate(0);
         }
         break;
+      case 'x':
+        let xDelta = objSVG.transform('x') - objSVG.rbox().x + svgAreaX;
+        objSVG.transform({x : Number(target.value) + xDelta});
+        break;
+      case 'y':
+        let yDelta = objSVG.transform('y') - objSVG.rbox().y + svgAreaY;
+        objSVG.transform({y : Number(target.value) + yDelta});
+        break;
+      case 'cx':
+        objSVG.transform({x : Number(target.value) - objSVG.cx()});       // Правильно только для неповернутых фигур
+        break;
+      case 'cy':
+        objSVG.transform({y : Number(target.value) - objSVG.cy()});       // Правильно только для неповернутых фигур
+        break;
+      case 'x1':
+        objSVG.attr('x1', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'x2':
+        objSVG.attr('x2', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y1':
+        objSVG.attr('y1', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y2':
+        objSVG.attr('y2', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
       case 'size':
         if (target.value.length !== 0) {
           objSVG.attr('font-size', target.value);
@@ -988,9 +1053,15 @@ export class SvgAreaModel {
           objSVG.attr('font-size', target.getAttribute('placeholder'));
         }
         break;
+      case 'stroke':
+        if (target.value.length !== 0) {
+          objSVG.attr('stroke-width', target.value);
+        } else {
+          objSVG.attr('stroke', target.getAttribute('placeholder'));
+        }
+        break;
       default:
         if (target.value.length !== 0) {
-          console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.value);
         } else {
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.getAttribute('placeholder'));
@@ -1058,8 +1129,8 @@ export class SvgAreaModel {
     }
     this.setSelectElements.clear();
     this.selectElements = [];
-    //this.appView.removeVisibilityPanel(this.selectElements);
-    //this.appView.deleteVisibilityContextMenu();
+    this.appView.removeVisibilityPanel(this.selectElements);
+    this.appView.deleteVisibilityContextMenu();
     this.saveHistory();
   }
 

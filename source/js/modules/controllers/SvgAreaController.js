@@ -42,13 +42,13 @@ export class SvgAreaController {
   onSvgAreaMouseMove(e) {
     e.preventDefault();
     this.model.wasMoved = true;
-    if (this.model.type === 'fill' || this.model.type === 'stroke') return;
+    if (!(this.model.type === 'fill' || this.model.type === 'stroke'))
     this.model.getTypeOfMouseMoveAction(this.model.type, e);
   }
 
   onSvgAreaMouseUp(e) {
     e.preventDefault();
-    if (this.model.type === 'fill' || this.model.type === 'stroke') return;
+    if (!(this.model.type === 'fill' || this.model.type === 'stroke'))
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved && !this.model.isSelectFrame && !this.model.isPath) {
       this.model.saveHistory();
@@ -56,6 +56,7 @@ export class SvgAreaController {
     this.model.wasMoved = false;
     this.model.isSelectFrame = false;
     this.appView.removeVisibilityPanel(this.model.selectElements);
+    console.log(this.model.selectElements);
     if (this.model.selectElements.length === 1) {
       this.appView.updateFunctionalArea(this.model.getAttr(this.model.selectElements[0]));
     }

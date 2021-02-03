@@ -26,6 +26,7 @@ export class AppView {
     this.contentContainer = null;
 
     this.toolsTopContainer = null;
+    this.toolsBottom = null;
     this.toolsBottomContainer = null;
     this.toolsLeftContainer = null;
     this.workAreaContainer = null;
@@ -124,8 +125,10 @@ export class AppView {
   }
 
   removeVisibilityPanel(selectElements) {
+    this.functionalAreaContainer.classList.remove('visibility');
     if (selectElements.length === 0) {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
+      this.functionalAreaContainer.classList.add('visibility');
     } else if (selectElements.length === 1) {
       [...this.functionalAreaContainer.childNodes].forEach((item) => item.classList.add('visibility'));
       switch (selectElements[0].type) {
@@ -152,74 +155,75 @@ export class AppView {
   }
 
   updateFunctionalArea(attribute) {
-    //if (selectElements.length === 1) {
-      // const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-      //const attribute = selectElements[0].attr();
-      switch (attribute.type) {
-        case 'rect':
-          const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelRect[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelRect[2].childNodes[1].setAttribute('placeholder', attribute.angle);
-          arrayLabelRect[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
-          arrayLabelRect[4].childNodes[1].setAttribute('placeholder', attribute.x);
-          arrayLabelRect[5].childNodes[1].setAttribute('placeholder', attribute.y);
-          arrayLabelRect[6].childNodes[1].setAttribute('placeholder', attribute.width);
-          arrayLabelRect[7].childNodes[1].setAttribute('placeholder', attribute.height);
-          break;
-        case 'line':
-          const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelLine[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelLine[2].childNodes[1].setAttribute('placeholder', attribute.angle);
-          arrayLabelLine[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
-          arrayLabelLine[4].childNodes[1].setAttribute('placeholder', attribute.x1);
-          arrayLabelLine[5].childNodes[1].setAttribute('placeholder', attribute.y1);
-          arrayLabelLine[6].childNodes[1].setAttribute('placeholder', attribute.x2);
-          arrayLabelLine[7].childNodes[1].setAttribute('placeholder', attribute.y2);
-          break;
-        case 'text':
-          const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelText[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelText[2].childNodes[1].setAttribute('placeholder', attribute.angle);
-          arrayLabelText[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
-          arrayLabelText[4].childNodes[1].setAttribute('placeholder', attribute.x);
-          arrayLabelText[5].childNodes[1].setAttribute('placeholder', attribute.y);
-          arrayLabelText[6].childNodes[1].setAttribute('placeholder', attribute.size);
-          // здесь долджно быть начертание
-          break;
-        case 'ellipse':
-          const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelEllipse[0].childNodes[1].setAttribute('placeholder', attribute.id);
-          arrayLabelEllipse[2].childNodes[1].setAttribute('placeholder', attribute.angle);
-          arrayLabelEllipse[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
-          arrayLabelEllipse[4].childNodes[1].setAttribute('placeholder', attribute.cx);
-          arrayLabelEllipse[5].childNodes[1].setAttribute('placeholder', attribute.cy);
-          arrayLabelEllipse[6].childNodes[1].setAttribute('placeholder', attribute.rx);
-          arrayLabelEllipse[7].childNodes[1].setAttribute('placeholder', attribute.ry);
-          break;
-        case 'path':
-          const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelPencil[0].childNodes[1].setAttribute('placeholder', attribute.id); // id
-          arrayLabelPencil[2].childNodes[1].setAttribute('placeholder', attribute.angle);
-          arrayLabelPencil[3].childNodes[1].setAttribute('placeholder', attribute.stroke);
-          break;
-      //}
+    console.log(attribute);
+    switch (attribute.type) {
+      case 'rect':
+        const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelRect[0].childNodes[1].value = attribute.id;
+        arrayLabelRect[2].childNodes[1].value = attribute.angle;
+        arrayLabelRect[3].childNodes[1].value = attribute.stroke;
+        arrayLabelRect[4].childNodes[1].value = attribute.x;
+        arrayLabelRect[5].childNodes[1].value = attribute.y;
+        arrayLabelRect[6].childNodes[1].value = attribute.width;
+        arrayLabelRect[7].childNodes[1].value = attribute.height;
+        break;
+      case 'line':
+        const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelLine[0].childNodes[1].value = attribute.id;
+        arrayLabelLine[2].childNodes[1].value = attribute.angle;
+        arrayLabelLine[3].childNodes[1].value = attribute.stroke;
+        arrayLabelLine[4].childNodes[1].value = attribute.x1;
+        arrayLabelLine[5].childNodes[1].value = attribute.y1;
+        arrayLabelLine[6].childNodes[1].value = attribute.x2;
+        arrayLabelLine[7].childNodes[1].value = attribute.y2;
+        break;
+      case 'text':
+        const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelText[0].childNodes[1].value = attribute.id;
+        arrayLabelText[2].childNodes[1].value = attribute.angle;
+        arrayLabelText[3].childNodes[1].value = attribute.stroke;
+        arrayLabelText[4].childNodes[1].value = attribute.x;
+        arrayLabelText[5].childNodes[1].value = attribute.y;
+        arrayLabelText[6].childNodes[1].value = attribute.size;
+        // здесь долджно быть начертание
+        break;
+      case 'ellipse':
+        const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelEllipse[0].childNodes[1].value = attribute.id;
+        arrayLabelEllipse[2].childNodes[1].value = attribute.angle;
+        arrayLabelEllipse[3].childNodes[1].value = attribute.stroke;
+        arrayLabelEllipse[4].childNodes[1].value = attribute.cx;
+        arrayLabelEllipse[5].childNodes[1].value = attribute.cy;
+        arrayLabelEllipse[6].childNodes[1].value = attribute.rx;
+        arrayLabelEllipse[7].childNodes[1].value = attribute.ry;
+        break;
+      case 'path':
+        const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelPencil[0].childNodes[1].value = attribute.id; // id
+        arrayLabelPencil[2].childNodes[1].value = attribute.angle;
+        arrayLabelPencil[3].childNodes[1].value = attribute.stroke;
+        arrayLabelPencil[4].childNodes[1].value = attribute.x;
+        arrayLabelPencil[5].childNodes[1].value = attribute.y;
+        arrayLabelPencil[6].childNodes[1].value = attribute.width;
+        arrayLabelPencil[7].childNodes[1].value = attribute.height;
+        break;
     }
   }
 
   createArrayNameBtn(type) {
     if (type === 'rect') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'width', 'height'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
     } else if (type === 'line') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x1', 'y1', 'x2', 'y2'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x1', 'y1', 'x2', 'y2'];
     } else if (type === 'text') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'size', 'family', 'mark'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family', 'mark'];
     } else if (type === 'ellipse') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'cx', 'cy', 'rx', 'ry'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'cx', 'cy', 'rx', 'ry'];
     } else if (type === 'path') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
     }
 
-    return ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
+    return ['delete', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
   }
 
   createSelectElement(typeElement) {
@@ -264,7 +268,8 @@ export class AppView {
         }
         containerButton.append(button);
         containerPanel.append(containerButton);
-      } else if (arrayBtn[i] === 'stroke' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
+      } else if (arrayBtn[i] === 'stroke-width' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
+        const span = createElement('span');
         const icon = document.createElement('img');
         icon.setAttribute('src', `../../img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
@@ -272,7 +277,8 @@ export class AppView {
         button.setAttribute('input', 'text');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
-        containerButton.append(icon, button);
+        span.append(icon);
+        containerButton.append(span, button);
         containerPanel.append(containerButton);
         j += 1;
       } else if (arrayBtn[i] === 'family') {
@@ -315,7 +321,7 @@ export class AppView {
     this.pencilContainerPanel = document.createElement('div');
     this.pencilContainerPanel.classList.add('tools-top__functional-area__pencil', 'visibility');
     const arrayPencilBtn = this.createArrayNameBtn('path');
-    this.createFunctionalAreaAlignmentElements(this.pencilContainerPanel, arrayPencilBtn);
+    this.createFunctionalAreaElements(this.pencilContainerPanel, arrayPencilBtn);
 
     this.alignContainerPanel = document.createElement('div');
     this.alignContainerPanel.classList.add('tools-top__functional-area__align', 'visibility');
@@ -325,7 +331,7 @@ export class AppView {
   }
 
   createFunctionalArea() {
-    const functionalArea = createElement('div', ['tools-top__functional-area']);
+    const functionalArea = createElement('div', ['tools-top__functional-area', 'visibility']);
     this.createFunctionalAreaPanels(functionalArea);
 
     return functionalArea;
@@ -370,15 +376,18 @@ export class AppView {
     this.workAreaContainer.append(tab);
   }
 
-  createToolsBottom() {
-    const toolsBottomContainer = createElement('div', ['tools-bottom']);
+  renderToolsBottom() {
+    this.toolsBottom = createElement('div', ['tools-bottom']);
     const buttonNewTab = createElement('button', ['tools-bottom__new-tab-button'], {type: 'button'});
 
     buttonNewTab.dataset[`${this.tabsDataAttribute}`] = 'new';
     buttonNewTab.innerHTML = `<svg width="20" height="20"><use xlink:href="#icon-new"></use></svg>`;
-    toolsBottomContainer.append(buttonNewTab);
 
-    return toolsBottomContainer;
+    this.toolsBottomContainer = createElement('div', ['tools-bottom__container']);
+    this.toolsBottomContainer.append(buttonNewTab);
+    this.toolsBottom.append(this.toolsBottomContainer);
+
+    // return toolsBottomContainer;
   }
 
   renderTabControl() {
@@ -400,20 +409,21 @@ export class AppView {
     const toolsLeftContainer = createElement('div', ['tools-left']);
 
     TOOLS_LEFT_NAMES_EN.forEach((item) => {
-      const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
-      toolsLeftContainer.append(tooltip);
-
       const btn = createElement('button', false, {id: `${item}`});
-      if (item === 'select') btn.classList.add('active');
-      btn.append(tooltip);
 
-      toolsLeftContainer.append(btn);
+      if (item === 'select') btn.classList.add('active');
 
       if (item === 'fill' || item === 'stroke') {
         btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-color"></use></svg>`;
-        return;
+      } else {
+        btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
       }
-      btn.innerHTML = `<svg width="30" height="30"><use xlink:href="#icon-${item}"></use></svg>`;
+
+      const tooltip = createElement('span', ['tooltip', 'tooltip-right'], false, `${item}`);
+      // toolsLeftContainer.append(tooltip);
+      btn.append(tooltip);
+
+      toolsLeftContainer.append(btn);
     });
 
     return toolsLeftContainer;
@@ -440,7 +450,8 @@ export class AppView {
     this.workAreaContainer = this.createWorkArea();
     this.renderTab();
 
-    this.toolsBottomContainer = this.createToolsBottom();
+    // this.toolsBottomContainer = this.createToolsBottom();
+    this.renderToolsBottom();
     this.renderTabControl();
 
     this.contentElement = createElement('main', ['main']);
@@ -448,10 +459,12 @@ export class AppView {
     this.contentElement.appendChild(this.contentContainer);
 
     this.toolsRightContainer = createElement('div', ['tools-right']);
-    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'}, 'Sign In');
+    const button = createElement('button', ['tools-right__sign-in'], {'type': 'button'});
+    button.innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
     button.dataset[this.signInButtonsDataAttribute] = 'Sign In';
     this.toolsRightContainer.append(button);
-    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottomContainer, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal);
+    this.overlay = createElement('div', ['overlay']);
+    this.contentContainer.append(this.toolsTopContainer, this.toolsLeftContainer, this.toolsRightContainer, this.toolsBottom, this.workAreaContainer, this.saveModal, this.settingsModal, this.svgCodeModal, this.contextMenuWindow, this.newImageModal, this.overlay);
   }
 
   renderFooter() {
