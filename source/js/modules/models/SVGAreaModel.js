@@ -292,7 +292,10 @@ export class SvgAreaModel {
         this.elem = null;
         //this.type = 'select';
       } else {
+        let fillColor = this.elem.node.childNodes[0].instance.attr('fill');
+        let strokeColor = this.elem.node.childNodes[0].instance.attr('stroke');
         let tspan = this.elem.tspan(this.text);
+        tspan.fill(fillColor).stroke(strokeColor);
         tspan.dy(`${1.3 * this.elem.font('size')}`);
         this.elem.resize('stop').selectize(false);
         this.text = '';
@@ -314,10 +317,15 @@ export class SvgAreaModel {
   }
 
   inputText(event) {
+    console.log(this.elem.node.childNodes[0].instance.attr('fill'));
+    let fillColor = this.elem.node.childNodes[0].instance.attr('fill');
+    let strokeColor = this.elem.node.childNodes[0].instance.attr('stroke');
+    //console.log(color);
     if (this.type === 'text' && event.key.length < 2) {
       this.text += event.key;
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
+      tspan.fill(fillColor).stroke(strokeColor);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
@@ -329,6 +337,7 @@ export class SvgAreaModel {
       this.text = this.text.slice(0, -1);
       let tspan = this.elem.tspan(this.text);
       tspan.dy(`${1.3 * this.elem.font('size')}`);
+      tspan.fill(fillColor).stroke(strokeColor);
       this.elem.build(true);
       this.createCursor();
       this.elem.build(false);
