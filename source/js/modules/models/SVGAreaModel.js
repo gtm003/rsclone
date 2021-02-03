@@ -147,11 +147,11 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
-      console.log(`x: ${this.mouseDownElemSVG.x()}`);
-      console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
-      console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
-      console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
-      console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
+      //console.log(`x: ${this.mouseDownElemSVG.x()}`);
+      //console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
+      //console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
+      //console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
+      //console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
       //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
       this.onMouseMoveG();
     }
@@ -185,7 +185,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    this.appView.updateFunctionalArea(this.selectElements);                        // Почему-то не срабатывает на move
+    this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -665,6 +665,7 @@ export class SvgAreaModel {
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
+        console.log(this.selectElements);
         if (this.selectElements.length === 1) {
           this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
@@ -950,11 +951,15 @@ export class SvgAreaModel {
     const id = this.idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
+    // for (let i = 0; i < projects.length; i += 1) {
+    //   projects[i][1] = JSON.stringify(projects[i][1]);
+    // }
     const json = {
       id,
       filenames,
       projects
     };
+    console.log(this.getLastCondition());
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
     xhr.onload = () => {
@@ -1040,7 +1045,6 @@ export class SvgAreaModel {
         break;
       default:
         if (target.value.length !== 0) {
-          console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.value);
         } else {
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.getAttribute('placeholder'));
@@ -1108,8 +1112,8 @@ export class SvgAreaModel {
     }
     this.setSelectElements.clear();
     this.selectElements = [];
-    //this.appView.removeVisibilityPanel(this.selectElements);
-    //this.appView.deleteVisibilityContextMenu();
+    this.appView.removeVisibilityPanel(this.selectElements);
+    this.appView.deleteVisibilityContextMenu();
     this.saveHistory();
   }
 
