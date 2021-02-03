@@ -153,7 +153,7 @@ export class SvgAreaModel {
       console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
       console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
       //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
-      this.onMouseMoveG();
+      // this.onMouseMoveG();
     }
   }
 
@@ -185,7 +185,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    this.appView.updateFunctionalArea(this.selectElements);                        // Почему-то не срабатывает на move
+    this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -656,6 +656,7 @@ export class SvgAreaModel {
     arrayElementG.shift();
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
+        console.log(this.selectElements);
         if (this.selectElements.length === 1) {
           this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
@@ -1102,8 +1103,8 @@ export class SvgAreaModel {
     }
     this.setSelectElements.clear();
     this.selectElements = [];
-    //this.appView.removeVisibilityPanel(this.selectElements);
-    //this.appView.deleteVisibilityContextMenu();
+    this.appView.removeVisibilityPanel(this.selectElements);
+    this.appView.deleteVisibilityContextMenu();
     this.saveHistory();
   }
 
