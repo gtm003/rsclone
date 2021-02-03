@@ -148,7 +148,7 @@ export class SvgAreaModel {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
     }
-    //this.onMouseMoveG();
+    // this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -179,7 +179,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    //this.appView.updateFunctionalArea(this.selectElements);
+    // this.appView.updateFunctionalArea(this.selectElements);
   }
 
   rememberCoordCenter(elem) {
@@ -921,11 +921,15 @@ export class SvgAreaModel {
     const id = this.idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
+    // for (let i = 0; i < projects.length; i += 1) {
+    //   projects[i][1] = JSON.stringify(projects[i][1]);
+    // }
     const json = {
       id,
       filenames,
       projects
     };
+    console.log(this.getLastCondition());
     console.log(json);
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
     xhr.onload = () => {
@@ -969,7 +973,6 @@ export class SvgAreaModel {
         break;
       default:
         if (target.value.length !== 0) {
-          console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.value);
         } else {
           objSVG.attr(`${target.dataset[this.appView.propertiesDataAttribute]}`, target.getAttribute('placeholder'));

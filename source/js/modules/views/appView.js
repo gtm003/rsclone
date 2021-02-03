@@ -207,15 +207,15 @@ export class AppView {
 
   createArrayNameBtn(type) {
     if (type === 'rect') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'width', 'height'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
     } else if (type === 'line') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x1', 'y1', 'x2', 'y2'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x1', 'y1', 'x2', 'y2'];
     } else if (type === 'text') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'x', 'y', 'size', 'family', 'mark'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family', 'mark'];
     } else if (type === 'ellipse') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke', 'cx', 'cy', 'rx', 'ry'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'cx', 'cy', 'rx', 'ry'];
     } else if (type === 'path') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke'];
+      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width'];
     }
 
     return ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
@@ -263,7 +263,7 @@ export class AppView {
         }
         containerButton.append(button);
         containerPanel.append(containerButton);
-      } else if (arrayBtn[i] === 'stroke' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
+      } else if (arrayBtn[i] === 'stroke-width' || arrayBtn[i] === 'angle' || arrayBtn[i] === 'width' || arrayBtn[i] === 'height') {
         const icon = document.createElement('img');
         icon.setAttribute('src', `../../img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
