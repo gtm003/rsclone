@@ -147,8 +147,12 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
+      console.log(this.mouseDownElemSVG.x());
+      console.log(this.mouseDownElemSVG.transform('x'));
+      console.log(this.mouseDownElemSVG.cx());
+      console.log(this.mouseDownElemSVG.rbox().cx);
+      this.onMouseMoveG();
     }
-    //this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -179,7 +183,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    //this.appView.updateFunctionalArea(this.selectElements);
+    this.appView.updateFunctionalArea(this.selectElements);                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -651,7 +655,7 @@ export class SvgAreaModel {
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
         if (this.selectElements.length === 1) {
-          this.appView.updateFunctionalArea(this.model.selectElements, this.model.getAttr(this.model.selectElements[0]));
+          this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
       });
     }
@@ -973,6 +977,8 @@ export class SvgAreaModel {
   changePropertiesSVGElement(target) {
     this.appView.deleteVisibilityContextMenu();
     const objSVG = this.selectElements[0];
+    let svgAreaX = this.svgArea.rbox().x;
+    let svgAreaY = this.svgArea.rbox().y;
     switch (target.dataset[this.appView.propertiesDataAttribute]) {
       case 'angle':
         if (target.value.length !== 0) {
@@ -981,6 +987,20 @@ export class SvgAreaModel {
           objSVG.rotate(0);
         }
         break;
+        case 'x':
+          let xDelta = objSVG.transform('x') - objSVG.rbox().x + svgAreaX;
+          objSVG.transform({x : Number(target.value) + xDelta});
+          break;
+        case 'y':
+          let yDelta = objSVG.transform('y') - objSVG.rbox().y + svgAreaY;
+          objSVG.transform({y : Number(target.value) + yDelta});
+          break;
+        case 'cx':
+            objSVG.transform({x : Number(target.value)});
+            break;
+            case 'cy':
+              objSVG.transform({y : Number(target.value)});
+              break;
       case 'size':
         if (target.value.length !== 0) {
           objSVG.attr('font-size', target.value);
@@ -988,6 +1008,13 @@ export class SvgAreaModel {
           objSVG.attr('font-size', target.getAttribute('placeholder'));
         }
         break;
+        case 'stroke':
+          if (target.value.length !== 0) {
+            objSVG.attr('stroke-width', target.value);
+          } else {
+            objSVG.attr('stroke', target.getAttribute('placeholder'));
+          }
+          break;
       default:
         if (target.value.length !== 0) {
           console.log(`${target.dataset[this.appView.propertiesDataAttribute]}`);
