@@ -147,8 +147,14 @@ export class SvgAreaModel {
       if (!this.mouseDownElemSVG.hasClass('selectedElem')) {
         this.selectSingleElem(this.mouseDownElemSVG);
       }
+      console.log(`x: ${this.mouseDownElemSVG.x()}`);
+      console.log(`xTransform ${this.mouseDownElemSVG.transform('x')}`);
+      console.log(`cx: ${this.mouseDownElemSVG.cx()}`);
+      console.log(`cxrbox${this.mouseDownElemSVG.rbox().cx}`);
+      console.log(`xrbox${this.mouseDownElemSVG.rbox().x}`);
+      //console.log(`xrboxSVGArea${this.svgArea.rbox().x}`);
+      this.onMouseMoveG();
     }
-    // this.onMouseMoveG();
   }
 
   selectSingleElem(elem) {
@@ -179,7 +185,7 @@ export class SvgAreaModel {
   moveSingleElem(e, elem) {
     elem.transform({x : e.offsetX - this.x + elem.xLast});
     elem.transform({y : e.offsetY - this.y + elem.yLast});
-    // this.appView.updateFunctionalArea(this.selectElements);
+    this.appView.updateFunctionalArea(this.selectElements);                        // Почему-то не срабатывает на move
   }
 
   rememberCoordCenter(elem) {
@@ -569,6 +575,7 @@ export class SvgAreaModel {
       this.elem = this.svgArea.last();
       if (this.target.nodeName !== 'svg') {
         this.type = 'select';
+        this.changeActiveButton(this.type);
       }
     } else {
       if (this.elem !== null) {
@@ -615,19 +622,19 @@ export class SvgAreaModel {
       class: elem.attr('class'),
       angle : elem.transform('rotation'),
       stroke : elem.attr('stroke-width'),
-      x: (elem.rbox().x - svgAreaX),
-      y: (elem.rbox().y - svgAreaY),
-      width: (elem.width()),
-      height: (elem.height()),
-      cx: (elem.rbox().cx - svgAreaX),
-      cy: (elem.rbox().cy - svgAreaY),
-      rx: (elem.width()) / 2,
-      ry: (elem.height()) / 2,
-      x1 : pointStart.transform(matrix).x,
-      y1 : pointStart.transform(matrix).y,
-      x2 : pointEnd.transform(matrix).x,
-      y2 : pointEnd.transform(matrix).y,
-      size : size,
+      x: Math.round((elem.rbox().x - svgAreaX)),
+      y: Math.round((elem.rbox().y - svgAreaY)),
+      width: Math.round((elem.width())),
+      height: Math.round((elem.height())),
+      cx: Math.round((elem.rbox().cx - svgAreaX)),
+      cy: Math.round((elem.rbox().cy - svgAreaY)),
+      rx: Math.round((elem.width()) / 2),
+      ry: Math.round((elem.height()) / 2),
+      x1 : Math.round(pointStart.transform(matrix).x + elem.attr('x1')),
+      y1 : Math.round(pointStart.transform(matrix).y + elem.attr('y1')),
+      x2 : Math.round(pointEnd.transform(matrix).x),
+      y2 : Math.round(pointEnd.transform(matrix).y),
+      size : Math.round(size),
     }
     return attrOBJ;
   }
@@ -650,7 +657,7 @@ export class SvgAreaModel {
     for (let i = 0; i < arrayElementG.length; i += 1) {
       arrayElementG[i].addEventListener('mousemove', () => {
         if (this.selectElements.length === 1) {
-          this.appView.updateFunctionalArea(this.model.selectElements, this.model.getAttr(this.model.selectElements[0]));
+          this.appView.updateFunctionalArea(this.getAttr(this.selectElements[0]));
         }
       });
     }
@@ -844,14 +851,26 @@ export class SvgAreaModel {
   }
 
   openModalSvgCode() {
-    this.appView.svgCodeModal.innerHTML = '';
+    const textArea = this.appView.svgCodeModal.querySelector('textarea');
+
+    textArea.innerHTML = '';
     this.appView.svgCodeModal.classList.toggle('modal-svg-code--show');
     this.removeSelect();
-    this.appView.svgCodeModal.textContent = this.rootElement.innerHTML;
+    textArea.textContent = this.rootElement.innerHTML;
+  }
+
+  closeModalSvgCode() {
+    this.appView.svgCodeModal.classList.remove('modal-svg-code--show');
   }
 
   openModalSettings() {
     this.appView.settingsModal.classList.add('modal-settings--show');
+    const svgWidthInput = this.appView.settingsModal.querySelector('[data-modal-settings="width"]');
+    const svgHeightInput = this.appView.settingsModal.querySelector('[data-modal-settings="height"]');
+
+    svgWidthInput.focus();
+    svgWidthInput.value = this.svgArea.attr().width;
+    svgHeightInput.value = this.svgArea.attr().height;
   }
 
   closeModalSettings() {
@@ -872,6 +891,7 @@ export class SvgAreaModel {
     } else {
       this.appView.saveModal.classList.add('modal-save--show');
     }
+    this.appView.inputFileName.focus();
   }
 
   closeModalSave() {
@@ -952,10 +972,19 @@ export class SvgAreaModel {
     }
   }
 
+  changeActiveButton(buttonId) {
+    const activeButton = this.appView.toolsLeftContainer.querySelector('.active');
+    if (activeButton) activeButton.classList.remove('active');
+
+    this.appView.toolsLeftContainer.querySelector(`#${buttonId}`).classList.add('active');
+  }
+
   // часть по functionalArea 11alexey11
   changePropertiesSVGElement(target) {
     this.appView.deleteVisibilityContextMenu();
     const objSVG = this.selectElements[0];
+    let svgAreaX = this.svgArea.rbox().x;
+    let svgAreaY = this.svgArea.rbox().y;
     switch (target.dataset[this.appView.propertiesDataAttribute]) {
       case 'angle':
         if (target.value.length !== 0) {
@@ -964,11 +993,44 @@ export class SvgAreaModel {
           objSVG.rotate(0);
         }
         break;
+      case 'x':
+        let xDelta = objSVG.transform('x') - objSVG.rbox().x + svgAreaX;
+        objSVG.transform({x : Number(target.value) + xDelta});
+        break;
+      case 'y':
+        let yDelta = objSVG.transform('y') - objSVG.rbox().y + svgAreaY;
+        objSVG.transform({y : Number(target.value) + yDelta});
+        break;
+      case 'cx':
+        objSVG.transform({x : Number(target.value) - objSVG.cx()});       // Правильно только для неповернутых фигур
+        break;
+      case 'cy':
+        objSVG.transform({y : Number(target.value) - objSVG.cy()});       // Правильно только для неповернутых фигур
+        break;
+      case 'x1':
+        objSVG.attr('x1', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'x2':
+        objSVG.attr('x2', Number(target.value) - objSVG.transform('x'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y1':
+        objSVG.attr('y1', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
+      case 'y2':
+        objSVG.attr('y2', Number(target.value) - objSVG.transform('y'));  // Правильно только для неповернутых фигур
+        break;
       case 'size':
         if (target.value.length !== 0) {
           objSVG.attr('font-size', target.value);
         } else {
           objSVG.attr('font-size', target.getAttribute('placeholder'));
+        }
+        break;
+      case 'stroke':
+        if (target.value.length !== 0) {
+          objSVG.attr('stroke-width', target.value);
+        } else {
+          objSVG.attr('stroke', target.getAttribute('placeholder'));
         }
         break;
       default:
