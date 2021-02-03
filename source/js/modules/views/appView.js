@@ -152,74 +152,75 @@ export class AppView {
   }
 
   updateFunctionalArea(attribute) {
-    //if (selectElements.length === 1) {
-      // const arrayChildFunctionalArea = [...this.functionalAreaContainer.childNodes].filter((value) => value.tagName === 'LABEL');
-      //const attribute = selectElements[0].attr();
-      switch (attribute.type) {
-        case 'rect':
-          const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelRect[0].childNodes[1].value = attribute.id;
-          arrayLabelRect[2].childNodes[1].value = attribute.angle;
-          arrayLabelRect[3].childNodes[1].value = attribute.stroke;
-          arrayLabelRect[4].childNodes[1].value = attribute.x;
-          arrayLabelRect[5].childNodes[1].value = attribute.y;
-          arrayLabelRect[6].childNodes[1].value = attribute.width;
-          arrayLabelRect[7].childNodes[1].value = attribute.height;
-          break;
-        case 'line':
-          const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelLine[0].childNodes[1].value = attribute.id;
-          arrayLabelLine[2].childNodes[1].value = attribute.angle;
-          arrayLabelLine[3].childNodes[1].value = attribute.stroke;
-          arrayLabelLine[4].childNodes[1].value = attribute.x1;
-          arrayLabelLine[5].childNodes[1].value = attribute.y1;
-          arrayLabelLine[6].childNodes[1].value = attribute.x2;
-          arrayLabelLine[7].childNodes[1].value = attribute.y2;
-          break;
-        case 'text':
-          const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelText[0].childNodes[1].value = attribute.id;
-          arrayLabelText[2].childNodes[1].value = attribute.angle;
-          arrayLabelText[3].childNodes[1].value = attribute.stroke;
-          arrayLabelText[4].childNodes[1].value = attribute.x;
-          arrayLabelText[5].childNodes[1].value = attribute.y;
-          arrayLabelText[6].childNodes[1].value = attribute.size;
-          // здесь долджно быть начертание
-          break;
-        case 'ellipse':
-          const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelEllipse[0].childNodes[1].value = attribute.id;
-          arrayLabelEllipse[2].childNodes[1].value = attribute.angle;
-          arrayLabelEllipse[3].childNodes[1].value = attribute.stroke;
-          arrayLabelEllipse[4].childNodes[1].value = attribute.cx;
-          arrayLabelEllipse[5].childNodes[1].value = attribute.cy;
-          arrayLabelEllipse[6].childNodes[1].value = attribute.rx;
-          arrayLabelEllipse[7].childNodes[1].value = attribute.ry;
-          break;
-        case 'path':
-          const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
-          arrayLabelPencil[0].childNodes[1].value = attribute.id; // id
-          arrayLabelPencil[2].childNodes[1].value = attribute.angle;
-          arrayLabelPencil[3].childNodes[1].value = attribute.stroke;
-          break;
-      //}
+    console.log(attribute);
+    switch (attribute.type) {
+      case 'rect':
+        const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelRect[0].childNodes[1].value = attribute.id;
+        arrayLabelRect[2].childNodes[1].value = attribute.angle;
+        arrayLabelRect[3].childNodes[1].value = attribute.stroke;
+        arrayLabelRect[4].childNodes[1].value = attribute.x;
+        arrayLabelRect[5].childNodes[1].value = attribute.y;
+        arrayLabelRect[6].childNodes[1].value = attribute.width;
+        arrayLabelRect[7].childNodes[1].value = attribute.height;
+        break;
+      case 'line':
+        const arrayLabelLine = [...this.lineContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelLine[0].childNodes[1].value = attribute.id;
+        arrayLabelLine[2].childNodes[1].value = attribute.angle;
+        arrayLabelLine[3].childNodes[1].value = attribute.stroke;
+        arrayLabelLine[4].childNodes[1].value = attribute.x1;
+        arrayLabelLine[5].childNodes[1].value = attribute.y1;
+        arrayLabelLine[6].childNodes[1].value = attribute.x2;
+        arrayLabelLine[7].childNodes[1].value = attribute.y2;
+        break;
+      case 'text':
+        const arrayLabelText = [...this.textContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelText[0].childNodes[1].value = attribute.id;
+        arrayLabelText[2].childNodes[1].value = attribute.angle;
+        arrayLabelText[3].childNodes[1].value = attribute.stroke;
+        arrayLabelText[4].childNodes[1].value = attribute.x;
+        arrayLabelText[5].childNodes[1].value = attribute.y;
+        arrayLabelText[6].childNodes[1].value = attribute.size;
+        // здесь долджно быть начертание
+        break;
+      case 'ellipse':
+        const arrayLabelEllipse = [...this.ellipseContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelEllipse[0].childNodes[1].value = attribute.id;
+        arrayLabelEllipse[2].childNodes[1].value = attribute.angle;
+        arrayLabelEllipse[3].childNodes[1].value = attribute.stroke;
+        arrayLabelEllipse[4].childNodes[1].value = attribute.cx;
+        arrayLabelEllipse[5].childNodes[1].value = attribute.cy;
+        arrayLabelEllipse[6].childNodes[1].value = attribute.rx;
+        arrayLabelEllipse[7].childNodes[1].value = attribute.ry;
+        break;
+      case 'path':
+        const arrayLabelPencil = [...this.pencilContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
+        arrayLabelPencil[0].childNodes[1].value = attribute.id; // id
+        arrayLabelPencil[2].childNodes[1].value = attribute.angle;
+        arrayLabelPencil[3].childNodes[1].value = attribute.stroke;
+        arrayLabelPencil[4].childNodes[1].value = attribute.x;
+        arrayLabelPencil[5].childNodes[1].value = attribute.y;
+        arrayLabelPencil[6].childNodes[1].value = attribute.width;
+        arrayLabelPencil[7].childNodes[1].value = attribute.height;
+        break;
     }
   }
 
   createArrayNameBtn(type) {
     if (type === 'rect') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
     } else if (type === 'line') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x1', 'y1', 'x2', 'y2'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x1', 'y1', 'x2', 'y2'];
     } else if (type === 'text') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family', 'mark'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family', 'mark'];
     } else if (type === 'ellipse') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width', 'cx', 'cy', 'rx', 'ry'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'cx', 'cy', 'rx', 'ry'];
     } else if (type === 'path') {
-      return ['delete', 'convert', 'id', 'class', 'angle', 'stroke-width'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'width', 'height'];
     }
 
-    return ['delete', 'convert', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
+    return ['delete', 'left', 'right', 'top', 'bottom', 'center', 'middle'];
   }
 
   createSelectElement(typeElement) {
@@ -315,7 +316,7 @@ export class AppView {
     this.pencilContainerPanel = document.createElement('div');
     this.pencilContainerPanel.classList.add('tools-top__functional-area__pencil', 'visibility');
     const arrayPencilBtn = this.createArrayNameBtn('path');
-    this.createFunctionalAreaAlignmentElements(this.pencilContainerPanel, arrayPencilBtn);
+    this.createFunctionalAreaElements(this.pencilContainerPanel, arrayPencilBtn);
 
     this.alignContainerPanel = document.createElement('div');
     this.alignContainerPanel.classList.add('tools-top__functional-area__align', 'visibility');
