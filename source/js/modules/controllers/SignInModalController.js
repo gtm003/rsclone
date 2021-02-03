@@ -19,10 +19,11 @@ export class SignInModalController {
   }
 
   openSignInModal({target}) {
-    if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
+    const button = target.closest('[data-register');
+    if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
       this.appView.signInModal = this.signInModalObject.createSignInModal(true);
       this.appView.signInModal.addEventListener('click', this.onSignInModalClick);
-    } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Sign Out') {
+    } else if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Sign Out') {
       this.signInModalObject.changeButtonSign(false);
       const lengthContainer = this.appView.toolsRightContainer.childNodes.length - 1;
       for (let i = 0; i < lengthContainer; i += 1) {
@@ -102,7 +103,8 @@ export class SignInModalController {
   }
 
   onToolsRightProfileClick({target}) {
-    if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
+    const button = target.closest('[data-register');
+    if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
       let xhr = new XMLHttpRequest();
       xhr.open('GET', `https://rs-demo-back.herokuapp.com/auth/login/${this.viewModel.idClient}`);
       xhr.responseType = 'json';
@@ -114,7 +116,7 @@ export class SignInModalController {
         this.signInModalObject.createModalOpen(this.filenames);
         this.signInModalObject.containerModalOpenFiles.addEventListener('click', this.onContainerModalOpenFilesClick);
       };
-    } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Save') {
+    } else if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Save') {
       this.viewModel.openModalSave('server');
     }
   }

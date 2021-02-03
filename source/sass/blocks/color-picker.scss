@@ -5,6 +5,7 @@
   width: 0px;
   height: 0px;
   margin: 5px;
+  // gap: 10px;
   padding: 15px;
   border-radius: 10px;
   grid-row-gap: 5px;
@@ -12,6 +13,7 @@
   position: absolute;
   top: 40%;
   z-index: 2;
+  border-radius: 5px;
 
   .pallete {
     grid-area: 1 / 1 / 2 / 5;
