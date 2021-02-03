@@ -42,13 +42,13 @@ export class SvgAreaController {
   onSvgAreaMouseMove(e) {
     e.preventDefault();
     this.model.wasMoved = true;
-    if (this.model.type === 'fill' || this.model.type === 'stroke') return;
+    if (!(this.model.type === 'fill' || this.model.type === 'stroke'))
     this.model.getTypeOfMouseMoveAction(this.model.type, e);
   }
 
   onSvgAreaMouseUp(e) {
     e.preventDefault();
-    if (this.model.type === 'fill' || this.model.type === 'stroke') return;
+    if (!(this.model.type === 'fill' || this.model.type === 'stroke'))
     this.model.getTypeOfMouseUpAction(this.model.type);
     if (this.model.wasMoved && !this.model.isSelectFrame && !this.model.isPath) {
       this.model.saveHistory();
