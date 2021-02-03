@@ -317,9 +317,12 @@ export class SvgAreaModel {
   }
 
   inputText(event) {
-    console.log(this.elem.node.childNodes[0].instance.attr('fill'));
     let fillColor = this.elem.node.childNodes[0].instance.attr('fill');
     let strokeColor = this.elem.node.childNodes[0].instance.attr('stroke');
+    if (fillColor === 'transparent' && strokeColor === 'transparent') {
+      fillColor = this.fillColor;
+      strokeColor = this.strokeColor;
+    }
     //console.log(color);
     if (this.type === 'text' && event.key.length < 2) {
       this.text += event.key;
