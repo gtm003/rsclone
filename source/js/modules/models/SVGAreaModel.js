@@ -565,9 +565,7 @@ export class SvgAreaModel {
   }
 
   drawPencilTrace(e) {
-    let arr = this.elem.array().value;
-    arr.push(['C', e.offsetX, e.offsetY, e.offsetX, e.offsetY, e.offsetX, e.offsetY]);
-    this.elem.plot(arr);
+    this.elem.L(e.offsetX, e.offsetY);
   }
 
   addPathNewNode(e) {
