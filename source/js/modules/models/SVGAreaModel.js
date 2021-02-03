@@ -676,6 +676,14 @@ export class SvgAreaModel {
 
   // из контроллера часть alexk08
 
+  addOverlay() {
+    this.appView.overlay.classList.add('overlay--on');
+  }
+
+  removeOverlay() {
+    this.appView.overlay.classList.remove('overlay--on');
+  }
+
   saveHistory() {
     const svgElements = this.svgArea.children();
 
@@ -855,13 +863,16 @@ export class SvgAreaModel {
 
   openNewImageModal() {
     this.appView.newImageModal.classList.add('modal-new-image--show');
+    this.addOverlay();
   }
 
   closeNewImageModal() {
     this.appView.newImageModal.classList.remove('modal-new-image--show');
+    this.removeOverlay();
   }
 
   openModalSvgCode() {
+    this.addOverlay();
     const textArea = this.appView.svgCodeModal.querySelector('textarea');
 
     textArea.innerHTML = '';
@@ -872,6 +883,7 @@ export class SvgAreaModel {
 
   closeModalSvgCode() {
     this.appView.svgCodeModal.classList.remove('modal-svg-code--show');
+    this.removeOverlay();
   }
 
   openModalSettings() {
@@ -882,10 +894,12 @@ export class SvgAreaModel {
     svgWidthInput.focus();
     svgWidthInput.value = this.svgArea.attr().width;
     svgHeightInput.value = this.svgArea.attr().height;
+    this.addOverlay();
   }
 
   closeModalSettings() {
     this.appView.settingsModal.classList.remove('modal-settings--show');
+    this.removeOverlay();
   }
 
   changeProperties() {
@@ -897,6 +911,7 @@ export class SvgAreaModel {
   }
 
   openModalSave(flagStr) {
+    this.addOverlay();
     if (flagStr === 'server') {
       this.appView.saveModal.classList.add('modal-save--server');
     } else {
@@ -909,6 +924,7 @@ export class SvgAreaModel {
     this.appView.inputFileName.value = '';
     this.appView.errorMessage.style.visibility = 'hidden';
     this.appView.saveModal.classList.remove('modal-save--show', 'modal-save--server');
+    this.removeOverlay();
   }
 
   saveFile(fileName, flagStr) {
