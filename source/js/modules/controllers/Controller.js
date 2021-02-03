@@ -37,7 +37,7 @@ export class Controller {
     this.contextMenuController = new ContextMenuController(this.appView, this.model); // модуль контроллер ContextMenu
     this.hotKeysController = new HotKeysController(this.appView, this.model); // модуль контроллер HotKeys
     this.colorController = new ColorPickerController(this.appView, this.model); // модуль контроллер ColorPicker
-    this.signInModelController = new SignInModalController(this.appView, this.model); // модуль контроллер входа в систему
+    this.signInModelController = new SignInModalController(this.appView, this.model, this.viewModel); // модуль контроллер входа в систему
 
     this.addAllListeners();
   }
