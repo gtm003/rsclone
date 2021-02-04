@@ -16,6 +16,8 @@ export class TabsController {
 
   onToolsBottomClick({ target }) {
     const button = target.closest('[data-tab]');
+
+    if (!button) return;
     const tabDataId = button.dataset[`${this.appView.tabsDataAttribute}`];
 
     if (tabDataId) {
