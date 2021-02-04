@@ -56,7 +56,6 @@ export class SvgAreaController {
     this.model.wasMoved = false;
     this.model.isSelectFrame = false;
     this.appView.removeVisibilityPanel(this.model.selectElements);
-    console.log(this.model.selectElements);
     if (this.model.selectElements.length === 1) {
       this.appView.updateFunctionalArea(this.model.getAttr(this.model.selectElements[0]));
     }

@@ -155,7 +155,6 @@ export class AppView {
   }
 
   updateFunctionalArea(attribute) {
-    console.log(attribute);
     switch (attribute.type) {
       case 'rect':
         const arrayLabelRect = [...this.rectContainerPanel.childNodes].filter((item) => typeof item.childNodes[1] !== 'undefined');
@@ -216,7 +215,7 @@ export class AppView {
     } else if (type === 'line') {
       return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x1', 'y1', 'x2', 'y2'];
     } else if (type === 'text') {
-      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family', 'mark'];
+      return ['delete', 'id', 'class', 'angle', 'stroke-width', 'x', 'y', 'size', 'family'];
     } else if (type === 'ellipse') {
       return ['delete', 'id', 'class', 'angle', 'stroke-width', 'cx', 'cy', 'rx', 'ry'];
     } else if (type === 'path') {

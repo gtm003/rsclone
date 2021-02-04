@@ -2,9 +2,10 @@ import {SignInModal} from '../views/SignInModal';
 import {createElement} from '../../utils/createELement';
 
 export class SignInModalController {
-  constructor(appView, model) {
+  constructor(appView, model, viewModel) {
     this.appView = appView;
     this.model = model;
+    this.viewModel = viewModel;
     this.signInModalObject = new SignInModal(this.appView, this.appView.contentContainer);
 
     this.openSignInModal = this.openSignInModal.bind(this);
@@ -19,7 +20,7 @@ export class SignInModalController {
   }
 
   openSignInModal({target}) {
-    const button = target.closest('[data-register');
+    const button = target.closest('[data-register]');
     if (!button) return;
     console.log(button);
     if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Sign In') {
@@ -110,7 +111,7 @@ export class SignInModalController {
   }
 
   onToolsRightProfileClick({target}) {
-    const button = target.closest('[data-register');
+    const button = target.closest('[data-register]');
     if (!button) return;
     if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Open') {
       let xhr = new XMLHttpRequest();
@@ -133,7 +134,22 @@ export class SignInModalController {
   onContainerModalOpenFilesClick({target}) {
     if (target.dataset[this.appView.signInButtonsDataAttribute] === 'File') {
       const index = this.filenames.indexOf(target.value);
-      console.log(this.projects[index]);
+      const projects = this.projects[index];
+      const projectArray = this.projects[index].split('@');
+      let arrayOut = [];
+      let arrayIn = [];
+      projectArray.forEach((itemOut) => {
+        const elem = itemOut.split('$');
+        elem.forEach((itemIn) => {
+          // console.log(elem);
+          arrayIn.push(JSON.parse(itemIn));
+        });
+        arrayOut.push(arrayIn);
+        arrayIn = [];
+      });
+
+      this.viewModel.createNewTab(arrayOut);
+      this.viewModel.openTab(this.appView.tabs.length - 1);
       // вот здесь делать создание нового холста по клику, мб придется перефакторить код
     } else if (target.dataset[this.appView.signInButtonsDataAttribute] === 'Cancel') {
       this.signInModalObject.containerModalOpenFiles.removeEventListener('click', this.onContainerModalOpenFilesClick);

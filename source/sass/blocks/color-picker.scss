@@ -108,6 +108,17 @@
     display: grid;
     width: 330px;
     height: 310px;
+    animation-duration: 2s;
+    animation-name: slidein;
+  }
+  @keyframes slidein {
+    from {
+      margin-left: -100%;
+    }
+
+    to {
+      margin-left: 0%;
+    }
   }
 }
 
