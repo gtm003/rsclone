@@ -655,6 +655,7 @@ button,
       -ms-flex-align: center;
           align-items: center;
   height: calc(100vh - 193px);
+  z-index: 3;
   background-color: #ADB5BD; }
   .tools-left button {
     display: -webkit-box;
@@ -1501,7 +1502,23 @@ button,
     display: -ms-grid;
     display: grid;
     width: 330px;
-    height: 310px; }
+    height: 310px;
+    -webkit-animation-duration: 2s;
+            animation-duration: 2s;
+    -webkit-animation-name: slidein;
+            animation-name: slidein; }
+
+@-webkit-keyframes slidein {
+  from {
+    margin-left: -100%; }
+  to {
+    margin-left: 0%; } }
+
+@keyframes slidein {
+  from {
+    margin-left: -100%; }
+  to {
+    margin-left: 0%; } }
 
 .modal-contextmenu {
   display: -webkit-box;
