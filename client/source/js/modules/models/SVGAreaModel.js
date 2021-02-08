@@ -47,8 +47,6 @@ export class SvgAreaModel {
     this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
-
-    this.idClient = null;
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -96,8 +94,6 @@ export class SvgAreaModel {
   }
 
   selectDown(e) {
-    //console.log(this.getAttr(e.target.instance));
-    //console.log(e.target.instance.attr());
     this.mouseDownElemSVG = e.target.instance;
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
@@ -901,7 +897,7 @@ export class SvgAreaModel {
     this.removeOverlay();
   }
 
-  saveFile(fileName, flagStr) {
+  saveFile(fileName, flagStr, idClient) {
     if (fileName === '') {
       this.appView.errorMessage.style.visibility = 'visible';
       return;
@@ -911,7 +907,7 @@ export class SvgAreaModel {
     if (flagStr === 'client') {
       this.downloadClient(this.svgArea.svg(), fileName, 'image/svg+xml');
     } else if (flagStr === 'server') {
-      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml');
+      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml', idClient);
     }
   }
 
@@ -933,13 +929,12 @@ export class SvgAreaModel {
     }
   }
 
-  downloadServer(data, filename, type) {
+  downloadServer(data, filename, type, idClient) {
     let xhr = new XMLHttpRequest();
-    console.log(this.idClient);
     xhr.open('PUT', 'https://rs-demo-back.herokuapp.com/auth/save');
     xhr.responseType = 'json';
     xhr.setRequestHeader('Content-Type', 'application/json');
-    const id = this.idClient;
+    const id = idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
     let str = '';
@@ -959,7 +954,7 @@ export class SvgAreaModel {
     };
     xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
     xhr.onload = () => {
-      console.log(xhr.response);
+      console.log(json, 'файл успешно сохранен')
     }
   }
 

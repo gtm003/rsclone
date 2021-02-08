@@ -7,6 +7,7 @@ import {SettingsModal} from './SettingsModal';
 import {SvgCodeModal} from './SvgCodeModal';
 import {SaveModal} from './SaveModal';
 import {MainViewModel} from '../models/MainViewModel';
+import {SignInModal} from './SignInModal';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -68,6 +69,7 @@ export class AppView {
     this.alignContainerPanel = null;
     this.selectProperty = null;
 
+    this.signInModalInstance = null;
     this.signInModal = null;
   }
 
@@ -77,9 +79,12 @@ export class AppView {
     this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
     this.svgCodeModal = new SvgCodeModal(this.svgCodeDataAttribute).createSvgCodeModal();
     this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
+
     this.saveModal = this.saveModalInstance.createSaveModal();
     this.inputFileName = this.saveModalInstance.createInputFileName();
     this.errorMessage = this.saveModalInstance.createErrorMessage();
+
+    this.signInModalInstance = new SignInModal(this);
 
     const wrapper = this.createWrapper();
     this.headerElement = this.createHeader();
