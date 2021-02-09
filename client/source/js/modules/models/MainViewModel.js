@@ -26,6 +26,7 @@ export class MainViewModel {
     this.appView = appView;
 
     this.controllers = [];
+    this.idClient = null;
   }
 
   init(tabsCount) {

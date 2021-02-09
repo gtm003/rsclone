@@ -1,7 +1,8 @@
 export class MainMenuController {
-  constructor(appView, model) {
+  constructor(appView, model, viewModel) {
     this.appView = appView;
     this.model = model;
+    this.viewModel = viewModel;
 
     this.onMenuButtonsClick = this.onMenuButtonsClick.bind(this);
     this.onNewImageModalClick = this.onNewImageModalClick.bind(this);
@@ -43,8 +44,6 @@ export class MainMenuController {
       this.model.openModalSettings();
     } else if (buttonDataAttribute === 'Get the code') {
       this.model.openModalSvgCode();
-      // console.log(JSON.stringify(this.model.getLastCondition()));
-      // console.log(this.model.getLastCondition());
     }
 
     const button = target.closest('[data-menu]');
@@ -83,7 +82,7 @@ export class MainMenuController {
 
     if (buttonDataAttribute === 'save') {
       if (this.appView.saveModal.classList.contains('modal-save--server')) {
-        this.model.saveFile(this.appView.inputFileName.value, 'server');
+        this.model.saveFile(this.appView.inputFileName.value, 'server', this.viewModel.idClient);
       } else {
         this.model.saveFile(this.appView.inputFileName.value, 'client');
       }
