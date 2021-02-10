@@ -16,16 +16,15 @@ export class ToolsLeftController {
   }
 
   onToolsLeftClick({target}) {
+    this.appView.deleteVisibilityContextMenu();
+    this.model.removeSelect();
+    this.appView.removeVisibilityPanel(this.model.selectElements);
+
     if (target.closest('button')) {
       if (this.model.isActiveText) this.model.onTextBlur();
-      this.model.removeSelect();
       const toolButtonId = target.closest('button').id;
       this.model.type = toolButtonId;
       this.model.changeActiveButton(toolButtonId);
-      // this.model.svgArea.mousedown(null);
-      // this.model.svgArea.mousedown(this.svgAreaController.onSvgAreaMouseDown);
-      // this.svgAreaController.removeAllListeners();
-      // this.svgAreaController.addAllListeners();
       if (toolButtonId === 'fill' || toolButtonId === 'stroke') {
         this.appView.colorPicker.openColorPicker();
         this.model.addOverlay();

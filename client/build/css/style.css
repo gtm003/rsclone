@@ -836,10 +836,11 @@ button,
             align-items: center;
     width: calc(100vw - 92px);
     background-color: #ADB5BD;
-    right: 46px;
+    left: 46px;
     top: 38px;
     position: absolute;
-    z-index: 4; }
+    z-index: 4;
+    min-width: 932px; }
   .tools-top__functional-area__rect, .tools-top__functional-area__circle, .tools-top__functional-area__line, .tools-top__functional-area__text, .tools-top__functional-area__ellipse, .tools-top__functional-area__pencil, .tools-top__functional-area__align {
     height: 88%;
     display: -webkit-box;
@@ -1502,11 +1503,7 @@ button,
     display: -ms-grid;
     display: grid;
     width: 330px;
-    height: 310px;
-    -webkit-animation-duration: 2s;
-            animation-duration: 2s;
-    -webkit-animation-name: slidein;
-            animation-name: slidein; }
+    height: 310px; }
 
 @-webkit-keyframes slidein {
   from {
@@ -1715,7 +1712,9 @@ button,
                 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
         background-color: #6C757D; }
   .modal-sign-in__message {
-    padding-bottom: 10px; }
+    padding-bottom: 10px;
+    font-size: 14px;
+    color: #FC6612; }
   .modal-sign-in__unregistered {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -1773,7 +1772,7 @@ button,
     .modal-sign-in__container-btn input:hover {
       color: #F8F9FA; }
 
-.modal--open {
+.modal-open {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -1797,13 +1796,13 @@ button,
   z-index: 7;
   padding: 20px;
   border-radius: 5px; }
-  .modal--open__content {
+  .modal-open__content {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
         flex-wrap: wrap; }
-    .modal--open__content__btn {
+    .modal-open__content__btn {
       min-height: 50px;
       min-width: 100px;
       margin: 10px;
@@ -1819,12 +1818,12 @@ button,
       cursor: pointer;
       font-weight: 300;
       color: #E9ECEF; }
-      .modal--open__content__btn:active {
+      .modal-open__content__btn:active {
         -webkit-transform: scale(0.97);
                 transform: scale(0.97); }
-      .modal--open__content__btn:hover {
+      .modal-open__content__btn:hover {
         background: rgba(206, 212, 218, 0.5); }
-    .modal--open__content__cancel {
+    .modal-open__content__cancel {
       width: 100px;
       padding: 10px;
       margin: 0 auto;
@@ -1839,11 +1838,16 @@ button,
       cursor: pointer;
       font-weight: 300;
       color: #E9ECEF; }
-      .modal--open__content__cancel:active {
+      .modal-open__content__cancel:active {
         -webkit-transform: scale(0.97);
                 transform: scale(0.97); }
-      .modal--open__content__cancel:hover {
+      .modal-open__content__cancel:hover {
         background: rgba(206, 212, 218, 0.5); }
+  .modal-open__message {
+    text-align: center;
+    margin: 100px auto;
+    font-size: 20px;
+    color: #FC6612; }
 
 .overlay {
   display: none;

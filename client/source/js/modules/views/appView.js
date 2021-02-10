@@ -7,6 +7,7 @@ import {SettingsModal} from './SettingsModal';
 import {SvgCodeModal} from './SvgCodeModal';
 import {SaveModal} from './SaveModal';
 import {MainViewModel} from '../models/MainViewModel';
+import {SignInModal} from './SignInModal';
 
 // const toolsBottomBtnName = ['red', 'green', 'blue'];
 // const MENU_BUTTONS_NAMES_EN = ['New Image', 'Save SVG', 'Import SVG', 'Document Properties', 'Get SVG-code', 'Undo', 'Redo'];
@@ -68,6 +69,7 @@ export class AppView {
     this.alignContainerPanel = null;
     this.selectProperty = null;
 
+    this.signInModalInstance = null;
     this.signInModal = null;
   }
 
@@ -77,9 +79,12 @@ export class AppView {
     this.settingsModal = new SettingsModal(this.settingsElementsDataAttribute).createSettingsModal();
     this.svgCodeModal = new SvgCodeModal(this.svgCodeDataAttribute).createSvgCodeModal();
     this.saveModalInstance = new SaveModal(this.saveElementsDataAttribute);
+
     this.saveModal = this.saveModalInstance.createSaveModal();
     this.inputFileName = this.saveModalInstance.createInputFileName();
     this.errorMessage = this.saveModalInstance.createErrorMessage();
+
+    this.signInModalInstance = new SignInModal(this);
 
     const wrapper = this.createWrapper();
     this.headerElement = this.createHeader();
@@ -273,7 +278,7 @@ export class AppView {
         icon.setAttribute('src', `img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
         const button = document.createElement('input');
-        button.setAttribute('input', 'text');
+        button.setAttribute('type', 'number');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         span.append(icon);
@@ -283,11 +288,20 @@ export class AppView {
       } else if (arrayBtn[i] === 'family') {
         containerButton.append(this.createSelectElement(arrayBtn[i]));
         containerPanel.append(containerButton);
+      } else if (arrayBtn[i] === 'id' || arrayBtn[i] === 'class') {
+        const span = document.createElement('span');
+        span.textContent = arrayBtn[i];
+        const button = document.createElement('input');
+        button.setAttribute('type', 'text');
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
+        button.classList.add('tools-top__functional-area__container__btn--keyup');
+        containerButton.append(span, button);
+        containerPanel.append(containerButton);
       } else {
         const span = document.createElement('span');
         span.textContent = arrayBtn[i];
         const button = document.createElement('input');
-        button.setAttribute('input', 'text');
+        button.setAttribute('type', 'number');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         containerButton.append(span, button);

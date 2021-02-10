@@ -1,9 +1,8 @@
 import {createElement} from '../../utils/createELement';
 
 export class SignInModal {
-  constructor(appView, rootElement) {
+  constructor(appView) {
     this.appView = appView;
-    this.rootElement = rootElement;
   }
 
   createSignInModal(flag) {
@@ -43,13 +42,15 @@ export class SignInModal {
       signUpButtonsContainer.append(signInButton, cancelButton);
       signInModal.append(containerField, containerMessage, signUpButtonsContainer);
     }
-    this.rootElement.append(signInModal);
+
+    this.appView.contentContainer.append(signInModal);
 
     return signInModal;
   }
 
   removeSignInModal() {
     const container = this.appView.signInModal;
+
     if (container !== null) {
       container.remove();
     }
@@ -58,16 +59,14 @@ export class SignInModal {
   changeButtonSign(flag) {
     if (flag) {
       this.appView.toolsRightContainer.childNodes[0].innerHTML = '<svg width="36" height="36"><use xlink:href="#icon-sign-out"></use></svg>';
-      // this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign Out';
       this.appView.toolsRightContainer.childNodes[0].dataset[this.appView.signInButtonsDataAttribute] = 'Sign Out';
     } else {
       this.appView.toolsRightContainer.childNodes[0].innerHTML = '<svg width="35" height="35"><use xlink:href="#icon-sign-in"></use></svg>';
-      // this.appView.toolsRightContainer.childNodes[0].textContent = 'Sign In';
       this.appView.toolsRightContainer.childNodes[0].dataset[this.appView.signInButtonsDataAttribute] = 'Sign In';
     }
   }
 
-  createProfile() {
+  renderProfile() { // правильнее эту функцию будет назвать renderProfile
     const buttonOpen = createElement('button', ['tools-right__open'], {'type': 'button'}, 'Open Files');
     buttonOpen.dataset[this.appView.signInButtonsDataAttribute] = 'Open';
     buttonOpen.innerHTML = '<svg width="30" height="28"><use xlink:href="#icon-open"></use></svg>';
@@ -77,17 +76,23 @@ export class SignInModal {
     this.appView.toolsRightContainer.append(buttonOpen, buttonSave);
   }
 
-  createModalOpen(arrayFiles) {
-    this.containerModalOpenFiles = createElement('div', ['modal--open']);
-    const contentButtons = createElement('div', ['modal--open__content']);
-    for (let i = 0; i < arrayFiles.length; i += 1) {
-      const btn = createElement('input', ['modal--open__content__btn'], {'type': 'button', 'value': `${arrayFiles[i]}`});
-      btn.dataset[this.appView.signInButtonsDataAttribute] = 'File';
-      contentButtons.append(btn);
+  renderModalOpen(arrayFiles) { // правильнее эту функцию будет назвать renderModalOpen
+    this.containerModalOpenFiles = createElement('div', ['modal-open']);
+    const contentButtons = createElement('div', ['modal-open__content']);
+    if (arrayFiles === null) {
+      const message = createElement('div', ['modal-open__message']);
+      message.textContent = 'There are no files in the profile yet.';
+      contentButtons.append(message);
+    } else {
+      for (let i = 0; i < arrayFiles.length; i += 1) {
+        const btn = createElement('input', ['modal-open__content__btn'], {'type': 'button', 'value': `${arrayFiles[i]}`});
+        btn.dataset[this.appView.signInButtonsDataAttribute] = 'File';
+        contentButtons.append(btn);
+      }
     }
-    const btnCancel = createElement('input', ['modal--open__content__cancel'], {'type': 'button', 'value': 'Cancel'});
+    const btnCancel = createElement('input', ['modal-open__content__cancel'], {'type': 'button', 'value': 'Cancel'});
     btnCancel.dataset[this.appView.signInButtonsDataAttribute] = 'Cancel';
     this.containerModalOpenFiles.append(contentButtons, btnCancel);
-    this.rootElement.append(this.containerModalOpenFiles);
+    this.appView.contentContainer.append(this.containerModalOpenFiles);
   }
 }

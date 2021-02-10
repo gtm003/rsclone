@@ -26,6 +26,7 @@ export class MainViewModel {
     this.appView = appView;
 
     this.controllers = [];
+    this.idClient = null;
   }
 
   init(tabsCount) {
@@ -61,6 +62,7 @@ export class MainViewModel {
     this.appView.renderTabControl();
 
     this.callNewController(this.appView.tabs.length - 1, lastCondition);
+    this.appView.functionalAreaContainer.classList.add('visibility');
   }
 
   openTab(tabId) {
@@ -73,6 +75,7 @@ export class MainViewModel {
 
     this.removeActiveConditionTab();
     this.setActiveConditionTab(tabId);
+    this.appView.functionalAreaContainer.classList.add('visibility');
   }
 
   closeTab(tabId) {
@@ -82,6 +85,7 @@ export class MainViewModel {
     this.removeTabControl(tabId);
     this.removeTab(tabId);
     this.setActiveTab();
+    this.appView.functionalAreaContainer.classList.add('visibility');
   }
 
   setActiveConditionTabControl(tabId) {

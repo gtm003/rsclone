@@ -47,8 +47,6 @@ export class SvgAreaModel {
     this.isSelectFrame = false;
 
     this.inputText = this.inputText.bind(this);
-
-    this.idClient = null;
   }
 
   getTypeOfMouseDownAction(type, e) {
@@ -96,8 +94,6 @@ export class SvgAreaModel {
   }
 
   selectDown(e) {
-    //console.log(this.getAttr(e.target.instance));
-    //console.log(e.target.instance.attr());
     this.mouseDownElemSVG = e.target.instance;
     if (this.mouseDownElemSVG.type === 'tspan') {
       this.mouseDownElemSVG = this.mouseDownElemSVG.parent();
@@ -342,7 +338,7 @@ export class SvgAreaModel {
   }
 
   createPencilTrace(e) {
-    this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.path().M(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     this.elem.attr('stroke-width', 2);
   }
 
@@ -504,7 +500,6 @@ export class SvgAreaModel {
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
-      this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
     } else {
       this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),
@@ -658,46 +653,65 @@ export class SvgAreaModel {
     this.appView.overlay.classList.remove('overlay--on');
   }
 
-  saveHistory() {
-    const svgElements = this.svgArea.children();
-
-    const svgElementsWithoutG = svgElements
-      .filter(initializer => initializer.type !== 'g')
-      .map(initializer => {
-        if (initializer.type === 'defs') {
-          return initializer;
-        }
-        if (initializer.type === 'text') {
-          return [
-            initializer.type,
-            initializer.attr(),
-            initializer.node.childNodes[0].textContent
-          ];
-        }
-        if (initializer.type === 'path') {
-          if (initializer._segments) {
-            return [
-              initializer.type,
-              initializer._segments
-            ];
-          }
-          return [
-            initializer.type,
-            initializer.attr()
-          ]
-        }
+  getElementDataForSaving(element) {
+    if (element.type === 'defs') {
+      return element;
+    }
+    if (element.type === 'text') {
+      let attr = element.attr();
+      const stroke = element.node.childNodes[0].getAttribute('stroke');
+      const fill = element.node.childNodes[0].getAttribute('fill');
+      if (stroke) attr['stroke'] = stroke;
+      if (fill) attr['fill'] = fill;
+      return [
+        element.type,
+        attr,
+        element.node.childNodes[0].textContent,
+      ];
+    }
+    if (element.type === 'path') {
+      if (element._segments) {
+        const attrNames = ['transform', 'fill', 'stroke', 'stroke-width'];
+        let attrObj = {};
+        attrNames.forEach(name => {
+          const attr = element.node.getAttribute(`${name}`);
+          if (attr) attrObj[`${name}`] = attr;
+        });
         return [
-          initializer.type,
-          initializer.attr()
+          element.type,
+          element._segments,
+          attrObj
         ];
-      });
+      }
+      return [
+        element.type,
+        element.attr()
+      ]
+    }
+    return [
+      element.type,
+      element.attr()
+    ];
+  }
 
+  getAllElementsDataForSaving(svgArea, exception) {
     const svgProp = [
-      this.svgArea.type,
-      this.svgArea.attr()
+      svgArea.type,
+      svgArea.attr()
     ];
 
-    svgElementsWithoutG.push(svgProp);
+    const svgElements = svgArea.children();
+
+    const svgData = [svgProp, ...svgElements
+      .filter(initializer => initializer.type !== exception)
+      .map(this.getElementDataForSaving)];
+
+    return svgData;
+  }
+
+  saveHistory() {
+    const svgElementsWithoutG = this.getAllElementsDataForSaving(this.svgArea, 'g');
+
     this.history = this.history.slice(0, this.historyPosition + 1);
     this.history.push(svgElementsWithoutG);
     if (!this.isFirstSaveHistory) this.historyPosition++;
@@ -705,86 +719,43 @@ export class SvgAreaModel {
   }
 
   unDo() {
-    this.selectElements = [];
     if (!this.historyPosition) return;
     this.historyPosition -= 1;
 
     this.svgArea.clear();
-    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
-    this.history[this.historyPosition].forEach(data => {
-      if (data.type === 'defs') {
-        this.svgArea.add(data);
-        return;
-      }
-      this.drawAfterFirstLoading(data)
-    });
+    this.history[this.historyPosition].forEach(data => this.drawAfterLoading(data));
+
+    this.removeSelect();
   }
 
   reDo() {
-    this.selectElements = [];
     if (this.historyPosition > this.history.length - 2) return;
     this.historyPosition += 1;
 
     this.svgArea.clear();
-    // this.history[this.historyPosition].forEach(initializer => this.svgArea.add(initializer));
-    this.history[this.historyPosition].forEach(data => {
-      if (data.type === 'defs') {
-        this.svgArea.add(data);
-        return;
-      }
-      this.drawAfterFirstLoading(data)
-    });
+    this.history[this.historyPosition].forEach(data => this.drawAfterLoading(data));
+
+    this.removeSelect();
   }
 
   getLastCondition() {
     this.removeSelect();
+    const svgElementsWithoutDefs = this.getAllElementsDataForSaving(this.svgArea, 'defs');
 
-    const svgElements = this.svgArea.children();
-    const svgData = [...svgElements
-      .filter(initializer => initializer.type !== 'defs')
-      .map(initializer => {
-        if (initializer.type === 'text') {
-          return [
-            initializer.type,
-            initializer.attr(),
-            initializer.node.childNodes[0].textContent
-          ]
-        }
-        if (initializer.type === 'path') {
-          if (initializer._segments) {
-            return [
-              initializer.type,
-              initializer._segments
-            ];
-          }
-          return [
-            initializer.type,
-            initializer.attr()
-          ]
-        }
-        return [
-          initializer.type,
-          initializer.attr()
-        ]
-      }
-    )];
-
-    const svgProp = [
-      this.svgArea.type,
-      this.svgArea.attr()
-    ];
-
-    svgData.push(svgProp);
-
-    return svgData;
+    return svgElementsWithoutDefs;
   }
 
   loadLastCondition() {
     if (!this.lastCondition || this.lastCondition.length === 0) return;
-    this.lastCondition.forEach(data => this.drawAfterFirstLoading(data));
+    this.lastCondition.forEach(data => this.drawAfterLoading(data));
   }
 
-  drawAfterFirstLoading(data) {
+  drawAfterLoading(data) {
+    if (data.type === 'defs') {
+      this.svgArea.add(data);
+      return;
+    }
+
     const type = data[0];
     const attr = data[1] || []; //костыль из-за pencil
     const text = data[2];
@@ -800,11 +771,11 @@ export class SvgAreaModel {
     } else if (type === 'text') {
       this.svgArea.text(`${text}`).attr(attr);
     } else if (type === 'path') {
-      Array.isArray(attr) ? this.drawPathAfterLoading(attr) : this.svgArea.path().attr(attr);
+      Array.isArray(attr) ? this.drawPathAfterLoading(attr, text) : this.svgArea.path().attr(attr);
     }
   }
 
-  drawPathAfterLoading(segments) {
+  drawPathAfterLoading(segments, attr) {
     const elem = this.svgArea.path();
     segments.forEach(segment => {
 
@@ -819,7 +790,7 @@ export class SvgAreaModel {
       }
     });
 
-    elem.stroke(this.strokeColor).fill(this.fillColor);
+    elem.attr(attr);
   }
 
   createNewImage() {
@@ -879,7 +850,6 @@ export class SvgAreaModel {
   changeProperties() {
     const svgWidth = this.appView.settingsModal.querySelector('[data-modal-settings="width"]').value;
     const svgHeight = this.appView.settingsModal.querySelector('[data-modal-settings="height"]').value;
-    // this.resizeSvgArea(svgWidth, svgHeight);
     this.svgArea.size(svgWidth, svgHeight);
     this.saveHistory();
   }
@@ -901,7 +871,7 @@ export class SvgAreaModel {
     this.removeOverlay();
   }
 
-  saveFile(fileName, flagStr) {
+  saveFile(fileName, flagStr, idClient) {
     if (fileName === '') {
       this.appView.errorMessage.style.visibility = 'visible';
       return;
@@ -911,7 +881,7 @@ export class SvgAreaModel {
     if (flagStr === 'client') {
       this.downloadClient(this.svgArea.svg(), fileName, 'image/svg+xml');
     } else if (flagStr === 'server') {
-      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml');
+      this.downloadServer(this.svgArea.svg(), fileName, 'image/svg+xml', idClient);
     }
   }
 
@@ -933,13 +903,12 @@ export class SvgAreaModel {
     }
   }
 
-  downloadServer(data, filename, type) {
+  downloadServer(data, filename, type, idClient) {
     let xhr = new XMLHttpRequest();
-    console.log(this.idClient);
     xhr.open('PUT', 'https://rs-demo-back.herokuapp.com/auth/save');
     xhr.responseType = 'json';
     xhr.setRequestHeader('Content-Type', 'application/json');
-    const id = this.idClient;
+    const id = idClient;
     const filenames = filename;
     const projects = this.getLastCondition();
     let str = '';
@@ -957,13 +926,14 @@ export class SvgAreaModel {
       filenames,
       projects: str
     };
-    xhr.send(JSON.stringify(json)); // почему-то пишет cors, хотя все есть
+    xhr.send(JSON.stringify(json));
     xhr.onload = () => {
-      console.log(xhr.response);
+      console.log('The file was successfully saved');
     }
   }
 
   uploadSVG(input) {
+    this.removeSelect();
     const file = input.files[0];
     const fileName = file.name.toLowerCase();
 
@@ -971,7 +941,12 @@ export class SvgAreaModel {
       const reader = new FileReader();
 
       reader.addEventListener('load', () => {
-        this.svgArea.svg(reader.result);
+        const temp = document.createElement('div');
+        temp.innerHTML = reader.result;
+        if (temp.childNodes[0].tagName === 'svg') {
+          this.svgArea.svg(temp.childNodes[0].innerHTML);
+        }
+        temp.remove();
       });
 
       reader.readAsText(file);
@@ -1144,6 +1119,7 @@ export class SvgAreaModel {
       });
     }
     this.appView.deleteVisibilityContextMenu();
+    this.removeSelect();
     this.saveHistory();
   }
 
