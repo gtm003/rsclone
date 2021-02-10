@@ -32,12 +32,12 @@ export class MainMenuController {
 
   onMenuButtonsClick({target}) {
     this.appView.deleteVisibilityContextMenu();
+    this.model.removeSelect();
+    this.appView.removeVisibilityPanel(this.model.selectElements);
     const buttonDataAttribute = target.dataset[`${this.appView.menuButtonsDataAttribute}`];
 
     if (buttonDataAttribute === 'Create') {
       this.model.openNewImageModal();
-      this.model.selectElements = [];
-      this.appView.removeVisibilityPanel(this.model.selectElements);
     } else if (buttonDataAttribute === 'Save') {
       this.model.openModalSave();
     } else if (buttonDataAttribute === 'Properties') {

@@ -25,6 +25,7 @@ export class Controller {
     this.signInModalController = null;
 
     this.onOverlayClick = this.onOverlayClick.bind(this);
+    this.onSvgAreaClick = this.onSvgAreaClick.bind(this);
   }
 
   init() {
@@ -49,10 +50,7 @@ export class Controller {
   }
 
   addAllListeners() {
-    this.model.svgArea.node.addEventListener('click', (e) => {
-      this.model.svgArea.node.tabIndex = '1';
-      this.model.svgArea.node.focus();
-    });
+    this.model.svgArea.node.addEventListener('click', this.onSvgAreaClick);
     this.mainMenuController.addAllListeners();
     this.functionalAreaController.addAllListeners();
     this.svgAreaController.addAllListeners();
@@ -65,10 +63,7 @@ export class Controller {
   }
 
   removeAllListeners() {
-    this.model.svgArea.node.removeEventListener('click', (e) => {
-      this.model.svgArea.node.tabIndex = '1';
-      this.model.svgArea.node.focus();
-    });
+    this.model.svgArea.node.removeEventListener('click', this.onSvgAreaClick);
     this.mainMenuController.removeAllListeners();
     this.functionalAreaController.removeAllListeners();
     this.svgAreaController.removeAllListeners();
@@ -79,6 +74,13 @@ export class Controller {
     this.model.removeSelect();
     this.signInModalController.removeAllListeners();
     this.appView.overlay.removeEventListener('click', this.onOverlayClick);
+
+    this.model.svgArea.node.removeAttribute('tabindex');
+  }
+
+  onSvgAreaClick(e) {
+    this.model.svgArea.node.tabIndex = '1';
+    this.model.svgArea.node.focus();
   }
 
   onOverlayClick({target}) {

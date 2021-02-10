@@ -278,7 +278,7 @@ export class AppView {
         icon.setAttribute('src', `img/content/${FUNCTIONAL_AREA_ICONS[j]}`);
         icon.setAttribute('alt', arrayBtn[i]);
         const button = document.createElement('input');
-        button.setAttribute('input', 'text');
+        button.setAttribute('type', 'number');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         span.append(icon);
@@ -288,11 +288,20 @@ export class AppView {
       } else if (arrayBtn[i] === 'family') {
         containerButton.append(this.createSelectElement(arrayBtn[i]));
         containerPanel.append(containerButton);
+      } else if (arrayBtn[i] === 'id' || arrayBtn[i] === 'class') {
+        const span = document.createElement('span');
+        span.textContent = arrayBtn[i];
+        const button = document.createElement('input');
+        button.setAttribute('type', 'text');
+        button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
+        button.classList.add('tools-top__functional-area__container__btn--keyup');
+        containerButton.append(span, button);
+        containerPanel.append(containerButton);
       } else {
         const span = document.createElement('span');
         span.textContent = arrayBtn[i];
         const button = document.createElement('input');
-        button.setAttribute('input', 'text');
+        button.setAttribute('type', 'number');
         button.dataset[this.propertiesDataAttribute] = arrayBtn[i];
         button.classList.add('tools-top__functional-area__container__btn--keyup');
         containerButton.append(span, button);
