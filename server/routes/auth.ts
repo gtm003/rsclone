@@ -14,7 +14,6 @@ const getPasswordHash = (password: string) => {
 }
 
 router.get('/', async (req, res, next) => {
-    const { body } = req;
 
     const users = await knex(tableName)
         .select()
@@ -59,7 +58,6 @@ router.put('/save', async (req, res, next) => {
     const id = body.id;
     const filenames = body.filenames;
     const projects = body.projects;
-    // const { body: {id, filenames, projects} } = req;
 
     const [arrayData] = await knex(tableName)
         .select('filenames', 'projects')
