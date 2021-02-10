@@ -1502,11 +1502,7 @@ button,
     display: -ms-grid;
     display: grid;
     width: 330px;
-    height: 310px;
-    -webkit-animation-duration: 2s;
-            animation-duration: 2s;
-    -webkit-animation-name: slidein;
-            animation-name: slidein; }
+    height: 310px; }
 
 @-webkit-keyframes slidein {
   from {
