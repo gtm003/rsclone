@@ -338,7 +338,7 @@ export class SvgAreaModel {
   }
 
   createPencilTrace(e) {
-    this.elem = this.svgArea.path([['M', e.offsetX, e.offsetY]]).stroke(this.strokeColor).fill(this.fillColor);
+    this.elem = this.svgArea.path().M(e.offsetX, e.offsetY).stroke(this.strokeColor).fill(this.fillColor);
     this.elem.attr('stroke-width', 2);
   }
 
