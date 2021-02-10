@@ -99,6 +99,8 @@ export class SignInModalController {
   }
 
   onToolsRightProfileClick({target}) {
+    this.appView.deleteVisibilityContextMenu();
+
     const button = target.closest('[data-register]');
     if (!button) return;
     if (button.dataset[this.appView.signInButtonsDataAttribute] === 'Open') { // вот этот метод должен быть в моделе MainViewModel, он общий для всей аппы

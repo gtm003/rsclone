@@ -836,10 +836,11 @@ button,
             align-items: center;
     width: calc(100vw - 92px);
     background-color: #ADB5BD;
-    right: 46px;
+    left: 46px;
     top: 38px;
     position: absolute;
-    z-index: 4; }
+    z-index: 4;
+    min-width: 932px; }
   .tools-top__functional-area__rect, .tools-top__functional-area__circle, .tools-top__functional-area__line, .tools-top__functional-area__text, .tools-top__functional-area__ellipse, .tools-top__functional-area__pencil, .tools-top__functional-area__align {
     height: 88%;
     display: -webkit-box;

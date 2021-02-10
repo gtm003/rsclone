@@ -15,6 +15,8 @@ export class TabsController {
   }
 
   onToolsBottomClick({ target }) {
+    this.appView.deleteVisibilityContextMenu();
+
     const button = target.closest('[data-tab]');
 
     if (!button) return;

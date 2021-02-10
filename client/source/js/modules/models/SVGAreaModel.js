@@ -500,7 +500,6 @@ export class SvgAreaModel {
         rx: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
         ry: Math.sqrt(((e.offsetX - this.x) ** 2) + (e.offsetY - this.y) ** 2),
       });
-      this.elem.transform({x : e.offsetX}).transform({y : e.offsetY});
     } else {
       this.elem.attr({
         rx: Math.abs(e.offsetX - this.x),

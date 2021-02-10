@@ -44,10 +44,11 @@
       align-items: center;
       width: calc(100vw - 92px);
       background-color: $color-gray;
-      right: 46px;
+      left: 46px;
       top: 38px;
       position: absolute;
       z-index: 4;
+      min-width: 932px;
     }
 
     &__functional-area__rect,
