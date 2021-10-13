@@ -2,7 +2,7 @@
 
 Это командная работа - финальное задание курса Front-end/JavaScript RS School. Ссылка на ТЗ [здесь](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/react/react-game.md). 
 
-![rsclone](client/source/img/rslang.gif)
+![rsclone](client/source/img/rslang.png)
 
 ## Технологии используемые в разработке:
 ### Код клиентской части написан на JS, а также
