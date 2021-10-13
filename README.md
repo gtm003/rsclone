@@ -1,8 +1,8 @@
 # [SVG-Editor](https://gtm003.github.io/rsclone/client/build/index.html)
 
-Это командная работа - финальное задание курса Front-end/JavaScript RS School. Ссылка на ТЗ [здесь](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/react/react-game.md). 
+Это командная работа - финальное задание курса Front-end/JavaScript RS School. Ссылка на ТЗ [здесь](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/rsclone/rsclone.md). 
 
-![rsclone](client/source/img/rslang.png)
+![rsclone](client/source/img/rsclone.png)
 
 ## Технологии используемые в разработке:
 ### Код клиентской части написан на JS, а также
